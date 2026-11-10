@@ -1,0 +1,20 @@
+# Perfil de desarrollo local: cookies sin Secure (http://localhost), OpenAPI visible,
+# CORS solo para el servidor de Vite. Nunca usar en producción.
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+app:
+  cors-allowed-origins: http://localhost:5173
+
+logging:
+  level:
+    com.englishos: DEBUG

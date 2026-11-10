@@ -1,0 +1,17 @@
+# Perfil de pruebas: la base de datos la aporta Testcontainers (@ServiceConnection).
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+springdoc:
+  api-docs:
+    enabled: true
+
+app:
+  base-url: http://localhost:5173
+  admin-bootstrap:
+    email: admin@englishos.test
+    password: Owner-Secret-Phrase-2026
+    display-name: Admin de pruebas
