@@ -79,7 +79,8 @@ public class RegistrationService {
         consents.save(Consent.accept(user.getId(), Consent.DocumentType.TERMS, properties.legal().termsVersion(), now));
         consents.save(Consent.accept(user.getId(), Consent.DocumentType.PRIVACY, properties.legal().privacyVersion(), now));
 
-        issueVerificationToken(user, cmd.displayName().trim(), now);
+        // Usuario nuevo: no tiene tokens pendientes que invalidar.
+        issueVerificationToken(user, cmd.displayName().trim(), now, false);
         return user;
     }
 
@@ -120,12 +121,14 @@ public class RegistrationService {
                 .filter(u -> !u.isEmailVerified() && u.canLogIn())
                 .ifPresent(u -> {
                     String name = profiles.findById(u.getId()).map(UserProfile::getDisplayName).orElse("");
-                    issueVerificationToken(u, name, Instant.now(clock));
+                    issueVerificationToken(u, name, Instant.now(clock), true);
                 });
     }
 
-    private void issueVerificationToken(User user, String displayName, Instant now) {
-        tokens.invalidatePending(user.getId(), AuthToken.Purpose.EMAIL_VERIFY, now);
+    private void issueVerificationToken(User user, String displayName, Instant now, boolean invalidatePrevious) {
+        if (invalidatePrevious) {
+            tokens.invalidatePending(user.getId(), AuthToken.Purpose.EMAIL_VERIFY, now);
+        }
         String raw = OneTimeTokens.newToken();
         tokens.save(AuthToken.issue(user.getId(), AuthToken.Purpose.EMAIL_VERIFY, OneTimeTokens.hash(raw),
                 now.plus(properties.security().emailVerificationTtl()), now));

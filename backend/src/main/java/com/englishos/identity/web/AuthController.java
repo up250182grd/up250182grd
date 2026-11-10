@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.Parameter;
+
 import com.englishos.identity.api.CurrentUser;
 import com.englishos.identity.application.LoginService;
 import com.englishos.identity.application.PasswordResetService;
@@ -94,7 +96,7 @@ class AuthController {
 
     /** La SPA llama a este endpoint al cargar para obtener la cookie XSRF-TOKEN. */
     @GetMapping("/csrf")
-    CsrfResponse csrf(CsrfToken token) {
+    CsrfResponse csrf(@Parameter(hidden = true) CsrfToken token) {
         return new CsrfResponse(token.getHeaderName(), token.getToken());
     }
 

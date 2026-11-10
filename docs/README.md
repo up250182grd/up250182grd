@@ -2,8 +2,9 @@
 
 Plataforma de aprendizaje de inglés con profesor virtual de IA, conversación de voz en tiempo real, billetera en MXN y facturación por consumo real.
 
-> **Estado:** Fase 1 — Análisis y arquitectura. **Todavía no hay código de la aplicación.**
-> Todo lo que aparece aquí es diseño; nada se declara "implementado".
+> **Estado:** Fase 1 (diseño) completa · **Fase 2 (base del proyecto) implementada y probada.**
+> Instalación, ejecución, pruebas y estado detallado: [DESARROLLO.md](DESARROLLO.md).
+> Lo que no figure como implementado en DESARROLLO.md es diseño, no funcionalidad existente.
 
 ## Convenciones de este documento
 
@@ -28,6 +29,21 @@ Plataforma de aprendizaje de inglés con profesor virtual de IA, conversación d
 10. [Plan de desarrollo](architecture/10-plan-desarrollo.md)
 
 Registro de decisiones de arquitectura (ADR): [`adr/`](adr/).
+
+Contrato de la API (generado por el backend): [`api/openapi.json`](api/openapi.json).
+
+### Versiones fijadas en la Fase 2 (verificadas en los repositorios oficiales el 2026-11-10)
+
+| Componente | Versión | Nota |
+|---|---|---|
+| Spring Boot | 4.1.2 | El diseño decía "4.0.x"; se usa la última estable. |
+| Java | 21 | |
+| MySQL | 8.4 | |
+| Flyway / Hibernate | 12.4 / 7.4 | Gestionadas por Spring Boot. |
+| React / Vite / Tailwind | 19.3 / 8.3 / 4.3 | |
+| TypeScript | 5.9.3 | La 7.x aún no es compatible con typescript-eslint ni con openapi-typescript. |
+| React Router | 7.18 | Se mantiene la línea 7 (la 8 es muy reciente). |
+| TanStack Query / Zod | 5.107 / 4.6 | |
 
 ## Decisiones pendientes del propietario
 

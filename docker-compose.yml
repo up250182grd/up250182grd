@@ -1,0 +1,68 @@
+# EnglishOS — entorno local.
+#
+#   Solo servicios de apoyo (lo habitual al programar):
+#     docker compose up -d mysql mailpit
+#   Todo empaquetado (backend + frontend detrás de nginx en http://localhost:8088):
+#     docker compose --profile full up -d --build
+#
+# Las credenciales de aquí son SOLO para desarrollo local. Producción usa variables/secretos propios.
+name: englishos
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: englishos
+      MYSQL_USER: ${DB_USER:-englishos}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-englishos-dev}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root-dev-only}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  mailpit:
+    # Captura los correos de desarrollo; bandeja web en http://localhost:8025
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
+  backend:
+    profiles: ["full"]
+    build:
+      context: ./backend
+      dockerfile: ../infra/docker/backend.Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:mysql://mysql:3306/englishos
+      DB_USER: ${DB_USER:-englishos}
+      DB_PASSWORD: ${DB_PASSWORD:-englishos-dev}
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      APP_BASE_URL: http://localhost:8088
+      CORS_ALLOWED_ORIGINS: ""
+      ADMIN_BOOTSTRAP_EMAIL: ${ADMIN_BOOTSTRAP_EMAIL:-}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+
+  frontend:
+    profiles: ["full"]
+    build:
+      context: ./frontend
+      dockerfile: ../infra/docker/frontend.Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:8088:8080"
+
+volumes:
+  mysql-data:

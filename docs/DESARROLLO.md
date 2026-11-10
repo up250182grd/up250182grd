@@ -1,0 +1,102 @@
+# EnglishOS — Instalación, ejecución y pruebas
+
+Estado: **Fase 2 (base del proyecto) implementada.** Ver [qué está hecho y qué falta](#estado-de-la-fase-2).
+
+## Requisitos
+
+| Herramienta | Versión probada |
+|---|---|
+| Java (JDK) | 21 |
+| Maven | 3.9 |
+| Node.js | 22 |
+| Docker + Docker Compose | Docker 29 |
+
+## 1. Configurar variables de entorno
+
+```bash
+cp .env.example .env
+```
+
+Edita `.env` y define al menos `ADMIN_BOOTSTRAP_EMAIL` y `ADMIN_BOOTSTRAP_PASSWORD` (mínimo 12 caracteres, sin contener la parte local de tu correo). Con eso se crea tu cuenta de administrador en el primer arranque. Después del primer arranque, borra la contraseña de `.env`.
+
+## 2. Levantar MySQL y Mailpit
+
+```bash
+docker compose up -d mysql mailpit
+```
+
+- MySQL 8.4 en `localhost:3306` (base `englishos`).
+- Mailpit (bandeja de correos de desarrollo) en <http://localhost:8025>.
+
+## 3. Backend (Spring Boot)
+
+```bash
+cd backend
+set -a; source ../.env; set +a
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+- API en <http://localhost:8080>. Swagger UI (solo dev): <http://localhost:8080/swagger-ui.html>.
+- Flyway crea las tablas automáticamente.
+
+## 4. Frontend (React + Vite)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Abre <http://localhost:5173>. Vite redirige `/api` al backend, así que navegador, cookies y CSRF funcionan igual que en producción (mismo origen).
+
+## Todo en contenedores (opcional)
+
+```bash
+docker compose --profile full up -d --build
+```
+
+La app queda en <http://localhost:8088> (nginx sirve el frontend y redirige `/api` al backend).
+
+## Pruebas
+
+| Comando | Qué ejecuta |
+|---|---|
+| `cd backend && mvn verify` | Unitarias, arquitectura (ArchUnit) e integración por HTTP real contra MySQL 8.4 (Testcontainers; requiere Docker). |
+| `cd frontend && npm test` | Pruebas de componentes y del cliente HTTP (Vitest). |
+| `cd frontend && npm run typecheck && npm run lint` | Tipos estrictos y lint. |
+| `cd frontend && npm run e2e` | E2E con Playwright contra el sistema completo (pasos 2–4 activos). Usa `E2E_ADMIN_EMAIL`/`E2E_ADMIN_PASSWORD` iguales a los del bootstrap. |
+
+### Contrato API tipado
+
+El backend exporta su OpenAPI a `docs/api/openapi.json` (prueba `OpenApiExportIT`). El frontend genera sus tipos con:
+
+```bash
+cd frontend
+npm run gen:api
+```
+
+La CI falla si el contrato cambió y no se regeneró el cliente.
+
+## Estado de la Fase 2
+
+| Funcionalidad | Estado |
+|---|---|
+| Registro con consentimientos versionados (RF-IDN-1) | ✅ Implementado y probado |
+| Verificación de correo de un solo uso, reenvío (RF-IDN-2) | ✅ |
+| Login/logout con sesión de servidor, bloqueo tras 5 fallos (RF-IDN-3) | ✅ |
+| Recuperación de contraseña sin revelar cuentas; revoca sesiones (RF-IDN-4) | ✅ |
+| Roles y permisos verificados en backend (RF-IDN-5) | ✅ |
+| Perfil: nombre, idioma de explicación, meta diaria, transcripciones (RF-IDN-6) | ✅ |
+| Suspensión/reactivación y cambio de roles con auditoría y revocación de sesiones (RF-IDN-8, RF-ADM-1 parcial) | ✅ |
+| Administrador inicial desde variables de entorno | ✅ |
+| UI: landing, acceso, dashboard, ajustes, usuarios (admin), claro/oscuro, responsive | ✅ |
+| Exportar/eliminar mis datos (RF-IDN-7) | ⏳ Pendiente (Fase 9, cuando existan datos de aprendizaje) |
+| Rate limiting por IP (RNF-16) | ⏳ Pendiente (Fase 9); hoy solo hay bloqueo por cuenta |
+| PWA (manifest + service worker) | ⏳ Pendiente (Fase 8) |
+| Auditoría de accesibilidad automatizada (axe) | ⏳ Pendiente (Fase 8) |
+
+### Pendientes conocidos
+
+- **Imágenes Docker (`--profile full`) sin verificar**: en el entorno donde se desarrolló la Fase 2, `docker build` no pudo descargar dependencias por la inspección TLS del proxy de red de ese entorno. Los Dockerfiles siguen el patrón estándar; deben probarse en una máquina normal o en CI. Los servicios `mysql` y `mailpit` sí se verificaron.
+- `npm audit` reporta 10 avisos moderados de `minimatch` en dependencias **de desarrollo** (no llegan al build de producción). Revisar cuando haya versiones corregidas.
+- Mailpit y las credenciales de `docker-compose.yml` son solo para desarrollo local.

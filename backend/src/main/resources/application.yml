@@ -10,6 +10,11 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/englishos}
     username: ${DB_USER:englishos}
     password: ${DB_PASSWORD:}
+    hikari:
+      # READ COMMITTED evita los gap locks de InnoDB en búsquedas por rango, que causaban deadlocks con
+      # operaciones concurrentes (ver ConcurrentRegistrationIT). La consistencia se garantiza con
+      # restricciones UNIQUE, bloqueos explícitos de fila (SELECT ... FOR UPDATE) y versiones optimistas.
+      transaction-isolation: TRANSACTION_READ_COMMITTED
   jpa:
     open-in-view: false
     hibernate:
