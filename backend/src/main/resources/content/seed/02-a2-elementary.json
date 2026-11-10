@@ -1,0 +1,182 @@
+{
+  "courses": [
+    {
+      "slug": "a2-elementary",
+      "level": "A2",
+      "sortOrder": 1,
+      "title": { "es": "A2 · Elemental", "en": "A2 · Elementary" },
+      "description": {
+        "es": "Cuenta experiencias pasadas y comunícate en situaciones cotidianas.",
+        "en": "Talk about past experiences and communicate in everyday situations."
+      },
+      "modules": [
+        {
+          "slug": "a2-m1-past-simple",
+          "title": { "es": "Pasado simple", "en": "Past simple" },
+          "objective": {
+            "es": "Contar lo que pasó con verbos regulares e irregulares.",
+            "en": "Say what happened using regular and irregular verbs."
+          },
+          "lessons": [
+            {
+              "slug": "a2-past-simple-regular",
+              "level": "A2",
+              "minutes": 14,
+              "prerequisites": [ "a1-present-simple-negative-questions" ],
+              "title": { "es": "Pasado simple: verbos regulares", "en": "Past simple: regular verbs" },
+              "objective": {
+                "es": "Formar el pasado de verbos regulares y sus negaciones.",
+                "en": "Form the past of regular verbs and their negatives."
+              },
+              "explanation": {
+                "es": "## ¿Cuándo se usa?\nPara acciones **terminadas** en el pasado, normalmente con una referencia de tiempo: yesterday, last week, in 2020.\n\n## Afirmativo: -ed\nEl verbo es igual para todas las personas:\n- I visit**ed**, she visit**ed**, they visit**ed**\n\n## Ortografía\n- Termina en -e: solo **-d** → live**d**\n- Consonante + y: **-ied** → stud**ied**\n- Una vocal + una consonante con acento: se duplica → sto**pped**\n\n## Negativo y preguntas: did\n- She **didn't** call me. (no \"didn't called\")\n- **Did** you watch the game?\nCon did, el verbo vuelve a su forma base.",
+                "en": "## When do we use it?\nFor **finished** actions in the past, usually with a time reference: yesterday, last week, in 2020.\n\n## Affirmative: -ed\nThe verb is the same for every person:\n- I visit**ed**, she visit**ed**, they visit**ed**\n\n## Spelling\n- Ends in -e: just **-d** → live**d**\n- Consonant + y: **-ied** → stud**ied**\n- One stressed vowel + one consonant: double it → sto**pped**\n\n## Negatives and questions: did\n- She **didn't** call me. (not \"didn't called\")\n- **Did** you watch the game?\nAfter did, the verb goes back to its base form."
+              },
+              "examples": [
+                { "en": "Yesterday I visited my grandmother.", "es": "Ayer visité a mi abuela." },
+                { "en": "We stayed at home last weekend.", "es": "Nos quedamos en casa el fin de semana pasado." },
+                { "en": "Did you call Laura?", "es": "¿Llamaste a Laura?" }
+              ],
+              "vocabulary": [
+                { "term": "yesterday", "translation": "ayer", "partOfSpeech": "adverb", "ipa": "/ˈjestərdeɪ/" },
+                { "term": "last week", "translation": "la semana pasada", "partOfSpeech": "phrase", "ipa": "/læst wiːk/" },
+                { "term": "to stay", "translation": "quedarse", "partOfSpeech": "verb", "ipa": "/steɪ/" },
+                { "term": "to pass (an exam)", "translation": "aprobar (un examen)", "partOfSpeech": "verb", "ipa": "/pæs/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a2-psr-mc-visited",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige la forma correcta.", "en": "Choose the correct form." },
+                  "prompt": {
+                    "question": "Yesterday I ___ my grandmother.",
+                    "options": [ { "id": "a", "text": "visit" }, { "id": "b", "text": "visited" }, { "id": "c", "text": "visits" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": { "es": "yesterday indica pasado: **visited**.", "en": "yesterday signals the past: **visited**." }
+                },
+                {
+                  "slug": "a2-psr-fill-stayed",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Escribe el verbo en pasado.", "en": "Write the verb in the past simple." },
+                  "prompt": { "text": "We ___ at home last weekend. (stay)" },
+                  "solution": { "answers": [ [ "stayed" ] ] },
+                  "feedback": { "es": "stay termina en vocal + y: solo -ed → **stayed**.", "en": "stay ends in vowel + y: just -ed → **stayed**." }
+                },
+                {
+                  "slug": "a2-psr-fill-studied-passed",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Completa con study y pass en pasado.", "en": "Complete with study and pass in the past simple." },
+                  "prompt": { "text": "She ___ for the exam and ___ it." },
+                  "solution": { "answers": [ [ "studied" ], [ "passed" ] ] },
+                  "feedback": { "es": "**studied** (y → ied) y **passed**.", "en": "**studied** (y → ied) and **passed**." }
+                },
+                {
+                  "slug": "a2-psr-tf-stoped",
+                  "type": "TRUE_FALSE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "¿Verdadero o falso?", "en": "True or false?" },
+                  "prompt": { "statement": "The past simple of \"stop\" is \"stoped\"." },
+                  "solution": { "value": false },
+                  "feedback": { "es": "Falso: se duplica la p → **stopped**.", "en": "False: the p is doubled → **stopped**." }
+                },
+                {
+                  "slug": "a2-psr-order-didnt",
+                  "type": "WORD_ORDER",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Ordena las palabras.", "en": "Put the words in order." },
+                  "prompt": { "tokens": [ "didn't", "the", "I", "door", "open" ] },
+                  "solution": { "sentences": [ [ "I", "didn't", "open", "the", "door" ] ] },
+                  "feedback": { "es": "Sujeto + didn't + verbo base: I didn't **open**.", "en": "Subject + didn't + base verb: I didn't **open**." }
+                }
+              ]
+            },
+            {
+              "slug": "a2-past-simple-irregular",
+              "level": "A2",
+              "minutes": 15,
+              "prerequisites": [ "a2-past-simple-regular" ],
+              "title": { "es": "Pasado simple: verbos irregulares", "en": "Past simple: irregular verbs" },
+              "objective": {
+                "es": "Usar los verbos irregulares más frecuentes en pasado.",
+                "en": "Use the most common irregular verbs in the past."
+              },
+              "explanation": {
+                "es": "## Verbos irregulares\nAlgunos verbos muy frecuentes no usan -ed y hay que memorizarlos:\n- go → **went**\n- eat → **ate**\n- see → **saw**\n- buy → **bought**\n- have → **had**\n\n## Lo bueno\nEn negativo y preguntas se usa **did** y el verbo vuelve a la forma base, igual que con los regulares:\n- I **didn't go** to the party.\n- **Did** you **see** the movie?\n\n## Consejo\nAprende los irregulares en frases cortas (\"I went to the beach\") y repásalos en días distintos: así se recuerdan mejor que en listas largas.",
+                "en": "## Irregular verbs\nSome very common verbs don't use -ed and must be memorised:\n- go → **went**\n- eat → **ate**\n- see → **saw**\n- buy → **bought**\n- have → **had**\n\n## The good news\nIn negatives and questions we use **did** and the base form, just like regular verbs:\n- I **didn't go** to the party.\n- **Did** you **see** the movie?\n\n## Tip\nLearn irregular verbs in short phrases (\"I went to the beach\") and review them on different days: it works better than long lists."
+              },
+              "examples": [
+                { "en": "Last summer we went to Oaxaca.", "es": "El verano pasado fuimos a Oaxaca." },
+                { "en": "I bought a new phone last month.", "es": "Compré un teléfono nuevo el mes pasado." },
+                { "en": "Did you see the movie?", "es": "¿Viste la película?" }
+              ],
+              "vocabulary": [
+                { "term": "went", "translation": "fue, fui (de go)", "partOfSpeech": "verb", "ipa": "/went/" },
+                { "term": "bought", "translation": "compró, compré (de buy)", "partOfSpeech": "verb", "ipa": "/bɔːt/" },
+                { "term": "saw", "translation": "vio, vi (de see)", "partOfSpeech": "verb", "ipa": "/sɔː/" },
+                { "term": "ate", "translation": "comió, comí (de eat)", "partOfSpeech": "verb", "ipa": "/eɪt/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a2-psi-match-forms",
+                  "type": "MATCHING",
+                  "skill": "VOCABULARY",
+                  "instructions": { "es": "Relaciona cada verbo con su pasado. Sobra una opción.", "en": "Match each verb with its past form. One option is extra." },
+                  "prompt": {
+                    "left": [ { "id": "l1", "text": "go" }, { "id": "l2", "text": "eat" }, { "id": "l3", "text": "see" }, { "id": "l4", "text": "buy" } ],
+                    "right": [ { "id": "r1", "text": "saw" }, { "id": "r2", "text": "goed" }, { "id": "r3", "text": "bought" }, { "id": "r4", "text": "went" }, { "id": "r5", "text": "ate" } ]
+                  },
+                  "solution": { "pairs": { "l1": "r4", "l2": "r5", "l3": "r1", "l4": "r3" } },
+                  "feedback": { "es": "go → went, eat → ate, see → saw, buy → bought. \"goed\" no existe.", "en": "go → went, eat → ate, see → saw, buy → bought. \"goed\" does not exist." }
+                },
+                {
+                  "slug": "a2-psi-mc-went",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige la forma correcta.", "en": "Choose the correct form." },
+                  "prompt": {
+                    "question": "Last summer we ___ to Oaxaca.",
+                    "options": [ { "id": "a", "text": "goed" }, { "id": "b", "text": "went" }, { "id": "c", "text": "gone" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": { "es": "El pasado de go es **went**. \"gone\" es participio (have gone).", "en": "The past of go is **went**. \"gone\" is the participle (have gone)." }
+                },
+                {
+                  "slug": "a2-psi-fill-bought",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Escribe el verbo en pasado.", "en": "Write the verb in the past simple." },
+                  "prompt": { "text": "I ___ a new phone last month. (buy)" },
+                  "solution": { "answers": [ [ "bought" ] ] },
+                  "feedback": { "es": "buy → **bought**.", "en": "buy → **bought**." },
+                  "hint": { "es": "Rima con \"thought\".", "en": "It rhymes with \"thought\"." }
+                },
+                {
+                  "slug": "a2-psi-error-saw",
+                  "type": "ERROR_SPOTTING",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Toca la palabra incorrecta.", "en": "Tap the incorrect word." },
+                  "prompt": { "tokens": [ "Did", "you", "saw", "the", "movie", "?" ] },
+                  "solution": { "errorIndex": 2, "correction": "see" },
+                  "feedback": { "es": "Con did el verbo va en forma base: Did you **see** the movie?", "en": "After did we use the base form: Did you **see** the movie?" }
+                },
+                {
+                  "slug": "a2-psi-fill-didnt-eat",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Escribe la forma negativa en pasado.", "en": "Write the negative past form." },
+                  "prompt": { "text": "They ___ breakfast this morning. (not / eat)" },
+                  "solution": { "answers": [ [ "didn't eat", "did not eat" ] ] },
+                  "feedback": { "es": "Negativo: **didn't eat** (o did not eat), nunca \"didn't ate\".", "en": "Negative: **didn't eat** (or did not eat), never \"didn't ate\"." }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

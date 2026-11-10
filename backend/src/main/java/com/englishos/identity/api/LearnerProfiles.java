@@ -1,0 +1,12 @@
+package com.englishos.identity.api;
+
+import java.time.ZoneId;
+
+/** Lo que otros módulos pueden consultar o cambiar del perfil del alumno, sin acceder a sus tablas. */
+public interface LearnerProfiles {
+
+    /** Zona horaria del alumno: los "días" de estudio y de dominio se cuentan en su hora local. */
+    ZoneId zoneOf(Long userId);
+
+    void markOnboardingCompleted(Long userId);
+}

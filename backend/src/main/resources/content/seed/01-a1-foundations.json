@@ -1,0 +1,377 @@
+{
+  "courses": [
+    {
+      "slug": "a1-foundations",
+      "level": "A1",
+      "sortOrder": 1,
+      "title": { "es": "A1 · Fundamentos", "en": "A1 · Foundations" },
+      "description": {
+        "es": "Las bases para presentarte, describir personas y hablar de tu rutina.",
+        "en": "The basics to introduce yourself, describe people and talk about your routine."
+      },
+      "modules": [
+        {
+          "slug": "a1-m1-be-and-articles",
+          "title": { "es": "Ser, estar y artículos", "en": "To be and articles" },
+          "objective": {
+            "es": "Usar el verbo to be y los artículos a/an en oraciones simples.",
+            "en": "Use the verb to be and the articles a/an in simple sentences."
+          },
+          "lessons": [
+            {
+              "slug": "a1-verb-to-be",
+              "level": "A1",
+              "minutes": 12,
+              "title": { "es": "El verbo to be (am, is, are)", "en": "The verb to be (am, is, are)" },
+              "objective": {
+                "es": "Elegir correctamente am, is o are según el sujeto.",
+                "en": "Choose am, is or are correctly depending on the subject."
+              },
+              "explanation": {
+                "es": "## ¿Qué es to be?\nEl verbo **to be** equivale a **ser** y a **estar** en español. En inglés es un solo verbo con tres formas en presente.\n\n## Las tres formas\n- **I am** → yo soy / estoy\n- **he, she, it is** → él, ella, eso es / está\n- **you, we, they are** → tú, ustedes, nosotros, ellos son / están\n\n## Contracciones\nAl hablar es muy común contraer: **I'm**, **she's**, **we're**, **they're**.\n\n## Error frecuente\nEn español a veces omitimos el sujeto (\"Es maestra\"). En inglés **el sujeto es obligatorio**: \"**She is** a teacher\", nunca \"Is a teacher\".",
+                "en": "## What is to be?\nThe verb **to be** covers the meanings of both **ser** and **estar** in Spanish. It is one verb with three present forms.\n\n## The three forms\n- **I am**\n- **he, she, it is**\n- **you, we, they are**\n\n## Contractions\nIn speech we usually contract: **I'm**, **she's**, **we're**, **they're**.\n\n## Common mistake\nSpanish speakers sometimes drop the subject. In English **the subject is required**: \"**She is** a teacher\", never \"Is a teacher\"."
+              },
+              "examples": [
+                { "en": "I am a student.", "es": "Soy estudiante." },
+                { "en": "She is at work.", "es": "Ella está en el trabajo." },
+                { "en": "They are from Mexico.", "es": "Ellos son de México." }
+              ],
+              "vocabulary": [
+                { "term": "teacher", "translation": "maestro, maestra", "partOfSpeech": "noun", "ipa": "/ˈtiːtʃər/" },
+                { "term": "student", "translation": "estudiante", "partOfSpeech": "noun", "ipa": "/ˈstuːdənt/" },
+                { "term": "friend", "translation": "amigo, amiga", "partOfSpeech": "noun", "ipa": "/frend/" },
+                { "term": "happy", "translation": "feliz, contento", "partOfSpeech": "adjective", "ipa": "/ˈhæpi/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a1-be-mc-she",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige la forma correcta.", "en": "Choose the correct form." },
+                  "prompt": {
+                    "question": "She ___ a teacher.",
+                    "options": [ { "id": "a", "text": "am" }, { "id": "b", "text": "is" }, { "id": "c", "text": "are" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": {
+                    "es": "Con he, she e it se usa **is**: She is a teacher.",
+                    "en": "With he, she and it we use **is**: She is a teacher."
+                  },
+                  "hint": { "es": "Piensa en el sujeto: she.", "en": "Look at the subject: she." }
+                },
+                {
+                  "slug": "a1-be-fill-i",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Completa con la forma de to be.", "en": "Complete with the correct form of to be." },
+                  "prompt": { "text": "I ___ from Mexico." },
+                  "solution": { "answers": [ [ "am" ] ] },
+                  "feedback": { "es": "Con I siempre se usa **am**.", "en": "With I we always use **am**." }
+                },
+                {
+                  "slug": "a1-be-fill-we-they",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Completa los dos espacios.", "en": "Fill in both blanks." },
+                  "prompt": { "text": "We ___ friends and they ___ happy." },
+                  "solution": { "answers": [ [ "are" ], [ "are" ] ] },
+                  "feedback": { "es": "Con we y they se usa **are**.", "en": "With we and they we use **are**." }
+                },
+                {
+                  "slug": "a1-be-tf-they-is",
+                  "type": "TRUE_FALSE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "¿Verdadero o falso?", "en": "True or false?" },
+                  "prompt": { "statement": "\"They is students\" is a correct sentence." },
+                  "solution": { "value": false },
+                  "feedback": {
+                    "es": "Es falso. Lo correcto es **They are students**.",
+                    "en": "False. The correct sentence is **They are students**."
+                  }
+                },
+                {
+                  "slug": "a1-be-order-where",
+                  "type": "WORD_ORDER",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Ordena las palabras para formar una pregunta.", "en": "Put the words in order to make a question." },
+                  "prompt": { "tokens": [ "you", "are", "Where", "from", "?" ] },
+                  "solution": { "sentences": [ [ "Where", "are", "you", "from", "?" ] ] },
+                  "feedback": {
+                    "es": "En las preguntas, **are** va antes del sujeto: Where **are you** from?",
+                    "en": "In questions, **are** goes before the subject: Where **are you** from?"
+                  }
+                },
+                {
+                  "slug": "a1-be-error-brothers",
+                  "type": "ERROR_SPOTTING",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Toca la palabra incorrecta.", "en": "Tap the incorrect word." },
+                  "prompt": { "tokens": [ "My", "brothers", "is", "at", "home", "." ] },
+                  "solution": { "errorIndex": 2, "correction": "are" },
+                  "feedback": {
+                    "es": "**brothers** es plural, por eso va **are**: My brothers are at home.",
+                    "en": "**brothers** is plural, so we need **are**: My brothers are at home."
+                  }
+                }
+              ]
+            },
+            {
+              "slug": "a1-articles-a-an",
+              "level": "A1",
+              "minutes": 10,
+              "prerequisites": [ "a1-verb-to-be" ],
+              "title": { "es": "Los artículos a y an", "en": "The articles a and an" },
+              "objective": {
+                "es": "Elegir entre a y an según el sonido de la palabra siguiente.",
+                "en": "Choose between a and an depending on the sound of the next word."
+              },
+              "explanation": {
+                "es": "## Un, una\n**a** y **an** significan **un** o **una**. Se usan con sustantivos en singular que se pueden contar.\n\n## La regla es el SONIDO, no la letra\n- **a** antes de sonido de consonante: **a** car, **a** book\n- **an** antes de sonido de vocal: **an** apple, **an** orange\n\n## Casos engañosos\n- **an hour**: la h no se pronuncia, empieza con sonido de vocal.\n- **a university**: suena \"iu\", que es sonido de consonante.\n\n## Profesiones\nEn inglés se usa artículo con profesiones: \"She is **a** doctor\" (en español: \"Es doctora\").",
+                "en": "## Meaning\n**a** and **an** mean \"one\". We use them with singular countable nouns.\n\n## The rule is the SOUND, not the letter\n- **a** before a consonant sound: **a** car, **a** book\n- **an** before a vowel sound: **an** apple, **an** orange\n\n## Tricky cases\n- **an hour**: the h is silent, so it starts with a vowel sound.\n- **a university**: it starts with a \"you\" sound, which is a consonant sound.\n\n## Jobs\nEnglish uses an article with jobs: \"She is **a** doctor\"."
+              },
+              "examples": [
+                { "en": "I have a car and an umbrella.", "es": "Tengo un coche y un paraguas." },
+                { "en": "It takes an hour.", "es": "Tarda una hora." },
+                { "en": "He is a university student.", "es": "Él es estudiante universitario." }
+              ],
+              "vocabulary": [
+                { "term": "apple", "translation": "manzana", "partOfSpeech": "noun", "ipa": "/ˈæpəl/" },
+                { "term": "hour", "translation": "hora", "partOfSpeech": "noun", "ipa": "/aʊər/" },
+                { "term": "umbrella", "translation": "paraguas", "partOfSpeech": "noun", "ipa": "/ʌmˈbrelə/" },
+                { "term": "university", "translation": "universidad", "partOfSpeech": "noun", "ipa": "/ˌjuːnɪˈvɜːrsəti/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a1-art-mc-umbrella",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige el artículo correcto.", "en": "Choose the correct article." },
+                  "prompt": {
+                    "question": "I have ___ umbrella.",
+                    "options": [ { "id": "a", "text": "a" }, { "id": "b", "text": "an" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": { "es": "umbrella empieza con sonido de vocal: **an** umbrella.", "en": "umbrella starts with a vowel sound: **an** umbrella." }
+                },
+                {
+                  "slug": "a1-art-mc-university",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige el artículo correcto.", "en": "Choose the correct article." },
+                  "prompt": {
+                    "question": "She is ___ university student.",
+                    "options": [ { "id": "a", "text": "a" }, { "id": "b", "text": "an" } ]
+                  },
+                  "solution": { "correctOptionId": "a" },
+                  "feedback": {
+                    "es": "university suena \"iu-ni-ver-si-ti\": empieza con sonido de consonante, por eso **a**.",
+                    "en": "university starts with a \"you\" sound, a consonant sound, so we use **a**."
+                  },
+                  "hint": { "es": "Escucha el sonido, no la letra.", "en": "Listen to the sound, not the letter." }
+                },
+                {
+                  "slug": "a1-art-fill-orange-banana",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Escribe a o an.", "en": "Write a or an." },
+                  "prompt": { "text": "It is ___ orange and ___ banana." },
+                  "solution": { "answers": [ [ "an" ], [ "a" ] ] },
+                  "feedback": { "es": "**an** orange (vocal) y **a** banana (consonante).", "en": "**an** orange (vowel sound) and **a** banana (consonant sound)." }
+                },
+                {
+                  "slug": "a1-art-match-vocab",
+                  "type": "MATCHING",
+                  "skill": "VOCABULARY",
+                  "instructions": { "es": "Relaciona cada palabra con su traducción.", "en": "Match each word with its translation." },
+                  "prompt": {
+                    "left": [ { "id": "l1", "text": "apple" }, { "id": "l2", "text": "hour" }, { "id": "l3", "text": "umbrella" }, { "id": "l4", "text": "university" } ],
+                    "right": [ { "id": "r1", "text": "paraguas" }, { "id": "r2", "text": "universidad" }, { "id": "r3", "text": "manzana" }, { "id": "r4", "text": "hora" } ]
+                  },
+                  "solution": { "pairs": { "l1": "r3", "l2": "r4", "l3": "r1", "l4": "r2" } },
+                  "feedback": { "es": "apple = manzana, hour = hora, umbrella = paraguas, university = universidad.", "en": "apple = manzana, hour = hora, umbrella = paraguas, university = universidad." }
+                },
+                {
+                  "slug": "a1-art-error-honest",
+                  "type": "ERROR_SPOTTING",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Toca la palabra incorrecta.", "en": "Tap the incorrect word." },
+                  "prompt": { "tokens": [ "He", "is", "a", "honest", "man", "." ] },
+                  "solution": { "errorIndex": 2, "correction": "an" },
+                  "feedback": {
+                    "es": "En honest la h no suena (\"onest\"): **an** honest man.",
+                    "en": "The h in honest is silent: **an** honest man."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "a1-m2-present-simple",
+          "title": { "es": "Presente simple", "en": "Present simple" },
+          "objective": {
+            "es": "Hablar de rutinas y hechos con el presente simple.",
+            "en": "Talk about routines and facts with the present simple."
+          },
+          "lessons": [
+            {
+              "slug": "a1-present-simple-affirmative",
+              "level": "A1",
+              "minutes": 14,
+              "prerequisites": [ "a1-verb-to-be" ],
+              "title": { "es": "Presente simple: afirmativo", "en": "Present simple: affirmative" },
+              "objective": {
+                "es": "Añadir -s/-es al verbo con he, she e it.",
+                "en": "Add -s/-es to the verb with he, she and it."
+              },
+              "explanation": {
+                "es": "## ¿Cuándo se usa?\nPara **rutinas**, **hábitos** y **hechos**: \"I work every day\", \"Water boils at 100 °C\".\n\n## La regla clave: tercera persona\nCon **he, she, it** el verbo lleva **-s**:\n- I work → She **works**\n- They live → He **lives**\n\n## Ortografía\n- Verbos en -ch, -sh, -s, -x, -o: **-es** → watch**es**, go**es**\n- Consonante + y: **-ies** → stud**ies**\n- **have** es irregular: she **has**\n\n## Error frecuente\nOlvidar la -s es el error más común de los hispanohablantes: \"She work\" ✗ → \"She **works**\" ✓.",
+                "en": "## When do we use it?\nFor **routines**, **habits** and **facts**: \"I work every day\", \"Water boils at 100 °C\".\n\n## The key rule: third person\nWith **he, she, it** the verb takes **-s**:\n- I work → She **works**\n- They live → He **lives**\n\n## Spelling\n- Verbs ending in -ch, -sh, -s, -x, -o: **-es** → watch**es**, go**es**\n- Consonant + y: **-ies** → stud**ies**\n- **have** is irregular: she **has**\n\n## Common mistake\nForgetting the -s is the most frequent mistake: \"She work\" ✗ → \"She **works**\" ✓."
+              },
+              "examples": [
+                { "en": "My sister lives in Monterrey.", "es": "Mi hermana vive en Monterrey." },
+                { "en": "He watches TV every night.", "es": "Él ve la tele todas las noches." },
+                { "en": "We work from Monday to Friday.", "es": "Trabajamos de lunes a viernes." }
+              ],
+              "vocabulary": [
+                { "term": "every day", "translation": "todos los días", "partOfSpeech": "phrase", "ipa": "/ˈevri deɪ/" },
+                { "term": "usually", "translation": "normalmente", "partOfSpeech": "adverb", "ipa": "/ˈjuːʒuəli/" },
+                { "term": "to study", "translation": "estudiar", "partOfSpeech": "verb", "ipa": "/ˈstʌdi/" },
+                { "term": "to watch", "translation": "ver, mirar", "partOfSpeech": "verb", "ipa": "/wɑːtʃ/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a1-ps-mc-lives",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige la forma correcta.", "en": "Choose the correct form." },
+                  "prompt": {
+                    "question": "My sister ___ in Monterrey.",
+                    "options": [ { "id": "a", "text": "live" }, { "id": "b", "text": "lives" }, { "id": "c", "text": "living" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": { "es": "my sister = she → **lives**.", "en": "my sister = she → **lives**." }
+                },
+                {
+                  "slug": "a1-ps-fill-watches",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Escribe el verbo entre paréntesis en presente simple.", "en": "Write the verb in brackets in the present simple." },
+                  "prompt": { "text": "He ___ TV every night. (watch)" },
+                  "solution": { "answers": [ [ "watches" ] ] },
+                  "feedback": { "es": "watch termina en -ch: he **watches**.", "en": "watch ends in -ch: he **watches**." },
+                  "hint": { "es": "Verbos en -ch añaden -es.", "en": "Verbs ending in -ch add -es." }
+                },
+                {
+                  "slug": "a1-ps-fill-studies-work",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Completa con los verbos (study, work).", "en": "Complete with the verbs (study, work)." },
+                  "prompt": { "text": "She ___ English and I ___ in an office." },
+                  "solution": { "answers": [ [ "studies" ], [ "work" ] ] },
+                  "feedback": { "es": "She **studies** (y → ies) e I **work** (sin -s).", "en": "She **studies** (y → ies) and I **work** (no -s)." }
+                },
+                {
+                  "slug": "a1-ps-order-coffee",
+                  "type": "WORD_ORDER",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Ordena las palabras.", "en": "Put the words in order." },
+                  "prompt": { "tokens": [ "every", "coffee", "drinks", "morning", "Ana" ] },
+                  "solution": { "sentences": [ [ "Ana", "drinks", "coffee", "every", "morning" ] ] },
+                  "feedback": { "es": "Sujeto + verbo + complemento + expresión de tiempo.", "en": "Subject + verb + object + time expression." }
+                },
+                {
+                  "slug": "a1-ps-tf-they-plays",
+                  "type": "TRUE_FALSE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "¿Verdadero o falso?", "en": "True or false?" },
+                  "prompt": { "statement": "In \"They plays football\", the verb is correct." },
+                  "solution": { "value": false },
+                  "feedback": { "es": "Falso: con they no hay -s → They **play** football.", "en": "False: no -s with they → They **play** football." }
+                }
+              ]
+            },
+            {
+              "slug": "a1-present-simple-negative-questions",
+              "level": "A1",
+              "minutes": 14,
+              "prerequisites": [ "a1-present-simple-affirmative" ],
+              "title": { "es": "Presente simple: negativo y preguntas", "en": "Present simple: negatives and questions" },
+              "objective": {
+                "es": "Formar negaciones y preguntas con do/does.",
+                "en": "Make negatives and questions with do/does."
+              },
+              "explanation": {
+                "es": "## El auxiliar do / does\nPara negar y preguntar usamos un auxiliar:\n- **do** con I, you, we, they\n- **does** con he, she, it\n\n## Negativo\nSujeto + **don't / doesn't** + verbo base:\n- I **don't** like coffee.\n- He **doesn't** speak French.\n\n## Preguntas\n**Do / Does** + sujeto + verbo base:\n- **Do** you like pizza?\n- **Does** she work on Saturdays?\n\n## Error frecuente\nCon does, el verbo **pierde la -s**: \"Does he play\" ✓, \"Does he plays\" ✗. La -s ya está en does.",
+                "en": "## The auxiliary do / does\nTo make negatives and questions we use an auxiliary:\n- **do** with I, you, we, they\n- **does** with he, she, it\n\n## Negatives\nSubject + **don't / doesn't** + base verb:\n- I **don't** like coffee.\n- He **doesn't** speak French.\n\n## Questions\n**Do / Does** + subject + base verb:\n- **Do** you like pizza?\n- **Does** she work on Saturdays?\n\n## Common mistake\nAfter does, the main verb **loses the -s**: \"Does he play\" ✓, \"Does he plays\" ✗."
+              },
+              "examples": [
+                { "en": "I don't eat meat.", "es": "No como carne." },
+                { "en": "Does your brother live here?", "es": "¿Tu hermano vive aquí?" },
+                { "en": "They don't work on Sundays.", "es": "No trabajan los domingos." }
+              ],
+              "vocabulary": [
+                { "term": "to like", "translation": "gustar", "partOfSpeech": "verb", "ipa": "/laɪk/" },
+                { "term": "meat", "translation": "carne", "partOfSpeech": "noun", "ipa": "/miːt/" },
+                { "term": "weekend", "translation": "fin de semana", "partOfSpeech": "noun", "ipa": "/ˈwiːkend/" }
+              ],
+              "exercises": [
+                {
+                  "slug": "a1-psnq-mc-do-you",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige el auxiliar correcto.", "en": "Choose the correct auxiliary." },
+                  "prompt": {
+                    "question": "___ you like pizza?",
+                    "options": [ { "id": "a", "text": "Do" }, { "id": "b", "text": "Does" }, { "id": "c", "text": "Are" } ]
+                  },
+                  "solution": { "correctOptionId": "a" },
+                  "feedback": { "es": "Con you se usa **Do**.", "en": "With you we use **Do**." }
+                },
+                {
+                  "slug": "a1-psnq-mc-doesnt",
+                  "type": "MULTIPLE_CHOICE",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Elige la opción correcta.", "en": "Choose the correct option." },
+                  "prompt": {
+                    "question": "He ___ speak French.",
+                    "options": [ { "id": "a", "text": "don't" }, { "id": "b", "text": "doesn't" }, { "id": "c", "text": "isn't" } ]
+                  },
+                  "solution": { "correctOptionId": "b" },
+                  "feedback": { "es": "Con he se usa **doesn't** + verbo base.", "en": "With he we use **doesn't** + base verb." }
+                },
+                {
+                  "slug": "a1-psnq-fill-does-she",
+                  "type": "FILL_BLANK",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Completa la pregunta.", "en": "Complete the question." },
+                  "prompt": { "text": "___ she work on Saturdays?" },
+                  "solution": { "answers": [ [ "Does" ] ] },
+                  "feedback": { "es": "Con she: **Does** she work...?", "en": "With she: **Does** she work...?" }
+                },
+                {
+                  "slug": "a1-psnq-order-meat",
+                  "type": "WORD_ORDER",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Ordena las palabras para formar una oración negativa.", "en": "Put the words in order to make a negative sentence." },
+                  "prompt": { "tokens": [ "not", "They", "do", "meat", "eat" ] },
+                  "solution": { "sentences": [ [ "They", "do", "not", "eat", "meat" ] ] },
+                  "feedback": { "es": "Sujeto + do not + verbo base + complemento.", "en": "Subject + do not + base verb + object." }
+                },
+                {
+                  "slug": "a1-psnq-error-plays",
+                  "type": "ERROR_SPOTTING",
+                  "skill": "GRAMMAR",
+                  "instructions": { "es": "Toca la palabra incorrecta.", "en": "Tap the incorrect word." },
+                  "prompt": { "tokens": [ "Does", "he", "plays", "the", "guitar", "?" ] },
+                  "solution": { "errorIndex": 2, "correction": "play" },
+                  "feedback": { "es": "Después de does el verbo va sin -s: Does he **play** the guitar?", "en": "After does the verb has no -s: Does he **play** the guitar?" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

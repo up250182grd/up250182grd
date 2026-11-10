@@ -42,6 +42,190 @@
         }
       }
     },
+    "/api/v1/admin/content/lessons/{publicId}" : {
+      "get" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "lesson",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminLesson"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "updateLesson",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LessonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminLesson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/exercises/{publicId}" : {
+      "put" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "updateExercise",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExerciseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminExercise"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lessons/{publicId}/runs" : {
+      "post" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "startRun",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RunStarted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lesson-runs/{runId}/complete" : {
+      "post" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "complete",
+        "parameters" : [ {
+          "name" : "runId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RunCompleted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exercises/{publicId}/attempts" : {
+      "post" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "attempt",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AttemptRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AttemptResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/verify-email" : {
       "post" : {
         "tags" : [ "auth-controller" ],
@@ -192,6 +376,86 @@
         }
       }
     },
+    "/api/v1/assessments" : {
+      "post" : {
+        "tags" : [ "assessment-controller" ],
+        "operationId" : "start",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessments/{sessionId}/responses" : {
+      "post" : {
+        "tags" : [ "assessment-controller" ],
+        "operationId" : "respond",
+        "parameters" : [ {
+          "name" : "sessionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResponseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessments/{sessionId}/next" : {
+      "post" : {
+        "tags" : [ "assessment-controller" ],
+        "operationId" : "next",
+        "parameters" : [ {
+          "name" : "sessionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NextQuestion"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/users/{publicId}/suspend" : {
       "post" : {
         "tags" : [ "admin-user-controller" ],
@@ -237,6 +501,205 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/AdminUserView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/modules/{modulePublicId}/lessons" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "createLesson",
+        "parameters" : [ {
+          "name" : "modulePublicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LessonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminLesson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/lessons/{publicId}/status" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "lessonStatus",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StatusRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminLesson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/lessons/{publicId}/review" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "review",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminLesson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/lessons/{publicId}/move" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "move",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MoveRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/lessons/{publicId}/exercises" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "createExercise",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExerciseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminExercise"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/exercises/{publicId}/status" : {
+      "post" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "exerciseStatus",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StatusRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminExercise"
                 }
               }
             }
@@ -290,6 +753,92 @@
         }
       }
     },
+    "/api/v1/me/skills" : {
+      "get" : {
+        "tags" : [ "assessment-controller" ],
+        "operationId" : "skills",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SkillLevelView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/learning-summary" : {
+      "get" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "summary",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LearningSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lessons/{publicId}" : {
+      "get" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "lesson_1",
+        "parameters" : [ {
+          "name" : "publicId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LessonView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/courses" : {
+      "get" : {
+        "tags" : [ "learning-controller" ],
+        "operationId" : "courses",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CourseView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/csrf" : {
       "get" : {
         "tags" : [ "auth-controller" ],
@@ -301,6 +850,32 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/CsrfResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessments/{sessionId}/result" : {
+      "get" : {
+        "tags" : [ "assessment-controller" ],
+        "operationId" : "result",
+        "parameters" : [ {
+          "name" : "sessionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Result"
                 }
               }
             }
@@ -359,6 +934,27 @@
           }
         }
       }
+    },
+    "/api/v1/admin/content/tree" : {
+      "get" : {
+        "tags" : [ "content-admin-controller" ],
+        "operationId" : "tree",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AdminCourseNode"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -410,6 +1006,374 @@
           "lastLoginAt" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }
+      },
+      "LessonRequest" : {
+        "type" : "object",
+        "properties" : {
+          "slug" : {
+            "type" : "string",
+            "maxLength" : 80,
+            "minLength" : 0
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/TextInput"
+          },
+          "objective" : {
+            "$ref" : "#/components/schemas/TextInput"
+          },
+          "explanation" : {
+            "$ref" : "#/components/schemas/TextInput"
+          },
+          "examplesJson" : {
+            "type" : "string",
+            "maxLength" : 50000,
+            "minLength" : 0
+          },
+          "vocabularyJson" : {
+            "type" : "string",
+            "maxLength" : 50000,
+            "minLength" : 0
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 180,
+            "minimum" : 1
+          }
+        },
+        "required" : [ "explanation", "objective", "title" ]
+      },
+      "TextInput" : {
+        "type" : "object",
+        "properties" : {
+          "es" : {
+            "type" : "string",
+            "maxLength" : 20000,
+            "minLength" : 0
+          },
+          "en" : {
+            "type" : "string",
+            "maxLength" : 20000,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "en", "es" ]
+      },
+      "AdminExercise" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "MULTIPLE_CHOICE", "TRUE_FALSE", "FILL_BLANK", "WORD_ORDER", "MATCHING", "ERROR_SPOTTING" ]
+          },
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "instructions" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "prompt" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "solution" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "feedback" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "hint" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "sortOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AdminLesson" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "objective" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "explanation" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "examples" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "vocabulary" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "reviewed" : {
+            "type" : "boolean"
+          },
+          "contentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "exercises" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminExercise"
+            }
+          }
+        }
+      },
+      "JsonNode" : {
+        "type" : "object",
+        "properties" : {
+          "array" : {
+            "type" : "boolean"
+          },
+          "empty" : {
+            "type" : "boolean"
+          },
+          "null" : {
+            "type" : "boolean"
+          },
+          "float" : {
+            "type" : "boolean"
+          },
+          "container" : {
+            "type" : "boolean"
+          },
+          "nodeType" : {
+            "type" : "string",
+            "enum" : [ "ARRAY", "BINARY", "BOOLEAN", "MISSING", "NULL", "NUMBER", "OBJECT", "POJO", "STRING" ]
+          },
+          "string" : {
+            "type" : "boolean"
+          },
+          "integralNumber" : {
+            "type" : "boolean"
+          },
+          "missingNode" : {
+            "type" : "boolean"
+          },
+          "valueNode" : {
+            "type" : "boolean"
+          },
+          "object" : {
+            "type" : "boolean"
+          },
+          "pojo" : {
+            "type" : "boolean"
+          },
+          "number" : {
+            "type" : "boolean"
+          },
+          "floatingPointNumber" : {
+            "type" : "boolean"
+          },
+          "short" : {
+            "type" : "boolean"
+          },
+          "int" : {
+            "type" : "boolean"
+          },
+          "long" : {
+            "type" : "boolean"
+          },
+          "double" : {
+            "type" : "boolean"
+          },
+          "bigDecimal" : {
+            "type" : "boolean"
+          },
+          "bigInteger" : {
+            "type" : "boolean"
+          },
+          "textual" : {
+            "type" : "boolean",
+            "deprecated" : true
+          },
+          "boolean" : {
+            "type" : "boolean"
+          },
+          "binary" : {
+            "type" : "boolean"
+          },
+          "embeddedValue" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Localized" : {
+        "type" : "object",
+        "properties" : {
+          "es" : {
+            "type" : "string"
+          },
+          "en" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ExerciseRequest" : {
+        "type" : "object",
+        "properties" : {
+          "slug" : {
+            "type" : "string",
+            "maxLength" : 80,
+            "minLength" : 0
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "MULTIPLE_CHOICE", "TRUE_FALSE", "FILL_BLANK", "WORD_ORDER", "MATCHING", "ERROR_SPOTTING" ]
+          },
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "instructions" : {
+            "$ref" : "#/components/schemas/TextInput"
+          },
+          "promptJson" : {
+            "type" : "string",
+            "maxLength" : 20000,
+            "minLength" : 0
+          },
+          "solutionJson" : {
+            "type" : "string",
+            "maxLength" : 20000,
+            "minLength" : 0
+          },
+          "feedback" : {
+            "$ref" : "#/components/schemas/TextInput"
+          },
+          "hint" : {
+            "$ref" : "#/components/schemas/TextInput"
+          }
+        },
+        "required" : [ "feedback", "instructions", "level", "promptJson", "skill", "solutionJson", "type" ]
+      },
+      "RunStarted" : {
+        "type" : "object",
+        "properties" : {
+          "runId" : {
+            "type" : "string"
+          },
+          "lessonPublicId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RunCompleted" : {
+        "type" : "object",
+        "properties" : {
+          "score" : {
+            "type" : "number"
+          },
+          "correctCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalExercises" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "state" : {
+            "type" : "string"
+          },
+          "newlyMastered" : {
+            "type" : "boolean"
+          },
+          "completedRuns" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AttemptRequest" : {
+        "type" : "object",
+        "properties" : {
+          "runId" : {
+            "type" : "string",
+            "maxLength" : 26,
+            "minLength" : 0
+          },
+          "answer" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "hintsUsed" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 20,
+            "minimum" : 0
+          },
+          "durationMs" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 3600000,
+            "minimum" : 0
+          },
+          "idempotencyKey" : {
+            "type" : "string",
+            "maxLength" : 64,
+            "minLength" : 8
+          }
+        },
+        "required" : [ "answer", "idempotencyKey" ]
+      },
+      "AttemptResult" : {
+        "type" : "object",
+        "properties" : {
+          "correct" : {
+            "type" : "boolean"
+          },
+          "score" : {
+            "type" : "number"
+          },
+          "solution" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "feedback" : {
+            "$ref" : "#/components/schemas/Localized"
           }
         }
       },
@@ -565,6 +1529,103 @@
           }
         }
       },
+      "SessionView" : {
+        "type" : "object",
+        "properties" : {
+          "sessionId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "answered" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "maxQuestions" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ResponseRequest" : {
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "string",
+            "maxLength" : 26,
+            "minLength" : 0
+          },
+          "answer" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        },
+        "required" : [ "answer", "itemId" ]
+      },
+      "ItemView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "instructions" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "prompt" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        }
+      },
+      "NextQuestion" : {
+        "type" : "object",
+        "properties" : {
+          "done" : {
+            "type" : "boolean"
+          },
+          "answered" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "maxQuestions" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "item" : {
+            "$ref" : "#/components/schemas/ItemView"
+          }
+        }
+      },
+      "StatusRequest" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "DRAFT", "PUBLISHED", "ARCHIVED" ]
+          }
+        },
+        "required" : [ "status" ]
+      },
+      "MoveRequest" : {
+        "type" : "object",
+        "properties" : {
+          "direction" : {
+            "type" : "string",
+            "enum" : [ "UP", "DOWN" ]
+          }
+        },
+        "required" : [ "direction" ]
+      },
       "UpdateProfileRequest" : {
         "type" : "object",
         "properties" : {
@@ -593,6 +1654,271 @@
           }
         }
       },
+      "SkillLevelView" : {
+        "type" : "object",
+        "properties" : {
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "confidence" : {
+            "type" : "string"
+          },
+          "evidence" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "LearningSummary" : {
+        "type" : "object",
+        "properties" : {
+          "planStartLevel" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "planSource" : {
+            "type" : "string"
+          },
+          "recommended" : {
+            "$ref" : "#/components/schemas/RecommendedLesson"
+          },
+          "totalLessons" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "mastered" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "practiced" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "inProgress" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "notStarted" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "RecommendedLesson" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "courseTitle" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "state" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ExerciseView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "MULTIPLE_CHOICE", "TRUE_FALSE", "FILL_BLANK", "WORD_ORDER", "MATCHING", "ERROR_SPOTTING" ]
+          },
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "instructions" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "prompt" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "hint" : {
+            "$ref" : "#/components/schemas/Localized"
+          }
+        }
+      },
+      "LessonView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "courseTitle" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "moduleTitle" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "objective" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "explanation" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "examples" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "vocabulary" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "prerequisites" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PrerequisiteView"
+            }
+          },
+          "progress" : {
+            "$ref" : "#/components/schemas/ProgressView"
+          },
+          "exercises" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ExerciseView"
+            }
+          }
+        }
+      },
+      "PrerequisiteView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "state" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProgressView" : {
+        "type" : "object",
+        "properties" : {
+          "state" : {
+            "type" : "string"
+          },
+          "bestScore" : {
+            "type" : "number"
+          },
+          "lastScore" : {
+            "type" : "number"
+          },
+          "completedRuns" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "CourseView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "description" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "inPlan" : {
+            "type" : "boolean"
+          },
+          "modules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModuleView"
+            }
+          }
+        }
+      },
+      "LessonSummary" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "state" : {
+            "type" : "string"
+          },
+          "bestScore" : {
+            "type" : "number"
+          }
+        }
+      },
+      "ModuleView" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "objective" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "lessons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LessonSummary"
+            }
+          }
+        }
+      },
       "CsrfResponse" : {
         "type" : "object",
         "properties" : {
@@ -601,6 +1927,58 @@
           },
           "token" : {
             "type" : "string"
+          }
+        }
+      },
+      "Result" : {
+        "type" : "object",
+        "properties" : {
+          "sessionId" : {
+            "type" : "string"
+          },
+          "skills" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SkillResult"
+            }
+          },
+          "planStartLevel" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "disclaimerEs" : {
+            "type" : "string"
+          },
+          "disclaimerEn" : {
+            "type" : "string"
+          },
+          "completedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "SkillResult" : {
+        "type" : "object",
+        "properties" : {
+          "skill" : {
+            "type" : "string",
+            "enum" : [ "VOCABULARY", "GRAMMAR", "READING" ]
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "confidence" : {
+            "type" : "string"
+          },
+          "evidence" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "correct" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -628,6 +2006,88 @@
           "totalPages" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "AdminCourseNode" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "modules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminModuleNode"
+            }
+          }
+        }
+      },
+      "AdminLessonNode" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string",
+            "enum" : [ "A1", "A2", "B1", "B2", "C1", "C2" ]
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "reviewed" : {
+            "type" : "boolean"
+          },
+          "exerciseCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sortOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AdminModuleNode" : {
+        "type" : "object",
+        "properties" : {
+          "publicId" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "title" : {
+            "$ref" : "#/components/schemas/Localized"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "lessons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminLessonNode"
+            }
           }
         }
       }

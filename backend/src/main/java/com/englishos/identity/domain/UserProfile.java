@@ -80,6 +80,13 @@ public class UserProfile {
         this.updatedAt = now;
     }
 
+    public void completeOnboarding(Instant now) {
+        if (!onboardingCompleted) {
+            onboardingCompleted = true;
+            updatedAt = now;
+        }
+    }
+
     public Long getUserId() {
         return userId;
     }
