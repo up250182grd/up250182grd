@@ -1,6 +1,23 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fase 2 (base del proyecto) implementada.** Ver [qué está hecho y qué falta](#estado-de-la-fase-2).
+Estado: **Fases 2 (base) y 3 (sistema educativo) implementadas.** Ver [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 3
+
+| Funcionalidad | Estado |
+|---|---|
+| Cursos → módulos → lecciones con textos bilingües (es/en) y cambio de idioma instantáneo (botón ES/EN) | ✅ Implementado y probado |
+| Ejercicios con corrección determinista en el servidor: opción múltiple, verdadero/falso, completar, ordenar palabras, relacionar, identificar error (RF-EXR-1/2) | ✅ |
+| La solución nunca llega al navegador antes de responder; intentos idempotentes (RF-EXR-3, RF-EXR-5) | ✅ |
+| Retroalimentación, respuesta correcta, pistas y reintentos (RF-EXR-6) | ✅ |
+| Progreso y regla de dominio en días distintos (RN-40); "Mi plan" con aprendido / en curso / pendiente (RF-CRS-5) | ✅ |
+| Diagnóstico adaptativo de vocabulario, gramática y lectura con nivel estimado por habilidad y confianza (RF-ASM-1 a 4) | ✅ |
+| Plan personalizado y lección recomendada (RF-ASM-5) | ✅ |
+| Panel de contenido: crear, editar, ordenar, publicar, archivar y marcar como revisado, con auditoría (RF-CRS-4) | ✅ |
+| Contenido semilla: 6 lecciones A1–A2 (32 ejercicios) y banco de 36 ítems de diagnóstico A1–B2 | ✅ cargado — ⚠️ **sin revisar**: revísalo desde *Administración → Contenido* |
+| Escritura libre evaluada por IA | ⏳ Fase 4 (requiere medición de consumo) |
+| Comprensión auditiva y expresión oral en el diagnóstico | ⏳ Posterior |
+| Contenido B1 en adelante | ⏳ Pendiente de redactar y revisar (el diagnóstico ya estima hasta B2; si no hay curso de tu nivel, el plan asigna el más avanzado disponible) |
 
 ## Requisitos
 

@@ -22,6 +22,14 @@ Convenciones:
 | — nuevas | `consents`, `auth_tokens`, `learning_plans`, `learner_errors`, `prompt_templates`, `commercial_pricing_policies`, `fx_rates`, `payment_orders`, `billing_incidents`, `system_settings`, `SPRING_SESSION*` | Justificadas en cada sección. |
 | `permissions` | se mantiene, sembrada por migración | Los permisos se definen en código/migraciones; los roles se asignan en BD. |
 
+### Ajustes al implementar la Fase 3 (migración `V4__learning.sql`)
+
+- Textos pedagógicos con columnas `*_es` / `*_en` (explicaciones bilingües conmutables).
+- `assessment_items` se unificó con `exercises` (`purpose = LESSON | DIAGNOSTIC`): mismo formato y mismos evaluadores.
+- Nueva `lesson_runs`: cada ejecución de lección, con su puntaje y el día local; es la base de la regla de dominio.
+- `assessment_sessions.state` guarda el estado JSON de la escalera y `current_item_id` la única pregunta que se puede responder.
+- `learning_plans.course_ids` (lista JSON ordenada) en lugar de un plan por módulos.
+
 ## 6.2 Diagrama entidad–relación (resumen)
 
 ```mermaid

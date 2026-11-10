@@ -20,6 +20,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/content/lessons/{publicId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["lesson"];
+        put: operations["updateLesson"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/exercises/{publicId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["updateExercise"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lessons/{publicId}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["startRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lesson-runs/{runId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exercises/{publicId}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["attempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/verify-email": {
         parameters: {
             query?: never;
@@ -116,6 +196,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/assessments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessments/{sessionId}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["respond"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessments/{sessionId}/next": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["next"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/users/{publicId}/suspend": {
         parameters: {
             query?: never;
@@ -142,6 +270,102 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["reactivate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/modules/{modulePublicId}/lessons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createLesson"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/lessons/{publicId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["lessonStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/lessons/{publicId}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/lessons/{publicId}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["move"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/lessons/{publicId}/exercises": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createExercise"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/exercises/{publicId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["exerciseStatus"];
         delete?: never;
         options?: never;
         head?: never;
@@ -180,6 +404,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["skills"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/learning-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lessons/{publicId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["lesson_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["courses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/csrf": {
         parameters: {
             query?: never;
@@ -196,6 +484,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/assessments/{sessionId}/result": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["result"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/users": {
         parameters: {
             query?: never;
@@ -204,6 +508,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/tree": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["tree"];
         put?: never;
         post?: never;
         delete?: never;
@@ -230,6 +550,106 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastLoginAt?: string;
+        };
+        LessonRequest: {
+            slug?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title: components["schemas"]["TextInput"];
+            objective: components["schemas"]["TextInput"];
+            explanation: components["schemas"]["TextInput"];
+            examplesJson?: string;
+            vocabularyJson?: string;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+        };
+        TextInput: {
+            es: string;
+            en: string;
+        };
+        AdminExercise: {
+            publicId?: string;
+            slug?: string;
+            /** @enum {string} */
+            type?: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "FILL_BLANK" | "WORD_ORDER" | "MATCHING" | "ERROR_SPOTTING";
+            /** @enum {string} */
+            skill?: "VOCABULARY" | "GRAMMAR" | "READING";
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            instructions?: components["schemas"]["Localized"];
+            prompt?: Record<string, never>;
+            solution?: Record<string, never>;
+            feedback?: components["schemas"]["Localized"];
+            hint?: components["schemas"]["Localized"];
+            status?: string;
+            /** Format: int32 */
+            sortOrder?: number;
+        };
+        AdminLesson: {
+            publicId?: string;
+            slug?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title?: components["schemas"]["Localized"];
+            objective?: components["schemas"]["Localized"];
+            explanation?: components["schemas"]["Localized"];
+            examples?: Record<string, never>;
+            vocabulary?: Record<string, never>;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            status?: string;
+            reviewed?: boolean;
+            /** Format: int32 */
+            contentVersion?: number;
+            exercises?: components["schemas"]["AdminExercise"][];
+        };
+        Localized: {
+            es?: string;
+            en?: string;
+        };
+        ExerciseRequest: {
+            slug?: string;
+            /** @enum {string} */
+            type: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "FILL_BLANK" | "WORD_ORDER" | "MATCHING" | "ERROR_SPOTTING";
+            /** @enum {string} */
+            skill: "VOCABULARY" | "GRAMMAR" | "READING";
+            /** @enum {string} */
+            level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            instructions: components["schemas"]["TextInput"];
+            promptJson: string;
+            solutionJson: string;
+            feedback: components["schemas"]["TextInput"];
+            hint?: components["schemas"]["TextInput"];
+        };
+        RunStarted: {
+            runId?: string;
+            lessonPublicId?: string;
+        };
+        RunCompleted: {
+            score?: number;
+            /** Format: int32 */
+            correctCount?: number;
+            /** Format: int32 */
+            totalExercises?: number;
+            state?: string;
+            newlyMastered?: boolean;
+            /** Format: int32 */
+            completedRuns?: number;
+        };
+        AttemptRequest: {
+            runId?: string;
+            answer: Record<string, never>;
+            /** Format: int32 */
+            hintsUsed?: number;
+            /** Format: int32 */
+            durationMs?: number;
+            idempotencyKey: string;
+        };
+        AttemptResult: {
+            correct?: boolean;
+            score?: number;
+            solution?: Record<string, never>;
+            feedback?: components["schemas"]["Localized"];
         };
         TokenRequest: {
             token: string;
@@ -276,6 +696,44 @@ export interface components {
             storeTranscripts?: boolean;
             onboardingCompleted?: boolean;
         };
+        SessionView: {
+            sessionId?: string;
+            status?: string;
+            /** Format: int32 */
+            answered?: number;
+            /** Format: int32 */
+            maxQuestions?: number;
+        };
+        ResponseRequest: {
+            itemId: string;
+            answer: Record<string, never>;
+        };
+        ItemView: {
+            publicId?: string;
+            type?: string;
+            /** @enum {string} */
+            skill?: "VOCABULARY" | "GRAMMAR" | "READING";
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            instructions?: components["schemas"]["Localized"];
+            prompt?: Record<string, never>;
+        };
+        NextQuestion: {
+            done?: boolean;
+            /** Format: int32 */
+            answered?: number;
+            /** Format: int32 */
+            maxQuestions?: number;
+            item?: components["schemas"]["ItemView"];
+        };
+        StatusRequest: {
+            /** @enum {string} */
+            status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+        };
+        MoveRequest: {
+            /** @enum {string} */
+            direction: "UP" | "DOWN";
+        };
         UpdateProfileRequest: {
             displayName?: string;
             explanationLanguage?: string;
@@ -284,9 +742,131 @@ export interface components {
             dailyGoalMinutes?: number;
             storeTranscripts?: boolean;
         };
+        SkillLevelView: {
+            /** @enum {string} */
+            skill?: "VOCABULARY" | "GRAMMAR" | "READING";
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            confidence?: string;
+            /** Format: int32 */
+            evidence?: number;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        LearningSummary: {
+            /** @enum {string} */
+            planStartLevel?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            planSource?: string;
+            recommended?: components["schemas"]["RecommendedLesson"];
+            /** Format: int32 */
+            totalLessons?: number;
+            /** Format: int32 */
+            mastered?: number;
+            /** Format: int32 */
+            practiced?: number;
+            /** Format: int32 */
+            inProgress?: number;
+            /** Format: int32 */
+            notStarted?: number;
+        };
+        RecommendedLesson: {
+            publicId?: string;
+            title?: components["schemas"]["Localized"];
+            courseTitle?: components["schemas"]["Localized"];
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            state?: string;
+        };
+        ExerciseView: {
+            publicId?: string;
+            /** @enum {string} */
+            type?: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "FILL_BLANK" | "WORD_ORDER" | "MATCHING" | "ERROR_SPOTTING";
+            /** @enum {string} */
+            skill?: "VOCABULARY" | "GRAMMAR" | "READING";
+            instructions?: components["schemas"]["Localized"];
+            prompt?: Record<string, never>;
+            hint?: components["schemas"]["Localized"];
+        };
+        LessonView: {
+            publicId?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            courseTitle?: components["schemas"]["Localized"];
+            moduleTitle?: components["schemas"]["Localized"];
+            title?: components["schemas"]["Localized"];
+            objective?: components["schemas"]["Localized"];
+            explanation?: components["schemas"]["Localized"];
+            examples?: Record<string, never>;
+            vocabulary?: Record<string, never>;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            prerequisites?: components["schemas"]["PrerequisiteView"][];
+            progress?: components["schemas"]["ProgressView"];
+            exercises?: components["schemas"]["ExerciseView"][];
+        };
+        PrerequisiteView: {
+            publicId?: string;
+            title?: components["schemas"]["Localized"];
+            state?: string;
+        };
+        ProgressView: {
+            state?: string;
+            bestScore?: number;
+            lastScore?: number;
+            /** Format: int32 */
+            completedRuns?: number;
+        };
+        CourseView: {
+            publicId?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title?: components["schemas"]["Localized"];
+            description?: components["schemas"]["Localized"];
+            inPlan?: boolean;
+            modules?: components["schemas"]["ModuleView"][];
+        };
+        LessonSummary: {
+            publicId?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title?: components["schemas"]["Localized"];
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            state?: string;
+            bestScore?: number;
+        };
+        ModuleView: {
+            publicId?: string;
+            title?: components["schemas"]["Localized"];
+            objective?: components["schemas"]["Localized"];
+            lessons?: components["schemas"]["LessonSummary"][];
+        };
         CsrfResponse: {
             headerName?: string;
             token?: string;
+        };
+        Result: {
+            sessionId?: string;
+            skills?: components["schemas"]["SkillResult"][];
+            /** @enum {string} */
+            planStartLevel?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            disclaimerEs?: string;
+            disclaimerEn?: string;
+            /** Format: date-time */
+            completedAt?: string;
+        };
+        SkillResult: {
+            /** @enum {string} */
+            skill?: "VOCABULARY" | "GRAMMAR" | "READING";
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            confidence?: string;
+            /** Format: int32 */
+            evidence?: number;
+            /** Format: int32 */
+            correct?: number;
         };
         PageResponseAdminUserView: {
             items?: components["schemas"]["AdminUserView"][];
@@ -298,6 +878,35 @@ export interface components {
             totalItems?: number;
             /** Format: int32 */
             totalPages?: number;
+        };
+        AdminCourseNode: {
+            publicId?: string;
+            slug?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title?: components["schemas"]["Localized"];
+            status?: string;
+            modules?: components["schemas"]["AdminModuleNode"][];
+        };
+        AdminLessonNode: {
+            publicId?: string;
+            slug?: string;
+            /** @enum {string} */
+            level?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+            title?: components["schemas"]["Localized"];
+            status?: string;
+            reviewed?: boolean;
+            /** Format: int32 */
+            exerciseCount?: number;
+            /** Format: int32 */
+            sortOrder?: number;
+        };
+        AdminModuleNode: {
+            publicId?: string;
+            slug?: string;
+            title?: components["schemas"]["Localized"];
+            status?: string;
+            lessons?: components["schemas"]["AdminLessonNode"][];
         };
     };
     responses: never;
@@ -330,6 +939,150 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["AdminUserView"];
+                };
+            };
+        };
+    };
+    lesson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminLesson"];
+                };
+            };
+        };
+    };
+    updateLesson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LessonRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminLesson"];
+                };
+            };
+        };
+    };
+    updateExercise: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExerciseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminExercise"];
+                };
+            };
+        };
+    };
+    startRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RunStarted"];
+                };
+            };
+        };
+    };
+    complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RunCompleted"];
+                };
+            };
+        };
+    };
+    attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttemptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttemptResult"];
                 };
             };
         };
@@ -474,6 +1227,74 @@ export interface operations {
             };
         };
     };
+    start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SessionView"];
+                };
+            };
+        };
+    };
+    respond: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResponseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SessionView"];
+                };
+            };
+        };
+    };
+    next: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NextQuestion"];
+                };
+            };
+        };
+    };
     suspend: {
         parameters: {
             query?: never;
@@ -514,6 +1335,156 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["AdminUserView"];
+                };
+            };
+        };
+    };
+    createLesson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modulePublicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LessonRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminLesson"];
+                };
+            };
+        };
+    };
+    lessonStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminLesson"];
+                };
+            };
+        };
+    };
+    review: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminLesson"];
+                };
+            };
+        };
+    };
+    move: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createExercise: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExerciseRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminExercise"];
+                };
+            };
+        };
+    };
+    exerciseStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminExercise"];
                 };
             };
         };
@@ -562,6 +1533,88 @@ export interface operations {
             };
         };
     };
+    skills: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SkillLevelView"][];
+                };
+            };
+        };
+    };
+    summary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LearningSummary"];
+                };
+            };
+        };
+    };
+    lesson_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                publicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LessonView"];
+                };
+            };
+        };
+    };
+    courses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CourseView"][];
+                };
+            };
+        };
+    };
     csrf: {
         parameters: {
             query?: never;
@@ -578,6 +1631,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CsrfResponse"];
+                };
+            };
+        };
+    };
+    result: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Result"];
                 };
             };
         };
@@ -603,6 +1678,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PageResponseAdminUserView"];
+                };
+            };
+        };
+    };
+    tree: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminCourseNode"][];
                 };
             };
         };

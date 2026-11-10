@@ -3,6 +3,7 @@ import {
   BookOpen,
   GraduationCap,
   Home,
+  Library,
   LogOut,
   MessagesSquare,
   Settings,
@@ -14,6 +15,7 @@ import {
 import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { cn } from '@/lib/cn';
+import { LangProvider } from '@/lib/lang';
 import { isAdmin, useLogout, useMe } from '@/features/auth/useSession';
 
 interface NavItem {
@@ -26,14 +28,17 @@ interface NavItem {
 
 const studentNav: NavItem[] = [
   { to: '/app', label: 'Inicio', icon: Home },
-  { to: '/app/plan', label: 'Mi plan', icon: GraduationCap, phase: 'Fase 3' },
-  { to: '/app/practice', label: 'Práctica', icon: BookOpen, phase: 'Fase 3' },
+  { to: '/app/plan', label: 'Mi plan', icon: GraduationCap },
+  { to: '/app/practice', label: 'Repaso', icon: BookOpen, phase: 'Fase 6' },
   { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare, phase: 'Fase 4' },
   { to: '/app/wallet', label: 'Billetera', icon: Wallet, phase: 'Fase 4' },
   { to: '/app/settings', label: 'Ajustes', icon: Settings },
 ];
 
-const adminNav: NavItem[] = [{ to: '/admin/users', label: 'Usuarios', icon: Users }];
+const adminNav: NavItem[] = [
+  { to: '/admin/users', label: 'Usuarios', icon: Users },
+  { to: '/admin/content', label: 'Contenido', icon: Library },
+];
 
 function SideLink({ item }: { item: NavItem }) {
   const Icon = item.icon;
@@ -140,14 +145,16 @@ export function AppShell() {
         </header>
 
         <main id="main" className="flex-1 px-4 pb-24 pt-6 sm:px-6 lg:px-10 lg:pb-10">
-          <Outlet />
+          <LangProvider profileLang={me?.profile?.explanationLanguage}>
+            <Outlet />
+          </LangProvider>
         </main>
 
         <nav
           aria-label="Principal"
           className="fixed inset-x-0 bottom-0 z-10 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
         >
-          {[...mobileNav, ...(admin ? adminNav : [])].map((item) => {
+          {[...mobileNav, ...(admin ? adminNav : [])].slice(0, 5).map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

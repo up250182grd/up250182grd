@@ -1090,10 +1090,10 @@
             "$ref" : "#/components/schemas/Localized"
           },
           "prompt" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "solution" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "feedback" : {
             "$ref" : "#/components/schemas/Localized"
@@ -1133,10 +1133,10 @@
             "$ref" : "#/components/schemas/Localized"
           },
           "examples" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "vocabulary" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "estimatedMinutes" : {
             "type" : "integer",
@@ -1157,85 +1157,6 @@
             "items" : {
               "$ref" : "#/components/schemas/AdminExercise"
             }
-          }
-        }
-      },
-      "JsonNode" : {
-        "type" : "object",
-        "properties" : {
-          "array" : {
-            "type" : "boolean"
-          },
-          "empty" : {
-            "type" : "boolean"
-          },
-          "null" : {
-            "type" : "boolean"
-          },
-          "float" : {
-            "type" : "boolean"
-          },
-          "container" : {
-            "type" : "boolean"
-          },
-          "nodeType" : {
-            "type" : "string",
-            "enum" : [ "ARRAY", "BINARY", "BOOLEAN", "MISSING", "NULL", "NUMBER", "OBJECT", "POJO", "STRING" ]
-          },
-          "string" : {
-            "type" : "boolean"
-          },
-          "integralNumber" : {
-            "type" : "boolean"
-          },
-          "missingNode" : {
-            "type" : "boolean"
-          },
-          "valueNode" : {
-            "type" : "boolean"
-          },
-          "object" : {
-            "type" : "boolean"
-          },
-          "pojo" : {
-            "type" : "boolean"
-          },
-          "number" : {
-            "type" : "boolean"
-          },
-          "floatingPointNumber" : {
-            "type" : "boolean"
-          },
-          "short" : {
-            "type" : "boolean"
-          },
-          "int" : {
-            "type" : "boolean"
-          },
-          "long" : {
-            "type" : "boolean"
-          },
-          "double" : {
-            "type" : "boolean"
-          },
-          "bigDecimal" : {
-            "type" : "boolean"
-          },
-          "bigInteger" : {
-            "type" : "boolean"
-          },
-          "textual" : {
-            "type" : "boolean",
-            "deprecated" : true
-          },
-          "boolean" : {
-            "type" : "boolean"
-          },
-          "binary" : {
-            "type" : "boolean"
-          },
-          "embeddedValue" : {
-            "type" : "boolean"
           }
         }
       },
@@ -1338,7 +1259,7 @@
             "minLength" : 0
           },
           "answer" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "hintsUsed" : {
             "type" : "integer",
@@ -1370,7 +1291,7 @@
             "type" : "number"
           },
           "solution" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "feedback" : {
             "$ref" : "#/components/schemas/Localized"
@@ -1557,7 +1478,7 @@
             "minLength" : 0
           },
           "answer" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           }
         },
         "required" : [ "answer", "itemId" ]
@@ -1583,7 +1504,7 @@
             "$ref" : "#/components/schemas/Localized"
           },
           "prompt" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           }
         }
       },
@@ -1756,7 +1677,7 @@
             "$ref" : "#/components/schemas/Localized"
           },
           "prompt" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "hint" : {
             "$ref" : "#/components/schemas/Localized"
@@ -1789,10 +1710,10 @@
             "$ref" : "#/components/schemas/Localized"
           },
           "examples" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "vocabulary" : {
-            "$ref" : "#/components/schemas/JsonNode"
+            "type" : "object"
           },
           "estimatedMinutes" : {
             "type" : "integer",

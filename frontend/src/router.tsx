@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { createBrowserRouter, Link } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
+import { DiagnosticPage } from '@/features/assessment/DiagnosticPage';
 import { RedirectIfAuthenticated, RequireAdmin, RequireAuth } from '@/features/auth/guards';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordResetPages';
@@ -8,12 +9,28 @@ import { RegisterPage } from '@/features/auth/RegisterPage';
 import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { LandingPage } from '@/features/landing/LandingPage';
+import { LessonPage } from '@/features/learning/LessonPage';
+import { PlanPage } from '@/features/learning/PlanPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 
 // El código del panel de administración se descarga solo cuando un administrador lo abre.
 const AdminUsersPage = lazy(() =>
   import('@/features/admin/AdminUsersPage').then((m) => ({ default: m.AdminUsersPage })),
 );
+const AdminContentPage = lazy(() =>
+  import('@/features/admin/content/AdminContentPage').then((m) => ({ default: m.AdminContentPage })),
+);
+const AdminLessonEditor = lazy(() =>
+  import('@/features/admin/content/AdminLessonEditor').then((m) => ({ default: m.AdminLessonEditor })),
+);
+
+function AdminRoute({ children }: { children: ReactNode }) {
+  return (
+    <RequireAdmin>
+      <Suspense fallback={<p className="p-6 text-muted">Cargando…</p>}>{children}</Suspense>
+    </RequireAdmin>
+  );
+}
 
 function NotFoundPage() {
   return (
@@ -42,17 +59,13 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: '/app', element: <DashboardPage /> },
+      { path: '/app/plan', element: <PlanPage /> },
+      { path: '/app/lessons/:lessonId', element: <LessonPage /> },
+      { path: '/app/diagnostic', element: <DiagnosticPage /> },
       { path: '/app/settings', element: <SettingsPage /> },
-      {
-        path: '/admin/users',
-        element: (
-          <RequireAdmin>
-            <Suspense fallback={<p className="p-6 text-muted">Cargando…</p>}>
-              <AdminUsersPage />
-            </Suspense>
-          </RequireAdmin>
-        ),
-      },
+      { path: '/admin/users', element: <AdminRoute><AdminUsersPage /></AdminRoute> },
+      { path: '/admin/content', element: <AdminRoute><AdminContentPage /></AdminRoute> },
+      { path: '/admin/content/lessons/:lessonId', element: <AdminRoute><AdminLessonEditor /></AdminRoute> },
     ],
   },
   { path: '*', element: <NotFoundPage /> },
