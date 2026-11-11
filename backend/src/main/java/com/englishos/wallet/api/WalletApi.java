@@ -50,4 +50,25 @@ public interface WalletApi {
 
     /** Invariantes del libro: Σ global = 0 y caché de saldo = Σ líneas. Vacío si todo cuadra. */
     java.util.List<String> verifyLedger();
+
+    // ---- Pasarela de pagos (Fase 7) -------------------------------------------------------------
+
+    record LedgerResult(String transactionId, boolean alreadyExisted) {
+    }
+
+    /**
+     * Acredita una recarga cobrada por la pasarela. Idempotente por pago del proveedor: el mismo pago nunca acredita
+     * dos veces, aunque la notificación llegue repetida o en paralelo.
+     */
+    LedgerResult creditGatewayTopup(Long userId, BigDecimal amount, String provider, String providerPaymentId,
+            String intentId);
+
+    /** Devolución: retira saldo disponible (409 si no alcanza). Idempotente por devolución. */
+    LedgerResult debitGatewayRefund(Long userId, BigDecimal amount, String provider, String refundId, Long actorId);
+
+    /** Revierte el retiro de una devolución que la pasarela rechazó. Idempotente por devolución. */
+    LedgerResult reverseGatewayRefund(Long userId, BigDecimal amount, String provider, String refundId, Long actorId);
+
+    /** Cierra una incidencia con su motivo; false si no existe o ya estaba resuelta. */
+    boolean resolveIncident(Long incidentId, String note, Long actorId);
 }

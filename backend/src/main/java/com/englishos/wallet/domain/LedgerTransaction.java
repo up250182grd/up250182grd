@@ -78,6 +78,10 @@ public class LedgerTransaction {
         return publicId;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     public Type getType() {
         return type;
     }

@@ -42,7 +42,25 @@ public class BillingIncident {
     @Column(name = "resolved_at")
     private Instant resolvedAt;
 
+    @Column(name = "resolution_note", length = 500)
+    private String resolutionNote;
+
+    @Column(name = "resolved_by")
+    private Long resolvedBy;
+
     protected BillingIncident() {
+    }
+
+    /** Cierra la incidencia con el motivo y quién la resolvió; devuelve false si ya estaba resuelta. */
+    public boolean resolve(String note, Long by, Instant now) {
+        if (!"OPEN".equals(status)) {
+            return false;
+        }
+        status = "RESOLVED";
+        resolutionNote = note;
+        resolvedBy = by;
+        resolvedAt = now;
+        return true;
     }
 
     public static BillingIncident open(String type, Long userId, String refType, String refId, String description,

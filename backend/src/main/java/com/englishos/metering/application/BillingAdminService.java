@@ -54,10 +54,12 @@ public class BillingAdminService {
     private final AuditService audit;
     private final JsonMapper json;
     private final Clock clock;
+    private final com.englishos.wallet.api.WalletApi wallet;
 
     BillingAdminService(AiModelRepository models, PricingVersionRepository pricing, CommercialPolicyRepository policies,
             FxRateRepository fxRates, UsageSettlementRepository settlements, MeteringService metering,
-            AuditService audit, JsonMapper json, Clock clock) {
+            AuditService audit, JsonMapper json, Clock clock, com.englishos.wallet.api.WalletApi wallet) {
+        this.wallet = wallet;
         this.models = models;
         this.pricing = pricing;
         this.policies = policies;
@@ -251,6 +253,36 @@ public class BillingAdminService {
                 .map(r -> new RoleTotals((String) r[0], (Long) r[1], (BigDecimal) r[2], (BigDecimal) r[3],
                         (BigDecimal) r[4], (BigDecimal) r[5]))
                 .toList();
+    }
+
+    /** Liquidaciones del periodo (incluye las pendientes de conciliación, marcadas en "estado"). */
+    @PreAuthorize("hasAuthority('billing:read:any')")
+    @Transactional(readOnly = true)
+    public String settlementsCsv(Instant from, Instant to) {
+        StringBuilder sb = new StringBuilder(com.englishos.shared.text.Csv.BOM);
+        sb.append(com.englishos.shared.text.Csv.row(List.of("liquidada_utc", "liquidacion", "usuario_id", "rol",
+                "sujeto", "sujeto_id", "estado", "costo_proveedor", "moneda_proveedor", "tipo_cambio",
+                "fuente_tipo_cambio", "costo_directo_mxn", "factor", "recargo_mxn", "impuestos_mxn", "total_mxn",
+                "nota")));
+        for (UsageSettlement s : settlements.findBySettledAtGreaterThanEqualAndSettledAtLessThanOrderByIdAsc(from, to)) {
+            sb.append(com.englishos.shared.text.Csv.row(java.util.Arrays.asList(s.getSettledAt(), s.getPublicId(),
+                    s.getUserId(), s.getRoleCode(), s.getSubjectType(), s.getSubjectId(), s.getStatus().name(),
+                    s.getProviderCost(), s.getProviderCurrency(), s.getFxRate(), s.getFxSource(), s.getDirectCostMxn(),
+                    s.getFactorApplied(), s.getMarkupMxn(), s.getTaxMxn(), s.getTotalMxn(), s.getNote())));
+        }
+        return sb.toString();
+    }
+
+    /** Cierra una incidencia de facturación con su motivo (queda auditado). */
+    @PreAuthorize("hasAuthority('payments:refund')")
+    @Transactional
+    public void resolveIncident(CurrentUser actor, Long incidentId, String note) {
+        if (note == null || note.strip().length() < 5 || note.length() > 500) {
+            throw ApiException.badRequest("NOTE_REQUIRED", "Explica cómo se resolvió (5 a 500 caracteres).");
+        }
+        if (!wallet.resolveIncident(incidentId, note.strip(), actor.id())) {
+            throw ApiException.notFound("INCIDENT_NOT_FOUND", "La incidencia no existe o ya estaba resuelta.");
+        }
     }
 
     @PreAuthorize("hasAuthority('billing:read:any')")

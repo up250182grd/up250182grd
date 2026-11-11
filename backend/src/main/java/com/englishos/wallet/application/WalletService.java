@@ -329,6 +329,66 @@ public class WalletService implements WalletApi {
                 .toList();
     }
 
+    // ---- Pasarela de pagos --------------------------------------------------------------------
+
+    @Override
+    @Transactional
+    public LedgerResult creditGatewayTopup(Long userId, BigDecimal amount, String provider, String providerPaymentId,
+            String intentId) {
+        LedgerService.Posted posted = ledger.post(new LedgerService.PostCommand(LedgerTransaction.Type.TOPUP, userId,
+                "topup:gw:" + provider + ":" + providerPaymentId, "Recarga con " + providerLabel(provider),
+                "PAYMENT_INTENT", intentId, null,
+                new LedgerPosting().move(business(AccountCode.GATEWAY_CLEARING), availableAcc(userId), amount),
+                Map.of()));
+        if (!posted.alreadyExisted()) {
+            audit.record(null, "WALLET_GATEWAY_TOPUP", "WALLET", String.valueOf(userId), null,
+                    Map.of("amount", amount.toPlainString(), "provider", provider, "payment", providerPaymentId,
+                            "transaction", posted.transaction().getPublicId()));
+        }
+        return new LedgerResult(posted.transaction().getPublicId(), posted.alreadyExisted());
+    }
+
+    @Override
+    @Transactional
+    public LedgerResult debitGatewayRefund(Long userId, BigDecimal amount, String provider, String refundId,
+            Long actorId) {
+        LedgerService.Posted posted = ledger.post(new LedgerService.PostCommand(LedgerTransaction.Type.REFUND, userId,
+                "refund:gw:" + provider + ":" + refundId, "Devolución de saldo a tu medio de pago", "PAYMENT_REFUND",
+                refundId, actorId,
+                new LedgerPosting().move(availableAcc(userId), business(AccountCode.GATEWAY_CLEARING), amount),
+                Map.of(availableAcc(userId), BigDecimal.ZERO)));
+        return new LedgerResult(posted.transaction().getPublicId(), posted.alreadyExisted());
+    }
+
+    @Override
+    @Transactional
+    public LedgerResult reverseGatewayRefund(Long userId, BigDecimal amount, String provider, String refundId,
+            Long actorId) {
+        LedgerService.Posted posted = ledger.post(new LedgerService.PostCommand(LedgerTransaction.Type.ADJUSTMENT,
+                userId, "refund-reversal:gw:" + provider + ":" + refundId,
+                "Reverso de devolución rechazada por la pasarela", "PAYMENT_REFUND", refundId, actorId,
+                new LedgerPosting().move(business(AccountCode.GATEWAY_CLEARING), availableAcc(userId), amount),
+                Map.of()));
+        return new LedgerResult(posted.transaction().getPublicId(), posted.alreadyExisted());
+    }
+
+    @Override
+    @Transactional
+    public boolean resolveIncident(Long incidentId, String note, Long actorId) {
+        return incidents.findById(incidentId).map(i -> {
+            boolean changed = i.resolve(note, actorId, Instant.now(clock));
+            if (changed) {
+                audit.record(actorId, "BILLING_INCIDENT_RESOLVED", "BILLING_INCIDENT", String.valueOf(incidentId),
+                        Map.of("status", "OPEN"), Map.of("status", "RESOLVED", "note", note));
+            }
+            return changed;
+        }).orElse(false);
+    }
+
+    private static String providerLabel(String provider) {
+        return "MERCADOPAGO".equals(provider) ? "Mercado Pago" : provider;
+    }
+
     /** Verificación de invariantes del libro (job/admin): Σ global = 0 y caché = Σ líneas por cuenta. */
     @Override
     @Transactional(readOnly = true)

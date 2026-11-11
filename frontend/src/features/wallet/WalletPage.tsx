@@ -9,6 +9,7 @@ import { Card, Skeleton } from '@/components/ui/Card';
 import { TextField } from '@/components/ui/TextField';
 import { errorMessage } from '@/features/auth/schemas';
 import { formatMXN } from '@/lib/money';
+import { GatewayTopupCard, MyTopups, usePaymentsConfig } from './payments';
 
 export const walletKeys = {
   summary: ['wallet', 'summary'] as const,
@@ -147,6 +148,7 @@ export function WalletPage() {
     queryFn: () => unwrap(api.GET('/api/v1/me/wallet/movements', { params: { query: { size: 30 } } })),
   });
   const usage = useQuery({ queryKey: walletKeys.usage, queryFn: () => unwrap(api.GET('/api/v1/me/usage')) });
+  const payments = usePaymentsConfig();
 
   if (wallet.isPending) return <Skeleton className="mx-auto h-64 max-w-4xl" />;
   if (wallet.isError) return <Alert tone="error">{errorMessage(wallet.error)}</Alert>;
@@ -189,15 +191,17 @@ export function WalletPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        {w.simulatedTopupsEnabled ? (
-          <TopupCard min={w.minTopup ?? 100} max={w.maxTopup ?? 2000} />
-        ) : (
-          <Card className="border-dashed text-sm text-muted">
-            Las recargas con pago real estarán disponibles en la Fase 7.
-          </Card>
+        {payments.data?.enabled && (
+          <GatewayTopupCard min={w.minTopup ?? 100} max={w.maxTopup ?? 2000} testMode={payments.data.testMode ?? true} />
+        )}
+        {w.simulatedTopupsEnabled && <TopupCard min={w.minTopup ?? 100} max={w.maxTopup ?? 2000} />}
+        {payments.data && !payments.data.enabled && !w.simulatedTopupsEnabled && (
+          <Card className="border-dashed text-sm text-muted">Las recargas no están disponibles en este entorno.</Card>
         )}
         <LimitsCard monthlyLimit={w.monthlyLimit} lowBalance={w.lowBalanceThreshold} />
       </div>
+
+      <MyTopups />
 
       <Card className="overflow-x-auto">
         <h2 className="mb-3 font-semibold">Consumo por sesión</h2>

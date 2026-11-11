@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/webhooks/mercadopago": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["webhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/voice/sessions": {
         parameters: {
             query?: never;
@@ -190,6 +206,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/wallet/topups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mine"];
+        put?: never;
+        post: operations["create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -452,6 +484,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/payments/{id}/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["refund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/payments/{id}/reconcile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reconcile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/content/modules/{modulePublicId}/lessons": {
         parameters: {
             query?: never;
@@ -590,6 +654,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["addPricing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/billing/incidents/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["resolveIncident"];
         delete?: never;
         options?: never;
         head?: never;
@@ -740,6 +820,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/payments/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["config"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -764,6 +860,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/wallet/topups/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -948,6 +1060,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/reports/settlements.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["settlementsCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reports/payments.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["csv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reports/ledger.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ledger"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["adminList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/content/tree": {
         parameters: {
             query?: never;
@@ -988,6 +1164,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["adminUsage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1273,6 +1465,24 @@ export interface components {
             correctStreak?: number;
             resolved?: boolean;
         };
+        GatewayTopupRequest: {
+            amount: number;
+            idempotencyKey: string;
+        };
+        TopupView: {
+            id?: string;
+            amountMxn?: number;
+            currency?: string;
+            status?: string;
+            providerStatus?: string;
+            checkoutUrl?: string;
+            credited?: boolean;
+            refundedMxn?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
         TopupRequest: {
             amount: number;
             idempotencyKey: string;
@@ -1400,6 +1610,38 @@ export interface components {
             /** Format: date-time */
             createdAt?: string;
         };
+        RefundRequest: {
+            amount: number;
+            note: string;
+        };
+        AdminPaymentView: {
+            id?: string;
+            /** Format: int64 */
+            userId?: number;
+            provider?: string;
+            amountMxn?: number;
+            status?: string;
+            providerPaymentId?: string;
+            providerStatus?: string;
+            credited?: boolean;
+            refundedMxn?: number;
+            refundableMxn?: number;
+            refunds?: components["schemas"]["RefundView"][];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        RefundView: {
+            id?: string;
+            amountMxn?: number;
+            status?: string;
+            providerRefundId?: string;
+            note?: string;
+            failure?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
         StatusRequest: {
             /** @enum {string} */
             status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
@@ -1471,6 +1713,9 @@ export interface components {
             sourceUrl: string;
             /** Format: date */
             verifiedAt: string;
+        };
+        ResolveIncidentRequest: {
+            note: string;
         };
         FxRequest: {
             base: string;
@@ -1580,6 +1825,13 @@ export interface components {
             streakToResolve?: number;
             /** Format: date-time */
             detectedAt?: string;
+        };
+        PaymentsConfig: {
+            enabled?: boolean;
+            provider?: string;
+            testMode?: boolean;
+            minTopupMxn?: number;
+            maxTopupMxn?: number;
         };
         Movement: {
             id?: string;
@@ -1849,6 +2101,25 @@ export interface components {
             taxMxn?: number;
             totalMxn?: number;
         };
+        AuditEntry: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            actorUserId?: number;
+            action?: string;
+            targetType?: string;
+            targetId?: string;
+            beforeState?: string;
+            afterState?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        AuditPage: {
+            items?: components["schemas"]["AuditEntry"][];
+            /** Format: int64 */
+            nextBefore?: number;
+            actions?: string[];
+        };
     };
     responses: never;
     parameters: never;
@@ -1979,6 +2250,34 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["AdminExercise"];
                 };
+            };
+        };
+    };
+    webhook: {
+        parameters: {
+            query?: {
+                "data.id"?: string;
+                type?: string;
+            };
+            header?: {
+                "x-signature"?: string;
+                "x-request-id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2208,6 +2507,50 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ErrorAnswerResult"];
+                };
+            };
+        };
+    };
+    mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TopupView"][];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GatewayTopupRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TopupView"];
                 };
             };
         };
@@ -2602,6 +2945,54 @@ export interface operations {
             };
         };
     };
+    refund: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefundRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminPaymentView"];
+                };
+            };
+        };
+    };
+    reconcile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminPaymentView"];
+                };
+            };
+        };
+    };
     createLesson: {
         parameters: {
             query?: never;
@@ -2866,6 +3257,30 @@ export interface operations {
             };
         };
     };
+    resolveIncident: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveIncidentRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     fxRates: {
         parameters: {
             query?: never;
@@ -3080,6 +3495,26 @@ export interface operations {
             };
         };
     };
+    config: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PaymentsConfig"];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -3116,6 +3551,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["WalletSummary"];
+                };
+            };
+        };
+    };
+    get_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TopupView"];
                 };
             };
         };
@@ -3354,6 +3811,92 @@ export interface operations {
             };
         };
     };
+    settlementsCsv: {
+        parameters: {
+            query?: {
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    csv: {
+        parameters: {
+            query?: {
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    ledger: {
+        parameters: {
+            query?: {
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    adminList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AdminPaymentView"][];
+                };
+            };
+        };
+    };
     tree: {
         parameters: {
             query?: never;
@@ -3412,6 +3955,33 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UsageItem"][];
+                };
+            };
+        };
+    };
+    search_1: {
+        parameters: {
+            query?: {
+                action?: string;
+                targetType?: string;
+                targetId?: string;
+                actor?: number;
+                before?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AuditPage"];
                 };
             };
         };

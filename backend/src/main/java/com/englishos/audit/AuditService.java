@@ -43,6 +43,29 @@ public class AuditService {
                 .toList();
     }
 
+    public record AuditPage(List<AuditEntry> items, Long nextBefore, List<String> actions) {
+    }
+
+    /** Bitácora consultable (Fase 7). Paginación por cursor: {@code before} = id del último registro visto. */
+    @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('audit:read')")
+    @Transactional(readOnly = true)
+    public AuditPage search(String action, String targetType, String targetId, Long actor, Long before, int limit) {
+        int size = Math.max(1, Math.min(limit, 100));
+        List<AuditEntry> items = repository.search(blankToNull(action), blankToNull(targetType),
+                        blankToNull(targetId), actor, before, org.springframework.data.domain.PageRequest.of(0, size + 1))
+                .stream()
+                .map(a -> new AuditEntry(a.getId(), a.getActorUserId(), a.getAction(), a.getTargetType(),
+                        a.getTargetId(), a.getBeforeState(), a.getAfterState(), a.getCreatedAt()))
+                .toList();
+        boolean more = items.size() > size;
+        List<AuditEntry> page = more ? items.subList(0, size) : items;
+        return new AuditPage(page, more ? page.getLast().id() : null, repository.distinctActions());
+    }
+
+    private static String blankToNull(String s) {
+        return s == null || s.isBlank() ? null : s.strip();
+    }
+
     private String toJson(Map<String, ?> state) {
         return state == null ? null : jsonMapper.writeValueAsString(state);
     }

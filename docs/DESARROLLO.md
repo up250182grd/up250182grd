@@ -1,6 +1,37 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2 a 6 implementadas.** Ver [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2 a 7 implementadas.** Ver [Fase 7](#estado-de-la-fase-7), [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 7
+
+| Funcionalidad | Estado |
+|---|---|
+| Recargas con Mercado Pago Checkout Pro (modo prueba): intención con monto fijado por el servidor, redirección a la pasarela, página de regreso que **solo consulta** | ✅ Implementado (ADR-0010) |
+| Webhook público con firma HMAC; registro de todas las notificaciones; crédito solo tras consultar el pago en la API (aprobado, mismo monto y moneda) | ✅ Probado: firma inválida, evento repetido y en paralelo, monto/moneda manipulados, regreso sin webhook → sin crédito |
+| Conciliación automática (cada 15 min) y manual de recargas sin notificación | ✅ |
+| Devoluciones manuales de saldo no usado, con reposición si la pasarela rechaza | ✅ |
+| Incidencias resolubles con motivo; bitácora de auditoría consultable con filtros | ✅ |
+| Reportes CSV (liquidaciones, libro mayor, recargas) que cuadran con el libro y el resumen; protección contra inyección de fórmulas | ✅ |
+| Política comercial versionada y no retroactiva, "Mi consumo" | ✅ (desde la Fase 4) |
+| Adaptador HTTP de Mercado Pago | ⚠️ **Probado solo contra un servidor simulado local.** 🔍 Falta verificar el contrato con la documentación vigente y con credenciales de prueba reales. |
+| Comisiones de la pasarela e IVA en la contabilidad (decisión fiscal D-1) | ⏳ Pendiente |
+
+### Probar Mercado Pago en modo prueba (cuando lo decidas)
+
+1. En el panel de desarrolladores de Mercado Pago crea una aplicación y copia las **credenciales de prueba**:
+   - el *Access token* de prueba;
+   - la *clave secreta* de webhooks.
+2. En el backend define:
+   - `PAYMENTS_PROVIDER=mercadopago`;
+   - `MP_ACCESS_TOKEN`;
+   - `MP_WEBHOOK_SECRET`;
+   - `MP_TEST_MODE=true`.
+
+   Solo en el servidor: nunca en el frontend ni en el repositorio.
+3. La pasarela debe poder llegar al webhook por HTTPS: `PAYMENTS_NOTIFICATION_URL=https://<tu-dominio>/api/v1/webhooks/mercadopago`.
+   En local se necesita un túnel.
+4. Verifica con la documentación vigente lo marcado con 🔍 en `MercadoPagoGateway` y `WebhookSignature`. Después haz
+   una recarga con una tarjeta de prueba y comprueba el crédito, el registro en *Auditoría* y el CSV de recargas.
 
 ## Estado de la Fase 6
 

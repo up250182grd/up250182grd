@@ -66,6 +66,24 @@ class BillingController {
     record FxRequest(@NotBlank String base, @NotNull BigDecimal rate, @NotNull LocalDate date) {
     }
 
+    record ResolveIncidentRequest(@NotBlank @Size(max = 500) String note) {
+    }
+
+    @PostMapping("/api/v1/admin/billing/incidents/{id}/resolve")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void resolveIncident(@AuthenticationPrincipal CurrentUser actor, @PathVariable Long id,
+            @Valid @RequestBody ResolveIncidentRequest req) {
+        billing.resolveIncident(actor, id, req.note());
+    }
+
+    @GetMapping(path = "/api/v1/admin/reports/settlements.csv", produces = "text/csv")
+    org.springframework.http.ResponseEntity<byte[]> settlementsCsv(@AuthenticationPrincipal CurrentUser actor,
+            @RequestParam(required = false) String month) {
+        var p = com.englishos.shared.web.CsvResponses.Period.of(month, profiles.zoneOf(actor.id()));
+        return com.englishos.shared.web.CsvResponses.csv("liquidaciones-" + p.month() + ".csv",
+                billing.settlementsCsv(p.from(), p.to()));
+    }
+
     record FinanceSummary(String month, List<RoleTotals> totalsByRole, Map<String, BigDecimal> businessAccounts,
             long pendingReconciliations, List<WalletApi.IncidentView> openIncidents, List<String> ledgerProblems,
             String note) {
@@ -136,7 +154,7 @@ class BillingController {
         Instant to = ym.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant();
         return new FinanceSummary(ym.toString(), billing.totalsByRole(from, to), wallet.businessBalances(),
                 billing.pendingReconciliations(), wallet.openIncidents(), wallet.verifyLedger(),
-                "Ingreso bruto adicional = recargo cobrado. La utilidad neta requiere restar comisiones de pasarela, "
-                        + "impuestos e infraestructura (Fase 7).");
+                "Ingreso bruto adicional = recargo cobrado. La utilidad neta requiere restar las comisiones de la "
+                        + "pasarela (aún no se registran automáticamente), los impuestos y la infraestructura.");
     }
 }

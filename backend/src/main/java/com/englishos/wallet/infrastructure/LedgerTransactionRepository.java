@@ -2,6 +2,7 @@ package com.englishos.wallet.infrastructure;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import com.englishos.wallet.domain.LedgerTransaction;
@@ -15,6 +16,8 @@ import org.springframework.data.repository.query.Param;
 public interface LedgerTransactionRepository extends JpaRepository<LedgerTransaction, Long> {
 
     Optional<LedgerTransaction> findByIdempotencyKey(String idempotencyKey);
+
+    List<LedgerTransaction> findByCreatedAtGreaterThanEqualAndCreatedAtLessThanOrderByIdAsc(Instant from, Instant to);
 
     @Query("select t from LedgerTransaction t where t.userId = :userId order by t.id desc")
     Page<LedgerTransaction> findByUser(@Param("userId") Long userId, Pageable pageable);

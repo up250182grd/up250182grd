@@ -9,6 +9,7 @@ import {
   MessagesSquare,
   Mic,
   Settings,
+  ScrollText,
   Shield,
   SlidersHorizontal,
   Users,
@@ -44,6 +45,7 @@ const adminNav: NavItem[] = [
   { to: '/admin/content', label: 'Contenido', icon: Library },
   { to: '/admin/billing', label: 'Finanzas', icon: BarChart3 },
   { to: '/admin/recommendations', label: 'Recomendaciones', icon: SlidersHorizontal },
+  { to: '/admin/audit', label: 'Auditoría', icon: ScrollText },
 ];
 
 function SideLink({ item }: { item: NavItem }) {

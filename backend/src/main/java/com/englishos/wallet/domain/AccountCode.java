@@ -10,6 +10,8 @@ public enum AccountCode {
     USER_RESERVED(true),
     /** Contrapartida de recargas simuladas (modo prueba). Las recargas reales usarán la cuenta de la pasarela. */
     SIMULATED_TOPUP_CLEARING(false),
+    /** Contrapartida de recargas cobradas por la pasarela (dinero a recibir del proveedor de pagos). */
+    GATEWAY_CLEARING(false),
     REVENUE_AI_COST_RECOVERY(false),
     REVENUE_MARKUP(false),
     TAX_PAYABLE(false),

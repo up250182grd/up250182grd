@@ -49,6 +49,9 @@ public class SecurityConfig {
 
     public static final String SESSION_COOKIE = "ENGLISHOS_SESSION";
 
+    /** Única ruta pública que acepta POST sin sesión ni CSRF: la valida la firma de la pasarela. */
+    static final String PAYMENT_WEBHOOK = "/api/v1/webhooks/mercadopago";
+
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http, CsrfTokenRepository csrfTokenRepository,
             SecurityContextRepository securityContextRepository, JsonMapper jsonMapper,
@@ -56,7 +59,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(csrfTokenRepository)
-                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                        // Las notificaciones de la pasarela no vienen de un navegador: se autentican por firma HMAC.
+                        .ignoringRequestMatchers(PAYMENT_WEBHOOK))
                 .cors(cors -> {
                 })
                 .securityContext(ctx -> ctx.securityContextRepository(securityContextRepository))
@@ -80,6 +85,7 @@ public class SecurityConfig {
                                     "/api/v1/auth/resend-verification",
                                     "/api/v1/auth/password-reset/request",
                                     "/api/v1/auth/password-reset/confirm").permitAll()
+                            .requestMatchers(HttpMethod.POST, PAYMENT_WEBHOOK).permitAll()
                             .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                             .requestMatchers("/error").permitAll();
                     if (openApiEnabled) {

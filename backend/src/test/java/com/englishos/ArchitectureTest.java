@@ -66,7 +66,7 @@ class ArchitectureTest {
     @Test
     void modulesTalkToEachOtherOnlyThroughTheirApi() {
         java.util.List<String> modules = java.util.List.of("identity", "learning", "assessment", "tutor", "voice",
-                "metering", "wallet", "ai", "vocabulary", "recommendation");
+                "metering", "wallet", "ai", "vocabulary", "recommendation", "payments");
         for (String m : modules) {
             String[] internals = modules.stream().filter(o -> !o.equals(m))
                     .flatMap(o -> java.util.stream.Stream.of("application", "domain", "infrastructure", "web")

@@ -36,4 +36,6 @@ public interface UsageSettlementRepository extends JpaRepository<UsageSettlement
     List<Object[]> totalsByRole(@Param("from") Instant from, @Param("to") Instant to);
 
     long countByStatus(UsageSettlement.Status status);
+
+    List<UsageSettlement> findBySettledAtGreaterThanEqualAndSettledAtLessThanOrderByIdAsc(Instant from, Instant to);
 }

@@ -9,10 +9,12 @@ import { TextField } from '@/components/ui/TextField';
 import { errorMessage } from '@/features/auth/schemas';
 import { cn } from '@/lib/cn';
 import { formatMXN, formatPrecise } from '@/lib/money';
+import { IncidentItem, PaymentsTab, ReportsCard } from './PaymentsAdmin';
 
-type Tab = 'summary' | 'pricing' | 'policy' | 'fx' | 'mine';
+type Tab = 'summary' | 'payments' | 'pricing' | 'policy' | 'fx' | 'mine';
 const tabs: { id: Tab; label: string }[] = [
   { id: 'summary', label: 'Resumen' },
+  { id: 'payments', label: 'Recargas' },
   { id: 'pricing', label: 'Modelos y tarifas' },
   { id: 'policy', label: 'Política comercial' },
   { id: 'fx', label: 'Tipo de cambio' },
@@ -21,6 +23,7 @@ const tabs: { id: Tab; label: string }[] = [
 const date = new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
 const accountLabels: Record<string, string> = {
   SIMULATED_TOPUP_CLEARING: 'Recargas simuladas (contrapartida)',
+  GATEWAY_CLEARING: 'Recargas cobradas por la pasarela (contrapartida)',
   REVENUE_AI_COST_RECOVERY: 'Ingreso: recuperación de costo de IA',
   REVENUE_MARKUP: 'Ingreso: recargo comercial (30 %)',
   TAX_PAYABLE: 'Impuestos por pagar',
@@ -99,13 +102,10 @@ function SummaryTab() {
         </h3>
         {s.openIncidents?.length === 0 && <p className="text-sm text-muted">Sin incidencias.</p>}
         <ul className="flex flex-col gap-2 text-sm">
-          {s.openIncidents?.map((i) => (
-            <li key={i.id} className="rounded-lg border border-border p-2">
-              <Badge tone="warning">{i.type}</Badge> {i.description}
-            </li>
-          ))}
+          {s.openIncidents?.map((i) => <IncidentItem key={i.id} incident={i} />)}
         </ul>
       </Card>
+      <ReportsCard />
     </div>
   );
 }
@@ -426,6 +426,7 @@ export function AdminBillingPage() {
       </div>
       <div role="tabpanel">
         {tab === 'summary' && <SummaryTab />}
+        {tab === 'payments' && <PaymentsTab />}
         {tab === 'pricing' && <PricingTab />}
         {tab === 'policy' && <PolicyTab />}
         {tab === 'fx' && <FxTab />}

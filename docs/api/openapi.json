@@ -166,6 +166,55 @@
         }
       }
     },
+    "/api/v1/webhooks/mercadopago" : {
+      "post" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "webhook",
+        "parameters" : [ {
+          "name" : "x-signature",
+          "in" : "header",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-request-id",
+          "in" : "header",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "data.id",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
     "/api/v1/voice/sessions" : {
       "get" : {
         "tags" : [ "voice-controller" ],
@@ -432,6 +481,53 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorAnswerResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet/topups" : {
+      "get" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "mine",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TopupView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GatewayTopupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TopupView"
                 }
               }
             }
@@ -884,6 +980,68 @@
         }
       }
     },
+    "/api/v1/admin/payments/{id}/refunds" : {
+      "post" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "refund",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RefundRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminPaymentView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/payments/{id}/reconcile" : {
+      "post" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "reconcile",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminPaymentView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/content/modules/{modulePublicId}/lessons" : {
       "post" : {
         "tags" : [ "content-admin-controller" ],
@@ -1214,6 +1372,36 @@
         }
       }
     },
+    "/api/v1/admin/billing/incidents/{id}/resolve" : {
+      "post" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "resolveIncident",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResolveIncidentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
     "/api/v1/admin/billing/fx-rates" : {
       "get" : {
         "tags" : [ "billing-controller" ],
@@ -1445,6 +1633,24 @@
         }
       }
     },
+    "/api/v1/payments/config" : {
+      "get" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "config",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentsConfig"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me" : {
       "get" : {
         "tags" : [ "me-controller" ],
@@ -1474,6 +1680,32 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/WalletSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet/topups/{id}" : {
+      "get" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "get_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TopupView"
                 }
               }
             }
@@ -1770,6 +2002,108 @@
         }
       }
     },
+    "/api/v1/admin/reports/settlements.csv" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "settlementsCsv",
+        "parameters" : [ {
+          "name" : "month",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/csv" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reports/payments.csv" : {
+      "get" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "csv",
+        "parameters" : [ {
+          "name" : "month",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/csv" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reports/ledger.csv" : {
+      "get" : {
+        "tags" : [ "wallet-report-controller" ],
+        "operationId" : "ledger",
+        "parameters" : [ {
+          "name" : "month",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/csv" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/payments" : {
+      "get" : {
+        "tags" : [ "payment-controller" ],
+        "operationId" : "adminList",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AdminPaymentView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/content/tree" : {
       "get" : {
         "tags" : [ "content-admin-controller" ],
@@ -1831,6 +2165,71 @@
                   "items" : {
                     "$ref" : "#/components/schemas/UsageItem"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit" : {
+      "get" : {
+        "tags" : [ "audit-controller" ],
+        "operationId" : "search_1",
+        "parameters" : [ {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "targetType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "targetId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "actor",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "before",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuditPage"
                 }
               }
             }
@@ -2618,6 +3017,57 @@
           }
         }
       },
+      "GatewayTopupRequest" : {
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "idempotencyKey" : {
+            "type" : "string",
+            "maxLength" : 64,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "amount", "idempotencyKey" ]
+      },
+      "TopupView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "amountMxn" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "providerStatus" : {
+            "type" : "string"
+          },
+          "checkoutUrl" : {
+            "type" : "string"
+          },
+          "credited" : {
+            "type" : "boolean"
+          },
+          "refundedMxn" : {
+            "type" : "number"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "TopupRequest" : {
         "type" : "object",
         "properties" : {
@@ -2990,6 +3440,97 @@
           }
         }
       },
+      "RefundRequest" : {
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "note" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "amount", "note" ]
+      },
+      "AdminPaymentView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "provider" : {
+            "type" : "string"
+          },
+          "amountMxn" : {
+            "type" : "number"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "providerPaymentId" : {
+            "type" : "string"
+          },
+          "providerStatus" : {
+            "type" : "string"
+          },
+          "credited" : {
+            "type" : "boolean"
+          },
+          "refundedMxn" : {
+            "type" : "number"
+          },
+          "refundableMxn" : {
+            "type" : "number"
+          },
+          "refunds" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RefundView"
+            }
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "RefundView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "amountMxn" : {
+            "type" : "number"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "providerRefundId" : {
+            "type" : "string"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "failure" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "StatusRequest" : {
         "type" : "object",
         "properties" : {
@@ -3190,6 +3731,17 @@
           }
         },
         "required" : [ "currency", "ratesPerMillion", "sourceUrl", "verifiedAt" ]
+      },
+      "ResolveIncidentRequest" : {
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "note" ]
       },
       "FxRequest" : {
         "type" : "object",
@@ -3465,6 +4017,26 @@
           "detectedAt" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }
+      },
+      "PaymentsConfig" : {
+        "type" : "object",
+        "properties" : {
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "provider" : {
+            "type" : "string"
+          },
+          "testMode" : {
+            "type" : "boolean"
+          },
+          "minTopupMxn" : {
+            "type" : "number"
+          },
+          "maxTopupMxn" : {
+            "type" : "number"
           }
         }
       },
@@ -4167,6 +4739,59 @@
           },
           "totalMxn" : {
             "type" : "number"
+          }
+        }
+      },
+      "AuditEntry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "actorUserId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "action" : {
+            "type" : "string"
+          },
+          "targetType" : {
+            "type" : "string"
+          },
+          "targetId" : {
+            "type" : "string"
+          },
+          "beforeState" : {
+            "type" : "string"
+          },
+          "afterState" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "AuditPage" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AuditEntry"
+            }
+          },
+          "nextBefore" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "actions" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       }

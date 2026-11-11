@@ -120,6 +120,18 @@ app:
       audio-in-per-minute: 600
       audio-out-per-minute: 900
       text-out-per-minute: 200
+  payments:
+    # none = sin pasarela (solo recargas simuladas si están activas); mercadopago = Checkout Pro (modo prueba).
+    provider: ${PAYMENTS_PROVIDER:none}
+    # URL pública HTTPS del webhook (…/api/v1/webhooks/mercadopago). Vacía: se configura en el panel del proveedor.
+    notification-url: ${PAYMENTS_NOTIFICATION_URL:}
+    reconcile-every: PT15M
+    mercadopago:
+      access-token: ${MP_ACCESS_TOKEN:}
+      webhook-secret: ${MP_WEBHOOK_SECRET:}
+      base-url: ${MP_BASE_URL:https://api.mercadopago.com}
+      # true: usa el enlace de pago de pruebas (sandbox_init_point) — ningún cobro es real.
+      test-mode: ${MP_TEST_MODE:true}
   vocabulary:
     # Tarjetas nuevas por día (RF-SRS-3) y tamaño máximo de la cola diaria.
     new-cards-per-day: 10
