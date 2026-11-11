@@ -11,6 +11,10 @@ springdoc:
 
 app:
   base-url: http://localhost:5173
+  billing:
+    simulated-topups-enabled: true
+  scheduling:
+    enabled: false
   admin-bootstrap:
     email: admin@englishos.test
     password: Owner-Secret-Phrase-2026

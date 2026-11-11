@@ -32,7 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 /** Diagnóstico adaptativo (RF-ASM-1 a RF-ASM-5). */
 @Service
-public class AssessmentService {
+public class AssessmentService implements com.englishos.assessment.api.LearnerLevels {
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Optional<CefrLevel> coreLevel(Long userId) {
+        var levels = skillLevels.findByUserId(userId);
+        return levels.stream()
+                .filter(l -> l.getSkill() == Skill.VOCABULARY || l.getSkill() == Skill.GRAMMAR)
+                .map(UserSkillLevel::getLevel)
+                .reduce(CefrLevel::min);
+    }
 
     public static final String DISCLAIMER_ES =
             "Nivel estimado a partir de un diagnóstico breve. No es una certificación oficial del MCER.";

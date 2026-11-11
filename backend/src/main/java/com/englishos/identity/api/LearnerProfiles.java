@@ -9,4 +9,10 @@ public interface LearnerProfiles {
     ZoneId zoneOf(Long userId);
 
     void markOnboardingCompleted(Long userId);
+
+    /** Las funciones de IA de pago requieren correo verificado (RF-IDN-2). */
+    boolean isEmailVerified(Long userId);
+
+    /** Idioma preferido para las explicaciones ("es" | "en"). */
+    String explanationLanguage(Long userId);
 }

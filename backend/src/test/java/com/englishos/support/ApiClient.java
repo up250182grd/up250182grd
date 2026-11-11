@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,6 +61,30 @@ public class ApiClient {
         return send(HttpRequest.newBuilder(URI.create(baseUrl + path))
                 .header("Content-Type", "application/json")
                 .method("PATCH", HttpRequest.BodyPublishers.ofString(JSON.writeValueAsString(body))));
+    }
+
+    /** Envía una petición cuya respuesta es Server-Sent Events y devuelve los eventos recibidos (nombre, datos). */
+    public List<Map.Entry<String, JsonNode>> postSse(String path, Object body) {
+        Response res = post(path, body);
+        if (res.status() != 200) {
+            throw new AssertionError("SSE no iniciado: " + res.status() + " " + res.body());
+        }
+        List<Map.Entry<String, JsonNode>> events = new java.util.ArrayList<>();
+        for (String block : res.body().split("\n\n")) {
+            String name = null;
+            StringBuilder data = new StringBuilder();
+            for (String line : block.split("\n")) {
+                if (line.startsWith("event:")) {
+                    name = line.substring(6).trim();
+                } else if (line.startsWith("data:")) {
+                    data.append(line.substring(5));
+                }
+            }
+            if (name != null) {
+                events.add(Map.entry(name, JSON.readTree(data.toString())));
+            }
+        }
+        return events;
     }
 
     public Response login(String email, String password) {

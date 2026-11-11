@@ -6,6 +6,34 @@
     "version" : "v1"
   },
   "paths" : {
+    "/api/v1/me/wallet/preferences" : {
+      "put" : {
+        "tags" : [ "wallet-controller" ],
+        "operationId" : "preferences",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PreferencesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WalletSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/users/{publicId}/roles" : {
       "put" : {
         "tags" : [ "admin-user-controller" ],
@@ -131,6 +159,143 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/AdminExercise"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/conversations" : {
+      "get" : {
+        "tags" : [ "tutor-controller" ],
+        "operationId" : "list",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ConversationSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "tutor-controller" ],
+        "operationId" : "start",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/conversations/{id}/messages" : {
+      "post" : {
+        "tags" : [ "tutor-controller" ],
+        "operationId" : "send",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SseEmitter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tutor/conversations/{id}/close" : {
+      "post" : {
+        "tags" : [ "tutor-controller" ],
+        "operationId" : "close",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet/simulated-topups" : {
+      "post" : {
+        "tags" : [ "wallet-controller" ],
+        "operationId" : "simulatedTopup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TopupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WalletSummary"
                 }
               }
             }
@@ -379,7 +544,7 @@
     "/api/v1/assessments" : {
       "post" : {
         "tags" : [ "assessment-controller" ],
-        "operationId" : "start",
+        "operationId" : "start_1",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -707,6 +872,184 @@
         }
       }
     },
+    "/api/v1/admin/billing/policies" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "policies",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PolicyView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "createPolicy",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PolicyRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PolicyView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/billing/models" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "models",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ModelView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "createModel",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateModelRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ModelView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/billing/models/{modelId}/pricing" : {
+      "post" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "addPricing",
+        "parameters" : [ {
+          "name" : "modelId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PricingRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PricingView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/billing/fx-rates" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "fxRates",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FxView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "addFx",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FxRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FxView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/profile" : {
       "patch" : {
         "tags" : [ "me-controller" ],
@@ -735,6 +1078,32 @@
         }
       }
     },
+    "/api/v1/tutor/conversations/{id}" : {
+      "get" : {
+        "tags" : [ "tutor-controller" ],
+        "operationId" : "get",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me" : {
       "get" : {
         "tags" : [ "me-controller" ],
@@ -746,6 +1115,95 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/MeView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet" : {
+      "get" : {
+        "tags" : [ "wallet-controller" ],
+        "operationId" : "summary",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WalletSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet/movements" : {
+      "get" : {
+        "tags" : [ "wallet-controller" ],
+        "operationId" : "movements",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 20
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Movement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/usage" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "myUsage",
+        "parameters" : [ {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UsageItem"
+                  }
                 }
               }
             }
@@ -777,7 +1235,7 @@
     "/api/v1/me/learning-summary" : {
       "get" : {
         "tags" : [ "learning-controller" ],
-        "operationId" : "summary",
+        "operationId" : "summary_1",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -955,10 +1413,103 @@
           }
         }
       }
+    },
+    "/api/v1/admin/billing/summary" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "summary_2",
+        "parameters" : [ {
+          "name" : "month",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FinanceSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/billing/my-usage" : {
+      "get" : {
+        "tags" : [ "billing-controller" ],
+        "operationId" : "adminUsage",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UsageItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "PreferencesRequest" : {
+        "type" : "object",
+        "properties" : {
+          "monthlyLimit" : {
+            "type" : "number",
+            "minimum" : 0
+          },
+          "lowBalanceThreshold" : {
+            "type" : "number",
+            "minimum" : 0
+          }
+        },
+        "required" : [ "lowBalanceThreshold" ]
+      },
+      "WalletSummary" : {
+        "type" : "object",
+        "properties" : {
+          "available" : {
+            "type" : "number"
+          },
+          "reserved" : {
+            "type" : "number"
+          },
+          "spentThisMonth" : {
+            "type" : "number"
+          },
+          "monthlyLimit" : {
+            "type" : "number"
+          },
+          "lowBalanceThreshold" : {
+            "type" : "number"
+          },
+          "lowBalance" : {
+            "type" : "boolean"
+          },
+          "simulatedTopupsEnabled" : {
+            "type" : "boolean"
+          },
+          "minTopup" : {
+            "type" : "number"
+          },
+          "maxTopup" : {
+            "type" : "number"
+          }
+        }
+      },
       "ChangeRolesRequest" : {
         "type" : "object",
         "properties" : {
@@ -1212,6 +1763,234 @@
           }
         },
         "required" : [ "feedback", "instructions", "level", "promptJson", "skill", "solutionJson", "type" ]
+      },
+      "StartRequest" : {
+        "type" : "object",
+        "properties" : {
+          "mode" : {
+            "type" : "string",
+            "enum" : [ "FREE", "GUIDED", "ROLEPLAY" ]
+          },
+          "topic" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "mode" ]
+      },
+      "ConversationView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "mode" : {
+            "type" : "string"
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "turns" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "maxTurns" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "startedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "closedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "closeReason" : {
+            "type" : "string"
+          },
+          "model" : {
+            "$ref" : "#/components/schemas/ModelInfo"
+          },
+          "reservedMxn" : {
+            "type" : "number"
+          },
+          "measured" : {
+            "$ref" : "#/components/schemas/CostEstimate"
+          },
+          "messages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MessageView"
+            }
+          },
+          "corrections" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CorrectionView"
+            }
+          },
+          "correctionsByCategory" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int64"
+            }
+          },
+          "settlement" : {
+            "$ref" : "#/components/schemas/SettlementView"
+          }
+        }
+      },
+      "CorrectionView" : {
+        "type" : "object",
+        "properties" : {
+          "original" : {
+            "type" : "string"
+          },
+          "correction" : {
+            "type" : "string"
+          },
+          "explanationEs" : {
+            "type" : "string"
+          },
+          "explanationEn" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CostEstimate" : {
+        "type" : "object",
+        "properties" : {
+          "available" : {
+            "type" : "boolean"
+          },
+          "providerCost" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "totalMxn" : {
+            "type" : "number"
+          }
+        }
+      },
+      "MessageView" : {
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string"
+          },
+          "content" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ModelInfo" : {
+        "type" : "object",
+        "properties" : {
+          "provider" : {
+            "type" : "string"
+          },
+          "modelCode" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "simulated" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SettlementView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "providerCost" : {
+            "type" : "number"
+          },
+          "providerCurrency" : {
+            "type" : "string"
+          },
+          "fxRate" : {
+            "type" : "number"
+          },
+          "fxSource" : {
+            "type" : "string"
+          },
+          "directCostMxn" : {
+            "type" : "number"
+          },
+          "factorApplied" : {
+            "type" : "number"
+          },
+          "markupMxn" : {
+            "type" : "number"
+          },
+          "taxMxn" : {
+            "type" : "number"
+          },
+          "totalMxn" : {
+            "type" : "number"
+          },
+          "internal" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MessageRequest" : {
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "type" : "string",
+            "maxLength" : 4000,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "text" ]
+      },
+      "SseEmitter" : {
+        "type" : "object",
+        "properties" : {
+          "timeout" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "TopupRequest" : {
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "idempotencyKey" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "amount", "idempotencyKey" ]
       },
       "RunStarted" : {
         "type" : "object",
@@ -1547,6 +2326,229 @@
         },
         "required" : [ "direction" ]
       },
+      "PolicyRequest" : {
+        "type" : "object",
+        "properties" : {
+          "roleCode" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "factor" : {
+            "type" : "number"
+          },
+          "taxMode" : {
+            "type" : "string",
+            "enum" : [ "NONE", "ADDED" ]
+          },
+          "taxRate" : {
+            "type" : "number"
+          },
+          "effectiveFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "note" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "factor", "note", "roleCode", "taxMode" ]
+      },
+      "PolicyView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "roleCode" : {
+            "type" : "string"
+          },
+          "factor" : {
+            "type" : "number"
+          },
+          "taxMode" : {
+            "type" : "string"
+          },
+          "taxRate" : {
+            "type" : "number"
+          },
+          "effectiveFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "current" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "CreateModelRequest" : {
+        "type" : "object",
+        "properties" : {
+          "provider" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "modelCode" : {
+            "type" : "string",
+            "maxLength" : 100,
+            "minLength" : 0
+          },
+          "modality" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "TEXT|REALTIME"
+          },
+          "displayName" : {
+            "type" : "string",
+            "maxLength" : 120,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "displayName", "modality", "modelCode", "provider" ]
+      },
+      "ModelView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "provider" : {
+            "type" : "string"
+          },
+          "modelCode" : {
+            "type" : "string"
+          },
+          "modality" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "simulated" : {
+            "type" : "boolean"
+          },
+          "currentPricing" : {
+            "$ref" : "#/components/schemas/PricingView"
+          },
+          "history" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PricingView"
+            }
+          }
+        }
+      },
+      "PricingView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "ratesPerMillion" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "number"
+            }
+          },
+          "effectiveFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sourceUrl" : {
+            "type" : "string"
+          },
+          "verifiedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "PricingRequest" : {
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "USD|MXN"
+          },
+          "ratesPerMillion" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "number"
+            },
+            "minProperties" : 1
+          },
+          "effectiveFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sourceUrl" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "verifiedAt" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "currency", "ratesPerMillion", "sourceUrl", "verifiedAt" ]
+      },
+      "FxRequest" : {
+        "type" : "object",
+        "properties" : {
+          "base" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "rate" : {
+            "type" : "number"
+          },
+          "date" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "base", "date", "rate" ]
+      },
+      "FxView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "base" : {
+            "type" : "string"
+          },
+          "quote" : {
+            "type" : "string"
+          },
+          "rate" : {
+            "type" : "number"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "rateDate" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
       "UpdateProfileRequest" : {
         "type" : "object",
         "properties" : {
@@ -1572,6 +2574,81 @@
           },
           "storeTranscripts" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "ConversationSummary" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "mode" : {
+            "type" : "string"
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "turns" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "startedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "closedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Movement" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "availableChange" : {
+            "type" : "number"
+          },
+          "reservedChange" : {
+            "type" : "number"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "UsageItem" : {
+        "type" : "object",
+        "properties" : {
+          "settlementId" : {
+            "type" : "string"
+          },
+          "subjectType" : {
+            "type" : "string"
+          },
+          "subjectId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "settledAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "detail" : {
+            "$ref" : "#/components/schemas/SettlementView"
           }
         }
       },
@@ -2009,6 +3086,98 @@
             "items" : {
               "$ref" : "#/components/schemas/AdminLessonNode"
             }
+          }
+        }
+      },
+      "FinanceSummary" : {
+        "type" : "object",
+        "properties" : {
+          "month" : {
+            "type" : "string"
+          },
+          "totalsByRole" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RoleTotals"
+            }
+          },
+          "businessAccounts" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "number"
+            }
+          },
+          "pendingReconciliations" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "openIncidents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/IncidentView"
+            }
+          },
+          "ledgerProblems" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "note" : {
+            "type" : "string"
+          }
+        }
+      },
+      "IncidentView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "refType" : {
+            "type" : "string"
+          },
+          "refId" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "RoleTotals" : {
+        "type" : "object",
+        "properties" : {
+          "roleCode" : {
+            "type" : "string"
+          },
+          "settlements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "directCostMxn" : {
+            "type" : "number"
+          },
+          "markupMxn" : {
+            "type" : "number"
+          },
+          "taxMxn" : {
+            "type" : "number"
+          },
+          "totalMxn" : {
+            "type" : "number"
           }
         }
       }

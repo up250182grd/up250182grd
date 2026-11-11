@@ -82,6 +82,31 @@ app:
     email: ${ADMIN_BOOTSTRAP_EMAIL:}
     password: ${ADMIN_BOOTSTRAP_PASSWORD:}
     display-name: ${ADMIN_BOOTSTRAP_DISPLAY_NAME:Administrador}
+  ai:
+    # fake = profesor simulado (sin red ni costo real); openai = proveedor real (requiere OPENAI_API_KEY).
+    provider: ${AI_PROVIDER:fake}
+    # Debe existir en Administración → Precios con una tarifa vigente.
+    text-model: ${AI_TEXT_MODEL:fake-tutor-1}
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+      timeout: 60s
+  tutor:
+    max-output-tokens: 600
+    max-message-chars: 2000
+    max-turns: 60
+    history-messages: 20
+    initial-reserve-mxn: 5.00
+    idle-timeout: 30m
+    idle-check: PT5M
+  billing:
+    # Sobregiro técnico máximo (RN-24) y tope mensual del consumo interno del administrador (RN-8).
+    overdraft-limit-mxn: 10.00
+    admin-monthly-cap-mxn: ${ADMIN_MONTHLY_CAP_MXN:1000.00}
+    min-topup-mxn: 100.00
+    max-topup-mxn: 2000.00
+    # Recargas simuladas (sin cobro real). Solo para desarrollo/pruebas; en producción, false.
+    simulated-topups-enabled: ${SIMULATED_TOPUPS_ENABLED:false}
 
 logging:
   level:

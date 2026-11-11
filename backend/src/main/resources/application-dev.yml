@@ -14,6 +14,8 @@ springdoc:
 
 app:
   cors-allowed-origins: http://localhost:5173
+  billing:
+    simulated-topups-enabled: true
 
 logging:
   level:
