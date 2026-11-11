@@ -58,3 +58,36 @@ export async function login(page: Page, email: string, password = PASSWORD) {
   await page.getByRole('button', { name: 'Entrar' }).click();
   await expect(page).toHaveURL(/\/app$/);
 }
+
+export async function check(page: Page) {
+  await page.getByRole('button', { name: 'Comprobar' }).click();
+}
+
+/** Completa "El verbo to be" respondiendo todo bien (su vocabulario pasa al repaso). */
+export async function completeVerbToBe(page: Page) {
+  await page.getByRole('link', { name: 'Mi plan' }).first().click();
+  await page.getByRole('link', { name: /El verbo to be/ }).click();
+  await page.getByRole('button', { name: /Empezar práctica/ }).click();
+  await page.getByLabel('is', { exact: true }).check();
+  await check(page);
+  await page.getByRole('button', { name: 'Siguiente' }).click();
+  await page.getByLabel('Espacio 1').fill('am');
+  await check(page);
+  await page.getByRole('button', { name: 'Siguiente' }).click();
+  await page.getByLabel('Espacio 1').fill('are');
+  await page.getByLabel('Espacio 2').fill('Are');
+  await check(page);
+  await page.getByRole('button', { name: 'Siguiente' }).click();
+  await page.getByText('Falso · False').click();
+  await check(page);
+  await page.getByRole('button', { name: 'Siguiente' }).click();
+  for (const word of ['Where', 'are', 'you', 'from', '?']) {
+    await page.getByLabel('Palabras disponibles').getByRole('button', { name: word, exact: true }).click();
+  }
+  await check(page);
+  await page.getByRole('button', { name: 'Siguiente' }).click();
+  await page.getByRole('radio', { name: 'is' }).click();
+  await check(page);
+  await page.getByRole('button', { name: 'Terminar práctica' }).click();
+  await expect(page.getByText('6 de 6 correctos al primer intento')).toBeVisible();
+}

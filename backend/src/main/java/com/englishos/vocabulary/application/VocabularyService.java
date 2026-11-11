@@ -49,9 +49,11 @@ public class VocabularyService implements VocabularyApi {
     private final Clock clock;
     private final int newPerDay;
     private final int maxQueue;
+    private final org.springframework.context.ApplicationEventPublisher events;
 
     VocabularyService(VocabularyItemRepository items, VocabularyCardRepository cards,
             VocabularyReviewRepository reviews, LearningProgressApi learning, LearnerProfiles profiles, Clock clock,
+            org.springframework.context.ApplicationEventPublisher events,
             @Value("${app.vocabulary.new-cards-per-day:10}") int newPerDay,
             @Value("${app.vocabulary.max-queue:50}") int maxQueue) {
         this.items = items;
@@ -62,6 +64,7 @@ public class VocabularyService implements VocabularyApi {
         this.clock = clock;
         this.newPerDay = newPerDay;
         this.maxQueue = maxQueue;
+        this.events = events;
     }
 
     // ---- Vistas -------------------------------------------------------------------------------
@@ -140,11 +143,15 @@ public class VocabularyService implements VocabularyApi {
             return new VocabularyReviewResult(view(card, item), previous.get().getQuality(), true);
         }
         Instant now = Instant.now(clock);
+        boolean wasLearned = card.getLearningState() == LearningState.REVIEW || card.isMature();
         Sm2.State before = card.state();
         Sm2.State after = card.review(quality, now, profiles.zoneOf(userId));
         Integer duration = durationMs == null ? null : Math.max(0, Math.min(durationMs, 600_000));
         reviews.save(new VocabularyReview(card.getId(), userId, clientReviewId, quality, json(before), json(after),
                 duration, now));
+        events.publishEvent(new com.englishos.vocabulary.api.VocabularyEvents.CardReviewed(userId, clientReviewId,
+                quality, duration, !wasLearned && card.getLearningState() == LearningState.REVIEW
+                        && card.getLapses() == 0, now));
         return new VocabularyReviewResult(view(card, item), quality, false);
     }
 

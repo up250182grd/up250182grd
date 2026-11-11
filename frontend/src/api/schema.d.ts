@@ -980,6 +980,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/achievements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["achievements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/lessons/{publicId}": {
         parameters: {
             query?: never;
@@ -1938,6 +1954,67 @@ export interface components {
             /** Format: int32 */
             estimatedMinutes?: number;
             state?: string;
+        };
+        BadgeView: {
+            code?: string;
+            title?: string;
+            description?: string;
+            /** Format: int32 */
+            goal?: number;
+            /** Format: int32 */
+            progress?: number;
+            earned?: boolean;
+            /** Format: date-time */
+            awardedAt?: string;
+        };
+        DayView: {
+            /** Format: date */
+            date?: string;
+            status?: string;
+        };
+        GamificationView: {
+            /** Format: int64 */
+            xpTotal?: number;
+            /** Format: int32 */
+            xpToday?: number;
+            streak?: components["schemas"]["StreakView"];
+            badges?: components["schemas"]["BadgeView"][];
+            /** Format: int32 */
+            badgesEarned?: number;
+            recentXp?: components["schemas"]["XpItem"][];
+            /** Format: int32 */
+            xpRulesVersion?: number;
+        };
+        StreakView: {
+            /** Format: int32 */
+            current?: number;
+            /** Format: int32 */
+            best?: number;
+            restUsedThisWeek?: boolean;
+            today?: components["schemas"]["TodayProgress"];
+            last28Days?: components["schemas"]["DayView"][];
+        };
+        TodayProgress: {
+            /** Format: int32 */
+            minutes?: number;
+            /** Format: int32 */
+            lessons?: number;
+            /** Format: int32 */
+            reviews?: number;
+            /** Format: int32 */
+            minMinutes?: number;
+            /** Format: int32 */
+            minLessons?: number;
+            /** Format: int32 */
+            minReviews?: number;
+            qualified?: boolean;
+        };
+        XpItem: {
+            source?: string;
+            /** Format: int32 */
+            xp?: number;
+            /** Format: date-time */
+            at?: string;
         };
         ExerciseView: {
             publicId?: string;
@@ -3698,6 +3775,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["LearningSummary"];
+                };
+            };
+        };
+    };
+    achievements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GamificationView"];
                 };
             };
         };

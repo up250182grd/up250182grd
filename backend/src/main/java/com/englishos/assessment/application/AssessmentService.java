@@ -68,9 +68,12 @@ public class AssessmentService implements com.englishos.assessment.api.LearnerLe
     private final Random random = new Random();
     private final Staircase.Params params = Staircase.Params.DEFAULT;
 
+    private final org.springframework.context.ApplicationEventPublisher events;
+
     AssessmentService(AssessmentSessionRepository sessions, AssessmentResponseRepository responses,
             UserSkillLevelRepository skillLevels, DiagnosticItemBank bank, LearningPlans plans,
-            LearnerProfiles learnerProfiles, JsonMapper jsonMapper, Clock clock) {
+            LearnerProfiles learnerProfiles, JsonMapper jsonMapper, Clock clock, org.springframework.context.ApplicationEventPublisher events) {
+        this.events = events;
         this.sessions = sessions;
         this.responses = responses;
         this.skillLevels = skillLevels;
@@ -202,6 +205,8 @@ public class AssessmentService implements com.englishos.assessment.api.LearnerLe
         learnerProfiles.markOnboardingCompleted(session.getUserId());
         Result result = new Result(session.getPublicId(), results, start, DISCLAIMER_ES, DISCLAIMER_EN, now);
         session.complete(jsonMapper.writeValueAsString(result), now);
+        events.publishEvent(new com.englishos.assessment.api.AssessmentEvents.DiagnosticCompleted(
+                session.getUserId(), session.getPublicId(), now));
     }
 
     private static CefrLevel level(List<SkillResult> results, Skill skill) {

@@ -1,38 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
-import { ADMIN_EMAIL, ADMIN_PASSWORD, login, register, uniqueEmail } from './support';
+import { expect, test } from '@playwright/test';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, completeVerbToBe, login, register, uniqueEmail } from './support';
 
-async function check(page: Page) {
-  await page.getByRole('button', { name: 'Comprobar' }).click();
-}
-
-/** Completa "El verbo to be" respondiendo todo bien (su vocabulario pasa al repaso). */
-async function completeVerbToBe(page: Page) {
-  await page.getByRole('link', { name: 'Mi plan' }).first().click();
-  await page.getByRole('link', { name: /El verbo to be/ }).click();
-  await page.getByRole('button', { name: /Empezar práctica/ }).click();
-  await page.getByLabel('is', { exact: true }).check();
-  await check(page);
-  await page.getByRole('button', { name: 'Siguiente' }).click();
-  await page.getByLabel('Espacio 1').fill('am');
-  await check(page);
-  await page.getByRole('button', { name: 'Siguiente' }).click();
-  await page.getByLabel('Espacio 1').fill('are');
-  await page.getByLabel('Espacio 2').fill('Are');
-  await check(page);
-  await page.getByRole('button', { name: 'Siguiente' }).click();
-  await page.getByText('Falso · False').click();
-  await check(page);
-  await page.getByRole('button', { name: 'Siguiente' }).click();
-  for (const word of ['Where', 'are', 'you', 'from', '?']) {
-    await page.getByLabel('Palabras disponibles').getByRole('button', { name: word, exact: true }).click();
-  }
-  await check(page);
-  await page.getByRole('button', { name: 'Siguiente' }).click();
-  await page.getByRole('radio', { name: 'is' }).click();
-  await check(page);
-  await page.getByRole('button', { name: 'Terminar práctica' }).click();
-  await expect(page.getByText('6 de 6 correctos al primer intento')).toBeVisible();
-}
 
 test('alumno: recomendaciones reales, vocabulario de la lección al repaso SM-2 y progreso', async ({ page }) => {
   const email = uniqueEmail('repaso');
@@ -88,6 +56,6 @@ test('administrador: pesos del recomendador versionados con motivo', async ({ pa
   await expect(save).toBeDisabled(); // el motivo es obligatorio
   await page.getByLabel('Motivo del cambio').fill('Prueba E2E: guardar sin cambios');
   await save.click();
-  await expect(page.getByText('Pesos guardados como versión nueva.')).toBeVisible();
+  await expect(page.getByText('Pesos guardados como versión nueva')).toBeVisible();
   await expect(page.getByText('Prueba E2E: guardar sin cambios').first()).toBeVisible();
 });

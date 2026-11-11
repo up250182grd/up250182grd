@@ -22,6 +22,7 @@ import { VocabularyPage } from '@/features/practice/VocabularyPage';
 import { RecommendationWeightsPage } from '@/features/admin/recommendations/RecommendationWeightsPage';
 import { AuditPage } from '@/features/admin/audit/AuditPage';
 import { TopupReturnPage } from '@/features/wallet/payments';
+import { AchievementsPage } from '@/features/achievements/AchievementsPage';
 
 // El código del panel de administración se descarga solo cuando un administrador lo abre.
 const AdminUsersPage = lazy(() =>
@@ -83,6 +84,7 @@ export const router = createBrowserRouter([
       { path: '/app/practice', element: <PracticePage /> },
       { path: '/app/vocabulary', element: <VocabularyPage /> },
       { path: '/app/wallet/topups/:topupId', element: <TopupReturnPage /> },
+      { path: '/app/achievements', element: <AchievementsPage /> },
       { path: '/app/wallet', element: <WalletPage /> },
       { path: '/admin/billing', element: <AdminRoute><AdminBillingPage /></AdminRoute> },
       { path: '/admin/recommendations', element: <AdminRoute><RecommendationWeightsPage /></AdminRoute> },

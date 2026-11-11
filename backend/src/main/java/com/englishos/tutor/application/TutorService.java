@@ -113,9 +113,11 @@ public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
     /** Turnos en curso (un turno a la vez por conversación). Suficiente para una sola instancia del backend. */
     private final Set<Long> inFlight = ConcurrentHashMap.newKeySet();
 
+    private final org.springframework.context.ApplicationEventPublisher events;
+
     TutorService(ConversationRepository conversations, ChatMessageRepository messages, LearnerErrorRepository errors,
             MeteringApi metering, WalletApi wallet, LearnerProfiles profiles, LearnerLevels levels, LlmClient llm,
-            JsonMapper json, Clock clock, TransactionTemplate tx,
+            JsonMapper json, Clock clock, TransactionTemplate tx, org.springframework.context.ApplicationEventPublisher events,
             @Value("${app.ai.text-model:fake-tutor-1}") String modelCode,
             @Value("${app.tutor.max-output-tokens:600}") int maxOutputTokens,
             @Value("${app.tutor.max-message-chars:2000}") int maxMessageChars,
@@ -124,6 +126,7 @@ public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
             @Value("${app.tutor.initial-reserve-mxn:5.00}") BigDecimal initialReserve,
             @Value("${app.billing.admin-monthly-cap-mxn:1000.00}") BigDecimal adminMonthlyCap,
             @Value("${app.tutor.idle-timeout:30m}") Duration idleTimeout) throws IOException {
+        this.events = events;
         this.conversations = conversations;
         this.messages = messages;
         this.errors = errors;
@@ -243,6 +246,8 @@ public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
                 wallet.ensureReserved(user.id(), SUBJECT, c.getId(), target);
             }
             messages.save(new ChatMessage(c.getId(), "USER", content, Instant.now(clock)));
+            events.publishEvent(new com.englishos.tutor.api.TutorEvents.MessageSent(c.getUserId(), c.getPublicId(),
+                    Instant.now(clock)));
             return new PreparedTurn(c.getId(), c.getPublicId(), user.id(), c.getModelId(), c.getPricingVersionId(),
                     c.getPolicyId(), new ChatRequest(metering.model(c.getModelId()).modelCode(), request,
                             maxOutputTokens));
@@ -324,6 +329,8 @@ public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
     private void closeAndSettle(Conversation c, String reason) {
         if (c.isOpen()) {
             c.close(reason, Instant.now(clock));
+            events.publishEvent(new com.englishos.tutor.api.TutorEvents.ConversationClosed(c.getUserId(), c.getPublicId(),
+                    c.getTurns(), Instant.now(clock)));
         }
         metering.settle(c.getUserId(), SUBJECT, c.getId(), c.getPricingVersionId(), c.getPolicyId());
     }

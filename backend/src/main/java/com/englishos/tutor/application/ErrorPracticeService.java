@@ -29,8 +29,10 @@ public class ErrorPracticeService {
 
     private final LearnerErrorRepository errors;
     private final Clock clock;
+    private final org.springframework.context.ApplicationEventPublisher events;
 
-    ErrorPracticeService(LearnerErrorRepository errors, Clock clock) {
+    ErrorPracticeService(LearnerErrorRepository errors, Clock clock, org.springframework.context.ApplicationEventPublisher events) {
+        this.events = events;
         this.errors = errors;
         this.clock = clock;
     }
@@ -70,7 +72,12 @@ public class ErrorPracticeService {
         }
         boolean correct = !AnswerNormalizer.normalize(answer).isEmpty()
                 && AnswerNormalizer.normalize(answer).equals(AnswerNormalizer.normalize(e.getCorrection()));
+        boolean wasResolved = e.isResolved();
         e.practiced(correct, Instant.now(clock));
+        if (!wasResolved && e.isResolved()) {
+            events.publishEvent(new com.englishos.tutor.api.TutorEvents.ErrorResolved(userId, e.getPublicId(),
+                    Instant.now(clock)));
+        }
         return new ErrorAnswerResult(correct, e.getCorrection(), e.getExplanationEs(), e.getExplanationEn(),
                 e.getCorrectStreak(), e.isResolved());
     }

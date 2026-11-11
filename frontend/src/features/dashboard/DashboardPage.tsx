@@ -13,6 +13,7 @@ import { formatMXN } from '@/lib/money';
 import { confidenceLabels, skillLabels, useLearningSummary, useSkillLevels } from '@/features/learning/api';
 import { useT } from '@/lib/lang';
 import { ProgressSection, RecommendationsCard } from './AdaptiveSections';
+import { AchievementsStrip } from '@/features/achievements/AchievementsPage';
 
 function greeting(date = new Date()): string {
   const h = date.getHours();
@@ -175,6 +176,8 @@ export function DashboardPage() {
       </div>
 
       {!me.emailVerified && me.email && <VerifyEmailBanner email={me.email} />}
+
+      <AchievementsStrip />
 
       <RecommendationsCard />
 

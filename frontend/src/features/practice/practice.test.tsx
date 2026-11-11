@@ -85,7 +85,7 @@ describe('ActivityChart', () => {
     renderPage(<ActivityChart days={days} goal={20} />);
     expect(screen.getByRole('img', { name: /meta diaria 20 minutos/ })).toBeInTheDocument();
     expect(screen.getAllByRole('row')).toHaveLength(15); // encabezado + 14 días
-    fireEvent.mouseEnter(screen.getByLabelText(/14 de noviembre: 25 minutos/));
+    fireEvent.mouseEnter(screen.getByTestId('activity-day-2026-11-14'));
     expect(screen.getByRole('tooltip')).toHaveTextContent('25 min (estimado)');
     expect(screen.getByRole('tooltip')).toHaveTextContent('13 ejercicios');
   });

@@ -1,0 +1,23 @@
+{
+  "name": "EnglishOS — aprende inglés con IA",
+  "short_name": "EnglishOS",
+  "description": "Lecciones, repaso espaciado y un profesor de IA por texto y voz.",
+  "lang": "es-MX",
+  "id": "/app",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F7FB",
+  "theme_color": "#3B3FD8",
+  "categories": ["education"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Repaso del día", "url": "/app/practice", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Profesor IA", "url": "/app/tutor", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

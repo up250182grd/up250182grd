@@ -6,9 +6,9 @@ type Tone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'accent';
 const tones: Record<Tone, string> = {
   neutral: 'bg-surface-2 text-muted',
   primary: 'bg-primary/12 text-primary',
-  success: 'bg-success/12 text-success',
-  warning: 'bg-warning/15 text-warning',
-  danger: 'bg-danger/12 text-danger',
+  success: 'bg-success/12 text-success-ink',
+  warning: 'bg-warning/15 text-warning-ink',
+  danger: 'bg-danger/12 text-danger-ink',
   accent: 'bg-accent/12 text-accent',
 };
 

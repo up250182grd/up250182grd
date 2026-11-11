@@ -49,9 +49,12 @@ public class PracticeService {
     private final Clock clock;
     private final MasteryPolicy masteryPolicy = MasteryPolicy.DEFAULT;
 
+    private final org.springframework.context.ApplicationEventPublisher events;
+
     PracticeService(LessonRepository lessons, ExerciseRepository exercises, LessonRunRepository runs,
             ExerciseAttemptRepository attempts, LessonProgressRepository progress, LearnerProfiles learnerProfiles,
-            Json json, Clock clock) {
+            Json json, Clock clock, org.springframework.context.ApplicationEventPublisher events) {
+        this.events = events;
         this.lessons = lessons;
         this.exercises = exercises;
         this.runs = runs;
@@ -134,6 +137,8 @@ public class PracticeService {
         Instant now = Instant.now(clock);
         attempts.save(ExerciseAttempt.record(userId, exercise.getId(), runId, json.write(cmd.answer()), evaluation,
                 cmd.hintsUsed(), cmd.durationMs(), cmd.idempotencyKey(), now));
+        events.publishEvent(new com.englishos.learning.api.LearningEvents.ExerciseAttempted(userId,
+                cmd.idempotencyKey(), cmd.durationMs(), now));
         progress.insertIfAbsent(userId, lesson.getId(), now);
         return result(exercise, evaluation.correct(), evaluation.score());
     }
@@ -185,6 +190,8 @@ public class PracticeService {
         LessonProgress p = progress.findById(key).orElseThrow();
         boolean wasMastered = p.getMasteredAt() != null;
         p.recordCompletedRun(score, state, now);
+        events.publishEvent(new com.englishos.learning.api.LearningEvents.LessonRunCompleted(userId, run.getPublicId(),
+                run.getLessonId(), state.name(), !wasMastered && state == MasteryPolicy.State.MASTERED, wasMastered, now));
         return new RunCompleted(score, correct, lessonExercises.size(), state.name(),
                 !wasMastered && state == MasteryPolicy.State.MASTERED, p.getCompletedRuns());
     }

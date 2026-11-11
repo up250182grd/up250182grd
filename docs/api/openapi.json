@@ -1859,6 +1859,24 @@
         }
       }
     },
+    "/api/v1/me/achievements" : {
+      "get" : {
+        "tags" : [ "gamification-controller" ],
+        "operationId" : "achievements",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GamificationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/lessons/{publicId}" : {
       "get" : {
         "tags" : [ "learning-controller" ],
@@ -4294,6 +4312,156 @@
           },
           "state" : {
             "type" : "string"
+          }
+        }
+      },
+      "BadgeView" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "goal" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "progress" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "earned" : {
+            "type" : "boolean"
+          },
+          "awardedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "DayView" : {
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GamificationView" : {
+        "type" : "object",
+        "properties" : {
+          "xpTotal" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "xpToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "streak" : {
+            "$ref" : "#/components/schemas/StreakView"
+          },
+          "badges" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BadgeView"
+            }
+          },
+          "badgesEarned" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "recentXp" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/XpItem"
+            }
+          },
+          "xpRulesVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "StreakView" : {
+        "type" : "object",
+        "properties" : {
+          "current" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "best" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "restUsedThisWeek" : {
+            "type" : "boolean"
+          },
+          "today" : {
+            "$ref" : "#/components/schemas/TodayProgress"
+          },
+          "last28Days" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DayView"
+            }
+          }
+        }
+      },
+      "TodayProgress" : {
+        "type" : "object",
+        "properties" : {
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "lessons" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "reviews" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minLessons" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minReviews" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "qualified" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "XpItem" : {
+        "type" : "object",
+        "properties" : {
+          "source" : {
+            "type" : "string"
+          },
+          "xp" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "at" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },

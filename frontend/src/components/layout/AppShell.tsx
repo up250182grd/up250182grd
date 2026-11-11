@@ -12,6 +12,7 @@ import {
   ScrollText,
   Shield,
   SlidersHorizontal,
+  Trophy,
   Users,
   Wallet,
   type LucideIcon,
@@ -37,6 +38,7 @@ const studentNav: NavItem[] = [
   { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare },
   { to: '/app/voice', label: 'Voz', icon: Mic },
   { to: '/app/wallet', label: 'Billetera', icon: Wallet },
+  { to: '/app/achievements', label: 'Logros', icon: Trophy },
   { to: '/app/settings', label: 'Ajustes', icon: Settings },
 ];
 

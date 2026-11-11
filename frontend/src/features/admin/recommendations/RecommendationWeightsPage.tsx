@@ -20,13 +20,14 @@ const rules: { key: string; label: string; text: string }[] = [
 
 const dateTime = new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
 
-function WeightsForm({ initial }: { initial: Record<string, number> }) {
+function WeightsForm({ initial, onSaved }: { initial: Record<string, number>; onSaved: (version: number) => void }) {
   const queryClient = useQueryClient();
   const [weights, setWeights] = useState<Record<string, number>>(initial);
   const [note, setNote] = useState('');
   const save = useMutation({
     mutationFn: () => unwrap(api.POST('/api/v1/admin/recommendations/weights', { body: { weights, note } })),
-    onSuccess: () => {
+    onSuccess: (saved) => {
+      onSaved(saved.id ?? 0);
       setNote('');
       void queryClient.invalidateQueries({ queryKey: ['admin', 'recommendation-weights'] });
       void queryClient.invalidateQueries({ queryKey: ['recommendations'] });
@@ -71,7 +72,6 @@ function WeightsForm({ initial }: { initial: Record<string, number> }) {
           required
         />
         {save.isError && <Alert tone="error">{errorMessage(save.error)}</Alert>}
-        {save.isSuccess && <Alert tone="success">Pesos guardados como versión nueva.</Alert>}
         <div>
           <Button type="submit" loading={save.isPending} disabled={note.trim().length < 5}>
             Guardar nueva versión
@@ -83,6 +83,7 @@ function WeightsForm({ initial }: { initial: Record<string, number> }) {
 }
 
 export function RecommendationWeightsPage() {
+  const [savedVersion, setSavedVersion] = useState<number | null>(null);
   const history = useQuery({
     queryKey: ['admin', 'recommendation-weights'],
     queryFn: () => unwrap(api.GET('/api/v1/admin/recommendations/weights')),
@@ -99,7 +100,10 @@ export function RecommendationWeightsPage() {
       </div>
       {history.isPending && <Skeleton className="h-64" />}
       {history.isError && <Alert tone="error">{errorMessage(history.error)}</Alert>}
-      {current && <WeightsForm key={current.id} initial={current.weights ?? {}} />}
+      {savedVersion != null && (
+        <Alert tone="success">Pesos guardados como versión nueva (v{savedVersion}).</Alert>
+      )}
+      {current && <WeightsForm key={current.id} initial={current.weights ?? {}} onSaved={setSavedVersion} />}
       {history.data && (
         <Card>
           <h2 className="mb-3 font-semibold">Historial</h2>

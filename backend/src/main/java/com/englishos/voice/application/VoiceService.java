@@ -88,6 +88,7 @@ public class VoiceService implements ApplicationRunner {
     private final BigDecimal adminMonthlyCap;
     private final Map<String, Long> perMinuteUnits;
     private final String promptTemplate;
+    private final org.springframework.context.ApplicationEventPublisher events;
 
     private final Map<Long, RealtimeVoiceProvider.Sideband> sidebands = new ConcurrentHashMap<>();
     private final Set<Long> warned = ConcurrentHashMap.newKeySet();
@@ -97,6 +98,7 @@ public class VoiceService implements ApplicationRunner {
     VoiceService(VoiceSessionRepository sessions, VoiceTranscriptRepository transcripts, MeteringApi metering,
             WalletApi wallet, LearnerProfiles profiles, LearnerLevels levels, LearnerErrorsApi learnerErrors,
             RealtimeVoiceProvider provider, VoiceEventHub hub, Clock clock, TransactionTemplate tx,
+            org.springframework.context.ApplicationEventPublisher events,
             @Value("${app.ai.realtime-model:fake-voice-1}") String modelCode,
             @Value("${app.ai.realtime-voice:alloy}") String voice,
             @Value("${app.voice.max-minutes:15}") int maxMinutes,
@@ -124,6 +126,7 @@ public class VoiceService implements ApplicationRunner {
         this.hub = hub;
         this.clock = clock;
         this.tx = tx;
+        this.events = events;
         this.modelCode = modelCode;
         this.voice = voice;
         this.maxMinutes = maxMinutes;
@@ -475,6 +478,10 @@ public class VoiceService implements ApplicationRunner {
                         s.getPolicyId());
                 if (s.getStatus() != VoiceSession.Status.ENDED && s.getStatus() != VoiceSession.Status.FAILED) {
                     s.finish(Instant.now(clock));
+                    int turns = (int) transcripts.findBySessionIdOrderByIdAsc(s.getId()).stream()
+                            .filter(t -> "USER".equals(t.getRole())).count();
+                    events.publishEvent(new com.englishos.voice.api.VoiceEvents.SessionEnded(s.getUserId(),
+                            s.getPublicId(), s.connectedSeconds(Instant.now(clock)), turns, Instant.now(clock)));
                 }
                 return v;
             });

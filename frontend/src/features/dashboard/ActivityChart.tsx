@@ -75,8 +75,8 @@ export function ActivityChart({ days, goal }: { days: Day[]; goal: number }) {
                 : '';
             const date = parseDay(d.date);
             return (
-              <g key={d.date} onMouseEnter={() => setHover(i)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0}
-                aria-label={`${longFmt.format(date)}: ${v} minutos`}>
+              // El detalle para teclado y lectores de pantalla está en la tabla equivalente ("Ver como tabla").
+              <g key={d.date} onMouseEnter={() => setHover(i)} data-testid={`activity-day-${d.date}`}>
                 {/* Zona de detección más grande que la columna. */}
                 <rect x={pad.left + band * i} y={pad.top} width={band} height={plotH} fill="transparent" />
                 {path && <path d={path} className={hover === i ? 'fill-primary-hover' : 'fill-primary'} />}

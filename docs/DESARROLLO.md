@@ -1,6 +1,21 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2 a 7 implementadas.** Ver [Fase 7](#estado-de-la-fase-7), [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2 a 8 implementadas.** Ver [Fase 8](#estado-de-la-fase-8), [Fase 7](#estado-de-la-fase-7), [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 8
+
+| Funcionalidad | Estado |
+|---|---|
+| XP por actividades terminadas (decreciente al repetir la misma lección el mismo día), separado del nivel MCER | ✅ Implementado y probado (ADR-0011) |
+| Racha con 1 día de descanso por semana; calendario de 4 semanas; meta del día (5 min, 1 lección o 10 repasos) | ✅ Tabla de casos en `StreakTest` |
+| 9 insignias por hitos reales, con progreso visible | ✅ |
+| Gamificación por eventos de dominio, después del commit e idempotente (un fallo no afecta lecciones ni cobros) | ✅ |
+| PWA instalable: manifiesto, iconos (incluido maskable), service worker que nunca guarda la API en caché, funciona sin conexión | ✅ Chrome no reporta errores de instalabilidad (CDP) con el build real servido por nginx |
+| Accesibilidad: axe-core sin violaciones serias o críticas en 18 rutas (claro y oscuro) y en pantallas con contenido | ✅ |
+| Pulido responsive: ninguna pantalla del alumno ni de administración se desborda en móvil | ✅ |
+| nginx: cabeceras de seguridad en todas las rutas y streaming sin búfer | ✅ Corregido; configuración validada con `nginx -t` y `curl` |
+| Revisión manual con lector de pantalla (NVDA/VoiceOver) y en iOS/Android reales | ⏳ Pendiente (no automatizable aquí) |
+| Misiones diarias y retos (RF-GAM-4, prioridad P) | ⏳ Fuera del MVP |
 
 ## Estado de la Fase 7
 

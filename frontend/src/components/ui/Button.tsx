@@ -8,7 +8,7 @@ const variants: Record<Variant, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-hover',
   secondary: 'bg-surface-2 text-text hover:bg-border border border-border',
   ghost: 'bg-transparent text-text hover:bg-surface-2',
-  danger: 'bg-danger text-white hover:opacity-90',
+  danger: 'bg-danger text-on-danger hover:opacity-90',
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
