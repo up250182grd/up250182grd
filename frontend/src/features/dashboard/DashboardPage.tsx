@@ -1,13 +1,15 @@
 import { Link } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
-import { BookOpen, ChevronRight, ClipboardCheck, MessagesSquare, Wallet, type LucideIcon } from 'lucide-react';
+import { BookOpen, ChevronRight, ClipboardCheck, MessagesSquare, Mic, Wallet, type LucideIcon } from 'lucide-react';
 import { api, unwrap } from '@/api/client';
 import { Alert } from '@/components/ui/Alert';
 import { Badge, ProgressBadge, ProgressBar } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, Skeleton } from '@/components/ui/Card';
 import { errorMessage } from '@/features/auth/schemas';
-import { useMe } from '@/features/auth/useSession';
+import { isAdmin, useMe } from '@/features/auth/useSession';
+import { useWallet } from '@/features/wallet/WalletPage';
+import { formatMXN } from '@/lib/money';
 import { confidenceLabels, skillLabels, useLearningSummary, useSkillLevels } from '@/features/learning/api';
 import { useT } from '@/lib/lang';
 
@@ -20,10 +22,36 @@ function greeting(date = new Date()): string {
 
 /** Lo que aún no existe se presenta como "próximamente", sin datos inventados. */
 const upcoming: { icon: LucideIcon; title: string; text: string; phase: string }[] = [
-  { icon: MessagesSquare, title: 'Profesor IA', text: 'Conversación por texto y, después, por voz en tiempo real.', phase: 'Fases 4–5' },
-  { icon: Wallet, title: 'Billetera', text: 'Saldo en MXN y detalle del consumo de cada sesión.', phase: 'Fase 4' },
+  { icon: Mic, title: 'Conversación por voz', text: 'Habla con el profesor como en una llamada, en tiempo real.', phase: 'Fase 5' },
   { icon: BookOpen, title: 'Repaso espaciado', text: 'Tarjetas de vocabulario y repasos en el momento justo.', phase: 'Fase 6' },
 ];
+
+function TutorAndWalletCard() {
+  const wallet = useWallet();
+  const { data: me } = useMe();
+  return (
+    <Card className="flex flex-col gap-3">
+      <h2 className="flex items-center gap-2 font-semibold">
+        <MessagesSquare aria-hidden className="size-5 text-primary" /> Profesor IA
+      </h2>
+      <p className="text-sm text-muted">Practica conversación por escrito con correcciones al momento.</p>
+      <Link
+        to="/app/tutor"
+        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-on-primary hover:bg-primary-hover"
+      >
+        Hablar con el profesor <ChevronRight aria-hidden className="size-4" />
+      </Link>
+      {!isAdmin(me) && wallet.data && (
+        <Link to="/app/wallet" className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm hover:underline">
+          <span className="inline-flex items-center gap-1">
+            <Wallet aria-hidden className="size-4 text-muted" /> Saldo: <strong className="font-mono">{formatMXN(wallet.data.available)}</strong>
+          </span>
+          <span className="text-muted">Este mes: {formatMXN(wallet.data.spentThisMonth)}</span>
+        </Link>
+      )}
+    </Card>
+  );
+}
 
 function VerifyEmailBanner({ email }: { email: string }) {
   const resend = useMutation({
@@ -153,13 +181,14 @@ export function DashboardPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <NextLessonCard />
         <SkillsCard />
+        <TutorAndWalletCard />
       </div>
 
       <section aria-labelledby="upcoming">
         <h2 id="upcoming" className="mb-3 text-lg font-semibold">
           Próximamente
         </h2>
-        <ul className="grid gap-4 sm:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {upcoming.map(({ icon: Icon, title, text, phase }) => (
             <li key={title}>
               <Card className="flex h-full gap-3">

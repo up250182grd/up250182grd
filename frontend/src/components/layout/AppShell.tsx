@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router';
 import {
+  BarChart3,
   BookOpen,
   GraduationCap,
   Home,
@@ -30,14 +31,15 @@ const studentNav: NavItem[] = [
   { to: '/app', label: 'Inicio', icon: Home },
   { to: '/app/plan', label: 'Mi plan', icon: GraduationCap },
   { to: '/app/practice', label: 'Repaso', icon: BookOpen, phase: 'Fase 6' },
-  { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare, phase: 'Fase 4' },
-  { to: '/app/wallet', label: 'Billetera', icon: Wallet, phase: 'Fase 4' },
+  { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare },
+  { to: '/app/wallet', label: 'Billetera', icon: Wallet },
   { to: '/app/settings', label: 'Ajustes', icon: Settings },
 ];
 
 const adminNav: NavItem[] = [
   { to: '/admin/users', label: 'Usuarios', icon: Users },
   { to: '/admin/content', label: 'Contenido', icon: Library },
+  { to: '/admin/billing', label: 'Finanzas', icon: BarChart3 },
 ];
 
 function SideLink({ item }: { item: NavItem }) {
@@ -86,7 +88,10 @@ export function AppShell() {
     navigate('/login', { replace: true });
   };
 
-  const mobileNav = studentNav.filter((i) => !i.phase);
+  // Barra inferior móvil: máximo 5 destinos (el resto sigue en el menú de escritorio y en enlaces del contenido).
+  const mobileNav = admin
+    ? [studentNav[0]!, studentNav[1]!, studentNav[3]!, adminNav[2]!, adminNav[1]!]
+    : studentNav.filter((i) => !i.phase);
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[260px_1fr]">
@@ -154,7 +159,7 @@ export function AppShell() {
           aria-label="Principal"
           className="fixed inset-x-0 bottom-0 z-10 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
         >
-          {[...mobileNav, ...(admin ? adminNav : [])].slice(0, 5).map((item) => {
+          {mobileNav.slice(0, 5).map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

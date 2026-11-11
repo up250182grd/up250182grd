@@ -40,6 +40,17 @@ export async function register(page: Page, email: string, name = 'Ana E2E') {
   await expect(page.getByRole('heading', { name: 'Revisa tu correo' })).toBeVisible();
 }
 
+/** Registra, confirma el correo (vía Mailpit) e inicia sesión. Las funciones de IA exigen correo verificado. */
+export async function verifiedStudent(page: Page, prefix = 'verificado'): Promise<string> {
+  const email = uniqueEmail(prefix);
+  await register(page, email);
+  const link = new URL(await linkFromEmail(email, '/verify-email'));
+  await page.goto(`/verify-email${link.search}`);
+  await expect(page.getByText('¡Correo confirmado!')).toBeVisible();
+  await login(page, email);
+  return email;
+}
+
 export async function login(page: Page, email: string, password = PASSWORD) {
   await page.goto('/login');
   await page.getByLabel('Correo electrónico').fill(email);

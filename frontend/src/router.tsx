@@ -12,6 +12,9 @@ import { LandingPage } from '@/features/landing/LandingPage';
 import { LessonPage } from '@/features/learning/LessonPage';
 import { PlanPage } from '@/features/learning/PlanPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
+import { ChatPage } from '@/features/tutor/ChatPage';
+import { TutorHomePage } from '@/features/tutor/TutorHomePage';
+import { WalletPage } from '@/features/wallet/WalletPage';
 
 // El código del panel de administración se descarga solo cuando un administrador lo abre.
 const AdminUsersPage = lazy(() =>
@@ -19,6 +22,9 @@ const AdminUsersPage = lazy(() =>
 );
 const AdminContentPage = lazy(() =>
   import('@/features/admin/content/AdminContentPage').then((m) => ({ default: m.AdminContentPage })),
+);
+const AdminBillingPage = lazy(() =>
+  import('@/features/admin/billing/AdminBillingPage').then((m) => ({ default: m.AdminBillingPage })),
 );
 const AdminLessonEditor = lazy(() =>
   import('@/features/admin/content/AdminLessonEditor').then((m) => ({ default: m.AdminLessonEditor })),
@@ -63,6 +69,10 @@ export const router = createBrowserRouter([
       { path: '/app/lessons/:lessonId', element: <LessonPage /> },
       { path: '/app/diagnostic', element: <DiagnosticPage /> },
       { path: '/app/settings', element: <SettingsPage /> },
+      { path: '/app/tutor', element: <TutorHomePage /> },
+      { path: '/app/tutor/:conversationId', element: <ChatPage /> },
+      { path: '/app/wallet', element: <WalletPage /> },
+      { path: '/admin/billing', element: <AdminRoute><AdminBillingPage /></AdminRoute> },
       { path: '/admin/users', element: <AdminRoute><AdminUsersPage /></AdminRoute> },
       { path: '/admin/content', element: <AdminRoute><AdminContentPage /></AdminRoute> },
       { path: '/admin/content/lessons/:lessonId', element: <AdminRoute><AdminLessonEditor /></AdminRoute> },

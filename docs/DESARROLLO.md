@@ -1,6 +1,31 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2 (base) y 3 (sistema educativo) implementadas.** Ver [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2, 3 y 4 implementadas.** Ver [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 4
+
+| Funcionalidad | Estado |
+|---|---|
+| Calculadora normativa de cargos (§5.2), factor ×1.30 alumno / ×1.00 administrador | ✅ Implementado y probado |
+| Libro mayor de doble partida: recargas, reservas, cargos, liberaciones, gasto interno del admin; idempotencia y verificación de invariantes | ✅ |
+| Medición por uso informado por el proveedor (nunca por el navegador); tarifa y factor fijados al iniciar la sesión | ✅ |
+| Tarifas versionadas con URL de fuente y fecha de verificación; política comercial versionada, no retroactiva y auditada | ✅ |
+| Tipo de cambio USD/MXN (captura manual); sin tipo de cambio → liquidación pendiente de conciliación (no se inventa) | ✅ |
+| Billetera: saldo, reservado, gastado del mes, movimientos, límite mensual, alerta de saldo bajo | ✅ |
+| Profesor IA por texto: modos libre/guiado/roleplay, streaming, correcciones estructuradas, memoria de errores recientes, cierre por inactividad | ✅ |
+| Panel de finanzas: resumen del mes, cuentas del negocio, incidencias, "Mi consumo", modelos/tarifas, política, tipo de cambio | ✅ |
+| **Proveedor simulado** (sin red y sin costo real, tarifas ficticias en MXN) | ✅ — es el proveedor activo por defecto |
+| Adaptador OpenAI (Chat Completions en streaming) | ⚠️ **Implementado pero no probado contra la API real** (no hay acceso a la API desde el entorno de desarrollo). Probado con un flujo de ejemplo. 🔍 Verificar con la documentación vigente antes de activarlo. |
+| Recargas con pago real (Mercado Pago), comisiones, IVA (decisión D-1) | ⏳ Fase 7. Hoy solo hay **recargas simuladas** (activas en `dev`/`test`, desactivadas por defecto en producción). |
+| Evaluación de escritura libre con IA | ⏳ Pendiente (usará esta misma medición) |
+| Tipo de cambio automático de Banxico | ⏳ Pendiente (hoy se captura manualmente) |
+
+### Activar el proveedor real (cuando lo decidas)
+
+1. En *Finanzas → Modelos y tarifas*, registra el modelo de OpenAI y captura su tarifa desde la página oficial de precios (URL y fecha).
+2. Si la tarifa está en USD, registra el tipo de cambio USD/MXN del día en *Finanzas → Tipo de cambio*.
+3. Define en el entorno del backend `AI_PROVIDER=openai`, `AI_TEXT_MODEL=<código del modelo>` y `OPENAI_API_KEY` (solo en el servidor; nunca en el frontend ni en el repositorio).
+4. Haz unas conversaciones como administrador (al costo) y compara el consumo con el panel de uso de OpenAI antes de abrirlo a alumnos.
 
 ## Estado de la Fase 3
 
