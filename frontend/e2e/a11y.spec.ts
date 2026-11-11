@@ -6,6 +6,9 @@ import { ADMIN_EMAIL, ADMIN_PASSWORD, login, verifiedStudent } from './support';
  * Auditoría automática de accesibilidad (RNF-8, objetivo WCAG 2.2 AA) con axe-core, en tema claro y oscuro.
  * Falla con violaciones "serious" o "critical". axe no sustituye la revisión manual (lector de pantalla, teclado).
  */
+// Cada prueba audita muchas páginas en dos temas: se da margen para máquinas con carga (CI).
+test.describe.configure({ timeout: 120_000 });
+
 async function audit(page: Page, path: string, ready: () => Promise<unknown>) {
   const problems: string[] = [];
   for (const scheme of ['light', 'dark'] as const) {
@@ -32,6 +35,8 @@ test('páginas públicas sin violaciones serias de accesibilidad', async ({ page
     ...(await audit(page, '/', () => page.getByRole('heading', { level: 1 }).first().waitFor())),
     ...(await audit(page, '/login', () => page.getByRole('button', { name: 'Entrar' }).waitFor())),
     ...(await audit(page, '/register', () => page.getByRole('button', { name: 'Crear cuenta' }).waitFor())),
+    ...(await audit(page, '/legal/privacidad', () => page.getByRole('heading', { level: 1 }).waitFor())),
+    ...(await audit(page, '/legal/comercial', () => page.getByRole('heading', { level: 1 }).waitFor())),
   ];
   expect(problems, problems.join('\n')).toEqual([]);
 });

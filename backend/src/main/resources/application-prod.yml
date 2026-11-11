@@ -1,0 +1,32 @@
+# Perfil de producción. Todo lo sensible llega por variables de entorno (ver .env.prod.example).
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+
+spring:
+  mail:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+app:
+  billing:
+    # Nunca recargas simuladas en producción.
+    simulated-topups-enabled: false
+
+# Registros en JSON (una línea por evento) para el agregador de logs. Sin datos personales ni secretos (RNF-12).
+logging:
+  structured:
+    format:
+      console: ecs
+  level:
+    root: INFO
+    com.englishos: INFO

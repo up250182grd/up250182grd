@@ -9,6 +9,7 @@ import { RegisterPage } from '@/features/auth/RegisterPage';
 import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { LandingPage } from '@/features/landing/LandingPage';
+import { LegalPage } from '@/features/legal/LegalPage';
 import { LessonPage } from '@/features/learning/LessonPage';
 import { PlanPage } from '@/features/learning/PlanPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
@@ -60,6 +61,7 @@ function NotFoundPage() {
 
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
+  { path: '/legal/:doc', element: <LegalPage /> },
   { path: '/login', element: <RedirectIfAuthenticated><LoginPage /></RedirectIfAuthenticated> },
   { path: '/register', element: <RedirectIfAuthenticated><RegisterPage /></RedirectIfAuthenticated> },
   { path: '/verify-email', element: <VerifyEmailPage /> },

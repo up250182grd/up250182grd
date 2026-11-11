@@ -15,6 +15,9 @@ app:
     simulated-topups-enabled: true
   scheduling:
     enabled: false
+  # Las pruebas registran decenas de usuarios desde 127.0.0.1; RateLimitIT lo activa con límites bajos.
+  rate-limit:
+    enabled: false
   ai:
     fake-voice:
       tick: PT0.3S

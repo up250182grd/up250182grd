@@ -131,6 +131,22 @@ public class User {
         updatedAt = now;
     }
 
+    /**
+     * Cierre de cuenta: se quitan los datos que identifican a la persona y el acceso. La fila se conserva (anónima)
+     * porque los movimientos contables y los cobros, que la ley obliga a guardar, apuntan a ella.
+     */
+    public void anonymize(String unusablePasswordHash, Instant now) {
+        email = "eliminado-" + publicId.toLowerCase(java.util.Locale.ROOT) + "@cuenta-eliminada.invalid";
+        emailVerifiedAt = null;
+        passwordHash = unusablePasswordHash;
+        status = UserStatus.DELETED;
+        failedLoginCount = 0;
+        lockedUntil = null;
+        lastLoginAt = null;
+        roles.clear();
+        updatedAt = now;
+    }
+
     public void reactivate(Instant now) {
         status = UserStatus.ACTIVE;
         updatedAt = now;

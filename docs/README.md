@@ -2,7 +2,9 @@
 
 Plataforma de aprendizaje de inglés con profesor virtual de IA, conversación de voz en tiempo real, billetera en MXN y facturación por consumo real.
 
-> **Estado:** Fase 1 (diseño) completa · **Fase 2 (base del proyecto) implementada y probada.**
+> **Estado:** Fases 1 a 9 completas: el MVP está implementado y probado con proveedores simulados.
+> Qué falta para darlo por terminado con proveedores reales: [criterios-de-exito.md](criterios-de-exito.md).
+> Operación: [despliegue](operacion/despliegue.md) · [respaldos](operacion/respaldos.md) · [incidentes](operacion/incidentes.md) · Seguridad: [ASVS](seguridad/asvs-l2.md).
 > Instalación, ejecución, pruebas y estado detallado: [DESARROLLO.md](DESARROLLO.md).
 > Lo que no figure como implementado en DESARROLLO.md es diseño, no funcionalidad existente.
 

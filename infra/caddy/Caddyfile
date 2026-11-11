@@ -1,0 +1,38 @@
+# Proxy inverso de producción: HTTPS automático (Let's Encrypt) y cabeceras de transporte.
+# DOMAIN, ACME_EMAIL y TLS_MODE llegan del entorno (.env de producción).
+{
+	email {$ACME_EMAIL}
+}
+
+# TLS_MODE=acme (producción): certificado público automático de Let's Encrypt.
+(tls-acme) {
+	tls {$ACME_EMAIL}
+}
+
+# TLS_MODE=internal: certificado de la CA interna de Caddy, solo para pruebas locales sin dominio.
+(tls-internal) {
+	tls internal
+}
+
+{$DOMAIN} {
+	import tls-{$TLS_MODE:acme}
+
+	encode zstd gzip
+
+	header {
+		# Solo HTTPS durante un año, incluidos subdominios.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# No revelar el software del servidor.
+		-Server
+	}
+
+	# Las respuestas en streaming (SSE) del tutor y de la voz pasan sin búfer.
+	reverse_proxy frontend:8080 {
+		flush_interval -1
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

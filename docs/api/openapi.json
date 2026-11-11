@@ -563,6 +563,34 @@
         }
       }
     },
+    "/api/v1/me/account/delete" : {
+      "post" : {
+        "tags" : [ "account-data-controller" ],
+        "operationId" : "delete",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteAccountRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DeletionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/lessons/{publicId}/runs" : {
       "post" : {
         "tags" : [ "learning-controller" ],
@@ -1859,6 +1887,25 @@
         }
       }
     },
+    "/api/v1/me/data-export" : {
+      "get" : {
+        "tags" : [ "account-data-controller" ],
+        "operationId" : "export",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/achievements" : {
       "get" : {
         "tags" : [ "gamification-controller" ],
@@ -3098,6 +3145,36 @@
           }
         },
         "required" : [ "amount", "idempotencyKey" ]
+      },
+      "DeleteAccountRequest" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          },
+          "confirmation" : {
+            "type" : "string",
+            "maxLength" : 20,
+            "minLength" : 0
+          },
+          "acceptBalanceLoss" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "confirmation", "password" ]
+      },
+      "DeletionResult" : {
+        "type" : "object",
+        "properties" : {
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "forfeitedBalanceMxn" : {
+            "type" : "number"
+          }
+        }
       },
       "RunStarted" : {
         "type" : "object",

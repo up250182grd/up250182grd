@@ -80,6 +80,12 @@ public class UserProfile {
         this.updatedAt = now;
     }
 
+    public void anonymize(Instant now) {
+        displayName = "Cuenta eliminada";
+        storeTranscripts = false;
+        updatedAt = now;
+    }
+
     public void completeOnboarding(Instant now) {
         if (!onboardingCompleted) {
             onboardingCompleted = true;

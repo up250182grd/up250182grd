@@ -1,0 +1,98 @@
+# EnglishOS — despliegue de producción en un servidor (ver docs/operacion/despliegue.md).
+#
+#   cp .env.prod.example .env      # y completa los valores (NUNCA lo subas al repositorio)
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Internet → Caddy (443, HTTPS automático) → nginx (app web y /api) → backend → MySQL.
+# Solo Caddy publica puertos; MySQL y el backend quedan en la red interna de Docker.
+name: englishos-prod
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?Define DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?Define ACME_EMAIL}
+      TLS_MODE: ${TLS_MODE:-acme}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../infra/docker/frontend.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../infra/docker/backend.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      APP_BASE_URL: https://${DOMAIN}
+      DB_URL: jdbc:mysql://mysql:3306/englishos
+      DB_USER: ${DB_USER:-englishos}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
+      MAIL_HOST: ${MAIL_HOST:?Define MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:?Define MAIL_FROM}
+      ADMIN_BOOTSTRAP_EMAIL: ${ADMIN_BOOTSTRAP_EMAIL:-}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+      ADMIN_MONTHLY_CAP_MXN: ${ADMIN_MONTHLY_CAP_MXN:-1000.00}
+      AI_PROVIDER: ${AI_PROVIDER:-fake}
+      AI_TEXT_MODEL: ${AI_TEXT_MODEL:-fake-tutor-1}
+      AI_VOICE_PROVIDER: ${AI_VOICE_PROVIDER:-fake}
+      AI_REALTIME_MODEL: ${AI_REALTIME_MODEL:-fake-voice-1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      PAYMENTS_PROVIDER: ${PAYMENTS_PROVIDER:-none}
+      PAYMENTS_NOTIFICATION_URL: https://${DOMAIN}/api/v1/webhooks/mercadopago
+      MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN:-}
+      MP_WEBHOOK_SECRET: ${MP_WEBHOOK_SECRET:-}
+      MP_TEST_MODE: ${MP_TEST_MODE:-true}
+      LEGAL_TERMS_VERSION: ${LEGAL_TERMS_VERSION:-2026-11-draft}
+      LEGAL_PRIVACY_VERSION: ${LEGAL_PRIVACY_VERSION:-2026-11-draft}
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /actuator/health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: englishos
+      MYSQL_USER: ${DB_USER:-englishos}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  mysql-data:
+  caddy-data:
+  caddy-config:

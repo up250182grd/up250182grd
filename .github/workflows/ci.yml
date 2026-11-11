@@ -39,6 +39,8 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      # Dependencias que llegan al navegador: ninguna vulnerabilidad alta o crítica (RNF-4).
+      - run: npm audit --omit=dev --audit-level=high
       # Si el contrato del backend cambió y no se regeneró el cliente, este paso falla.
       - run: npm run gen:api && git diff --exit-code src/api/schema.d.ts
       - run: npm run typecheck

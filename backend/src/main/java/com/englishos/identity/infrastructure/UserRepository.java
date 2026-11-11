@@ -24,6 +24,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsActiveWithRole(@Param("role") RoleCode role);
 
     @Query("""
+            select count(u) > 0 from User u join u.roles r
+            where r.code = com.englishos.identity.domain.RoleCode.ADMIN and u.status = 'ACTIVE' and u.id <> :id""")
+    boolean existsOtherActiveAdmin(@Param("id") Long id);
+
+    @Query("""
             select u from User u
             where (:status is null or u.status = :status)
               and (:q is null or u.email like concat('%', :q, '%'))

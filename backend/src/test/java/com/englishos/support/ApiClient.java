@@ -87,6 +87,30 @@ public class ApiClient {
         return events;
     }
 
+    /** Petición genérica con la respuesta completa (cabeceras incluidas), para las pruebas de seguridad. */
+    public HttpResponse<String> exchange(String method, String path, String jsonBody) {
+        if (!"GET".equals(method)) {
+            ensureCsrfCookie();
+        }
+        HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(baseUrl + path));
+        if (sendCsrfHeader) {
+            cookie("XSRF-TOKEN").ifPresent(token -> b.header("X-XSRF-TOKEN", token));
+        }
+        if (jsonBody != null) {
+            b.header("Content-Type", "application/json");
+        }
+        b.method(method, jsonBody == null ? HttpRequest.BodyPublishers.noBody()
+                : HttpRequest.BodyPublishers.ofString(jsonBody));
+        try {
+            return http.send(b.build(), HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
+    }
+
     public Response login(String email, String password) {
         return post("/api/v1/auth/login", Map.of("email", email, "password", password));
     }

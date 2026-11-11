@@ -78,7 +78,8 @@ export function RegisterPage() {
           <label className="flex items-start gap-2">
             <input type="checkbox" className="mt-1 size-4 accent-[var(--color-primary)]" {...register('acceptTerms')} />
             <span>
-              Acepto los <span className="font-medium">términos de uso</span> (borrador sujeto a revisión legal).
+              Acepto los <a href="/legal/terminos" className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener">términos de uso</a> y la 
+              <a href="/legal/comercial" className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener">política comercial</a> (borradores sujetos a revisión legal).
             </span>
           </label>
           {formState.errors.acceptTerms && (
@@ -87,7 +88,7 @@ export function RegisterPage() {
           <label className="flex items-start gap-2">
             <input type="checkbox" className="mt-1 size-4 accent-[var(--color-primary)]" {...register('acceptPrivacy')} />
             <span>
-              He leído el <span className="font-medium">aviso de privacidad</span>.
+              He leído el <a href="/legal/privacidad" className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener">aviso de privacidad</a>.
             </span>
           </label>
           {formState.errors.acceptPrivacy && (

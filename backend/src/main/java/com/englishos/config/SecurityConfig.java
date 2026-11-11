@@ -55,7 +55,12 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http, CsrfTokenRepository csrfTokenRepository,
             SecurityContextRepository securityContextRepository, JsonMapper jsonMapper,
-            @Value("${springdoc.api-docs.enabled:false}") boolean openApiEnabled) throws Exception {
+            @Value("${springdoc.api-docs.enabled:false}") boolean openApiEnabled, RateLimitProperties rateLimits,
+            java.time.Clock clock) throws Exception {
+        // Después de cargar la sesión (para limitar por usuario) y antes de CSRF y autorización (cuenta también los
+        // intentos rechazados, p. ej. fuerza bruta de inicio de sesión).
+        http.addFilterAfter(new RateLimitFilter(rateLimits, jsonMapper, clock),
+                org.springframework.security.web.context.SecurityContextHolderFilter.class);
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(csrfTokenRepository)

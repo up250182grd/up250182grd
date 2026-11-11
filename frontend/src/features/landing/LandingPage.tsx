@@ -61,6 +61,11 @@ export function LandingPage() {
       </main>
       <footer className="border-t border-border py-6 text-center text-xs text-muted">
         EnglishOS · Proyecto en desarrollo. Los niveles mostrados son estimaciones, no certificaciones oficiales del MCER.
+        <nav aria-label="Documentos legales" className="mt-2 flex justify-center gap-4">
+          <a href="/legal/privacidad" className="hover:underline">Aviso de privacidad</a>
+          <a href="/legal/terminos" className="hover:underline">Términos de uso</a>
+          <a href="/legal/comercial" className="hover:underline">Política comercial</a>
+        </nav>
       </footer>
     </div>
   );

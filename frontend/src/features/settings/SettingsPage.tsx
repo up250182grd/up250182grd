@@ -1,3 +1,4 @@
+import { PrivacyCard } from './PrivacyCard';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -90,6 +91,7 @@ export function SettingsPage() {
         <p className="mb-4 text-sm text-muted">{me.email}</p>
         <ProfileForm me={me} />
       </Card>
+      <PrivacyCard />
     </div>
   );
 }

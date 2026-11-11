@@ -16,6 +16,13 @@ app:
   cors-allowed-origins: http://localhost:5173
   billing:
     simulated-topups-enabled: true
+  # En local las pruebas E2E registran muchos usuarios desde la misma IP.
+  rate-limit:
+    rules:
+      login: { method: POST, path: /api/v1/auth/login, limit: 300, window: 1m, by: IP }
+      register: { method: POST, path: /api/v1/auth/register, limit: 300, window: 10m, by: IP }
+      resend-verification: { method: POST, path: /api/v1/auth/resend-verification, limit: 300, window: 10m, by: IP }
+      password-reset: { method: POST, path: "/api/v1/auth/password-reset/**", limit: 300, window: 10m, by: IP }
 
 logging:
   level:

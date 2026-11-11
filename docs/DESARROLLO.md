@@ -1,6 +1,24 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2 a 8 implementadas.** Ver [Fase 8](#estado-de-la-fase-8), [Fase 7](#estado-de-la-fase-7), [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2 a 9 implementadas.** Ver [Fase 9](#estado-de-la-fase-9), [Fase 8](#estado-de-la-fase-8), [Fase 7](#estado-de-la-fase-7), [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 9
+
+| Funcionalidad | Estado |
+|---|---|
+| Límites de peticiones (RNF-16): inicio de sesión, registro, recuperación, IA, recargas, webhook; 429 con `Retry-After` | ✅ `RateLimitIT`; además verificado en la cadena real con `X-Forwarded-For` falsificado |
+| IP real solo desde proxies de confianza (`forward-headers-strategy: native`) | ✅ |
+| Barrido de seguridad sobre **todas** las rutas del contrato: sesión, rol de administrador, CSRF, campos de consumo prohibidos, cabeceras, errores sin detalles, actuator cerrado, asignación masiva, inyección, montos manipulados | ✅ `SecuritySweepIT` (9 pruebas) |
+| Derechos del titular: descargar mis datos (JSON) y eliminar mi cuenta (borra el contenido, conserva la contabilidad anonimizada y revoca sesiones) | ✅ `PrivacyIT`, E2E `privacy.spec` |
+| Retención de transcripciones: 180 días, borrado diario automático (RNF-11) | ✅ `PrivacyIT` |
+| Documentos legales visibles antes de aceptarlos (`/legal/privacidad`, `/legal/terminos`, `/legal/comercial`) | ✅ **Borradores sujetos a revisión legal** |
+| Respaldos: script diario cifrable, restauración y **prueba de restauración verificada** | ✅ [operacion/respaldos.md](operacion/respaldos.md) |
+| Despliegue de producción: Caddy (HTTPS automático) + nginx + backend `prod` + MySQL interno | ✅ Configuración validada y cadena probada en local · ⚠️ construcción de imágenes no verificada aquí (proxy de red) |
+| Registros JSON en producción sin datos personales; salud sin depender del SMTP | ✅ |
+| Dependabot (Maven, npm, Actions, Docker) y `npm audit` de producción en CI | ✅ |
+| Manuales: [despliegue](operacion/despliegue.md), [respaldos](operacion/respaldos.md), [incidentes](operacion/incidentes.md) | ✅ |
+| Revisión OWASP ASVS nivel 2 | ✅ [seguridad/asvs-l2.md](seguridad/asvs-l2.md) (por capítulos; pendientes: MFA de administradores y una prueba de penetración externa) |
+| Los 20 criterios de éxito | 17 ✅ · 2 🟡 · 1 ⏳ — ver [criterios-de-exito.md](criterios-de-exito.md) |
 
 ## Estado de la Fase 8
 
@@ -215,10 +233,10 @@ La CI falla si el contrato cambió y no se regeneró el cliente.
 | Suspensión/reactivación y cambio de roles con auditoría y revocación de sesiones (RF-IDN-8, RF-ADM-1 parcial) | ✅ |
 | Administrador inicial desde variables de entorno | ✅ |
 | UI: landing, acceso, dashboard, ajustes, usuarios (admin), claro/oscuro, responsive | ✅ |
-| Exportar/eliminar mis datos (RF-IDN-7) | ⏳ Pendiente (Fase 9, cuando existan datos de aprendizaje) |
-| Rate limiting por IP (RNF-16) | ⏳ Pendiente (Fase 9); hoy solo hay bloqueo por cuenta |
-| PWA (manifest + service worker) | ⏳ Pendiente (Fase 8) |
-| Auditoría de accesibilidad automatizada (axe) | ⏳ Pendiente (Fase 8) |
+| Exportar/eliminar mis datos (RF-IDN-7) | ✅ Fase 9 |
+| Rate limiting por IP (RNF-16) | ✅ Fase 9 |
+| PWA (manifest + service worker) | ✅ Fase 8 |
+| Auditoría de accesibilidad automatizada (axe) | ✅ Fase 8 |
 
 ### Pendientes conocidos
 
