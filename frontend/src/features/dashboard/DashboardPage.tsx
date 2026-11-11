@@ -22,7 +22,6 @@ function greeting(date = new Date()): string {
 
 /** Lo que aún no existe se presenta como "próximamente", sin datos inventados. */
 const upcoming: { icon: LucideIcon; title: string; text: string; phase: string }[] = [
-  { icon: Mic, title: 'Conversación por voz', text: 'Habla con el profesor como en una llamada, en tiempo real.', phase: 'Fase 5' },
   { icon: BookOpen, title: 'Repaso espaciado', text: 'Tarjetas de vocabulario y repasos en el momento justo.', phase: 'Fase 6' },
 ];
 
@@ -34,12 +33,15 @@ function TutorAndWalletCard() {
       <h2 className="flex items-center gap-2 font-semibold">
         <MessagesSquare aria-hidden className="size-5 text-primary" /> Profesor IA
       </h2>
-      <p className="text-sm text-muted">Practica conversación por escrito con correcciones al momento.</p>
+      <p className="text-sm text-muted">Practica por escrito con correcciones al momento, o habla con él en una llamada de voz.</p>
       <Link
         to="/app/tutor"
         className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-on-primary hover:bg-primary-hover"
       >
         Hablar con el profesor <ChevronRight aria-hidden className="size-4" />
+      </Link>
+      <Link to="/app/voice" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary hover:underline">
+        <Mic aria-hidden className="size-4" /> Conversación por voz
       </Link>
       {!isAdmin(me) && wallet.data && (
         <Link to="/app/wallet" className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm hover:underline">

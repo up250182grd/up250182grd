@@ -7,6 +7,7 @@ import {
   Library,
   LogOut,
   MessagesSquare,
+  Mic,
   Settings,
   Shield,
   Users,
@@ -32,6 +33,7 @@ const studentNav: NavItem[] = [
   { to: '/app/plan', label: 'Mi plan', icon: GraduationCap },
   { to: '/app/practice', label: 'Repaso', icon: BookOpen, phase: 'Fase 6' },
   { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare },
+  { to: '/app/voice', label: 'Voz', icon: Mic },
   { to: '/app/wallet', label: 'Billetera', icon: Wallet },
   { to: '/app/settings', label: 'Ajustes', icon: Settings },
 ];

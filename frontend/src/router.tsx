@@ -15,6 +15,8 @@ import { SettingsPage } from '@/features/settings/SettingsPage';
 import { ChatPage } from '@/features/tutor/ChatPage';
 import { TutorHomePage } from '@/features/tutor/TutorHomePage';
 import { WalletPage } from '@/features/wallet/WalletPage';
+import { VoicePage } from '@/features/voice/VoicePage';
+import { VoiceSessionPage } from '@/features/voice/VoiceSessionPage';
 
 // El código del panel de administración se descarga solo cuando un administrador lo abre.
 const AdminUsersPage = lazy(() =>
@@ -71,6 +73,8 @@ export const router = createBrowserRouter([
       { path: '/app/settings', element: <SettingsPage /> },
       { path: '/app/tutor', element: <TutorHomePage /> },
       { path: '/app/tutor/:conversationId', element: <ChatPage /> },
+      { path: '/app/voice', element: <VoicePage /> },
+      { path: '/app/voice/:sessionId', element: <VoiceSessionPage /> },
       { path: '/app/wallet', element: <WalletPage /> },
       { path: '/admin/billing', element: <AdminRoute><AdminBillingPage /></AdminRoute> },
       { path: '/admin/users', element: <AdminRoute><AdminUsersPage /></AdminRoute> },

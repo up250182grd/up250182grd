@@ -98,7 +98,11 @@ public class ApiClient {
                 .findFirst();
     }
 
-    private void ensureCsrfCookie() {
+    /**
+     * Sincronizado: tras el login Spring rota el token CSRF; si varios hilos lo pidieran a la vez, cada uno recibiría
+     * uno distinto y la cabecera podría no coincidir con la cookie guardada (403 intermitente en pruebas concurrentes).
+     */
+    private synchronized void ensureCsrfCookie() {
         if (cookie("XSRF-TOKEN").isEmpty()) {
             get("/api/v1/auth/csrf");
         }

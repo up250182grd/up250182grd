@@ -15,4 +15,7 @@ public interface LearnerProfiles {
 
     /** Idioma preferido para las explicaciones ("es" | "en"). */
     String explanationLanguage(Long userId);
+
+    /** Si el alumno permite guardar transcripciones de sus conversaciones (RN-37). */
+    boolean storeTranscripts(Long userId);
 }

@@ -54,6 +54,12 @@ class LearnerProfilesService implements LearnerProfiles {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean storeTranscripts(Long userId) {
+        return profiles.findById(userId).map(UserProfile::isStoreTranscripts).orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public String explanationLanguage(Long userId) {
         return profiles.findById(userId).map(UserProfile::getExplanationLanguage).orElse("es");
     }

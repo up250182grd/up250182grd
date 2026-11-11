@@ -1,6 +1,29 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2, 3 y 4 implementadas.** Ver [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2 a 5 implementadas.** Ver [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 5
+
+| Funcionalidad | Estado |
+|---|---|
+| Cotización previa: costo estimado por minuto (marcado como estimación), minutos que alcanza el saldo/límite, motivo si no se puede llamar | ✅ Implementado y probado |
+| Inicio de llamada: correo verificado, **una llamada activa por usuario**, reserva mínima de 2 minutos (alumno), tope mensual (admin) | ✅ |
+| Medición en el servidor por el canal lateral (`response.done` → uso); tarifa y factor fijados al iniciar; liquidación única ×1.30 / ×1.00 | ✅ |
+| Cortes automáticos: al 90 % de la reserva sin saldo/límite para ampliarla (`RESERVE_LIMIT`), duración máxima (aviso 60 s antes), cliente sin latido (`CLIENT_LOST`), cierre del proveedor | ✅ |
+| Recuperación al reiniciar el servidor: las llamadas abiertas se cuelgan y se liquidan con lo registrado | ✅ (sin prueba automatizada) |
+| Transcripción en vivo (SSE) y guardada solo si el alumno lo permite; **el audio nunca se guarda** | ✅ |
+| Interfaz: cotización, modos, contador, consumo medido, nivel de micrófono, silenciar, colgar, transcripción, resumen con desglose, historial | ✅ |
+| **Llamada simulada** (sin audio, diálogo y consumo ficticios) — proveedor por defecto, etiquetada "Llamada simulada (sin audio)" | ✅ |
+| Adaptador OpenAI Realtime (WebRTC: SDP del navegador → servidor → `/v1/realtime/calls`; canal lateral por WebSocket con `call_id`; colgar) | ⚠️ **Implementado pero no probado contra la API real.** El `call_id` se lee del encabezado `Location` y el modelo de transcripción está fijo (`gpt-4o-mini-transcribe`): 🔍 verificar ambos con la documentación vigente. |
+| Ruta WebRTC del navegador (micrófono, oferta SDP, audio remoto, permisos, iOS) | ⚠️ Implementada; **solo se probó el modo simulado** (no hay proveedor real en el entorno de pruebas). |
+| Grabación/almacenamiento de audio | ❌ Deliberadamente no se hace |
+
+### Activar la voz real (cuando lo decidas)
+
+1. Registra el modelo realtime en *Finanzas → Modelos y tarifas* (modalidad `REALTIME`) con sus tarifas por millón de tokens de texto y audio (entrada, entrada en caché, salida) **copiadas de la página oficial de precios**, con URL y fecha.
+2. En el backend: `AI_VOICE_PROVIDER=openai`, `AI_REALTIME_MODEL=<código del modelo>`, opcional `AI_REALTIME_VOICE`, y `OPENAI_API_KEY` (solo en el servidor).
+3. Haz llamadas cortas como administrador y compara el consumo registrado con el panel de uso del proveedor antes de abrirlo a alumnos.
+4. El sitio debe servirse por HTTPS (el navegador solo permite el micrófono en contextos seguros).
 
 ## Estado de la Fase 4
 

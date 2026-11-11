@@ -68,7 +68,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tutor/conversations": {
+    "/api/v1/voice/sessions": {
         parameters: {
             query?: never;
             header?: never;
@@ -78,6 +78,54 @@ export interface paths {
         get: operations["list"];
         put?: never;
         post: operations["start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/voice/sessions/{id}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["heartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/voice/sessions/{id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["end"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tutor/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_1"];
+        put?: never;
+        post: operations["start_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -285,7 +333,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["start_1"];
+        post: operations["start_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -532,7 +580,7 @@ export interface paths {
         patch: operations["updateProfile"];
         trace?: never;
     };
-    "/api/v1/tutor/conversations/{id}": {
+    "/api/v1/voice/sessions/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -540,6 +588,54 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/voice/sessions/{id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/voice/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["quote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tutor/conversations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -880,6 +976,74 @@ export interface components {
             /** @enum {string} */
             mode: "FREE" | "GUIDED" | "ROLEPLAY";
             topic?: string;
+            sdpOffer?: string;
+        };
+        VoiceModelInfo: {
+            provider?: string;
+            modelCode?: string;
+            displayName?: string;
+            simulated?: boolean;
+        };
+        VoiceStartResult: {
+            sessionId?: string;
+            simulated?: boolean;
+            sdpAnswer?: string;
+            /** Format: int32 */
+            maxDurationSeconds?: number;
+            reservedMxn?: number;
+            model?: components["schemas"]["VoiceModelInfo"];
+        };
+        CostEstimate: {
+            available?: boolean;
+            providerCost?: number;
+            currency?: string;
+            totalMxn?: number;
+        };
+        SettlementView: {
+            id?: string;
+            status?: string;
+            providerCost?: number;
+            providerCurrency?: string;
+            fxRate?: number;
+            fxSource?: string;
+            directCostMxn?: number;
+            factorApplied?: number;
+            markupMxn?: number;
+            taxMxn?: number;
+            totalMxn?: number;
+            internal?: boolean;
+            note?: string;
+        };
+        VoiceSessionView: {
+            id?: string;
+            mode?: string;
+            topic?: string;
+            status?: string;
+            endReason?: string;
+            model?: components["schemas"]["VoiceModelInfo"];
+            /** Format: int32 */
+            maxDurationSeconds?: number;
+            /** Format: int64 */
+            connectedSeconds?: number;
+            reservedMxn?: number;
+            measured?: components["schemas"]["CostEstimate"];
+            transcriptStored?: boolean;
+            transcript?: components["schemas"]["VoiceTranscriptLine"][];
+            /** Format: int32 */
+            studentTurns?: number;
+            settlement?: components["schemas"]["SettlementView"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            connectedAt?: string;
+            /** Format: date-time */
+            endedAt?: string;
+        };
+        VoiceTranscriptLine: {
+            role?: string;
+            content?: string;
+            /** Format: date-time */
+            at?: string;
         };
         ConversationView: {
             id?: string;
@@ -912,12 +1076,6 @@ export interface components {
             explanationEn?: string;
             category?: string;
         };
-        CostEstimate: {
-            available?: boolean;
-            providerCost?: number;
-            currency?: string;
-            totalMxn?: number;
-        };
         MessageView: {
             role?: string;
             content?: string;
@@ -929,21 +1087,6 @@ export interface components {
             modelCode?: string;
             displayName?: string;
             simulated?: boolean;
-        };
-        SettlementView: {
-            id?: string;
-            status?: string;
-            providerCost?: number;
-            providerCurrency?: string;
-            fxRate?: number;
-            fxSource?: string;
-            directCostMxn?: number;
-            factorApplied?: number;
-            markupMxn?: number;
-            taxMxn?: number;
-            totalMxn?: number;
-            internal?: boolean;
-            note?: string;
         };
         MessageRequest: {
             text: string;
@@ -1156,6 +1299,28 @@ export interface components {
             /** Format: int32 */
             dailyGoalMinutes?: number;
             storeTranscripts?: boolean;
+        };
+        VoiceSessionSummary: {
+            id?: string;
+            mode?: string;
+            topic?: string;
+            status?: string;
+            /** Format: int64 */
+            connectedSeconds?: number;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        VoiceQuote: {
+            model?: components["schemas"]["VoiceModelInfo"];
+            estimatedPerMinuteMxn?: number;
+            /** Format: int32 */
+            maxMinutes?: number;
+            availableMxn?: number;
+            spentThisMonthMxn?: number;
+            monthlyLimitMxn?: number;
+            canStart?: boolean;
+            reason?: string;
+            admin?: boolean;
         };
         ConversationSummary: {
             id?: string;
@@ -1534,12 +1699,98 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ConversationSummary"][];
+                    "*/*": components["schemas"]["VoiceSessionSummary"][];
                 };
             };
         };
     };
     start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VoiceStartResult"];
+                };
+            };
+        };
+    };
+    heartbeat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    end: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VoiceSessionView"];
+                };
+            };
+        };
+    };
+    list_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationSummary"][];
+                };
+            };
+        };
+    };
+    start_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1845,7 +2096,7 @@ export interface operations {
             };
         };
     };
-    start_1: {
+    start_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2290,6 +2541,70 @@ export interface operations {
         };
     };
     get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VoiceSessionView"];
+                };
+            };
+        };
+    };
+    events: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": components["schemas"]["SseEmitter"];
+                };
+            };
+        };
+    };
+    quote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VoiceQuote"];
+                };
+            };
+        };
+    };
+    get_1: {
         parameters: {
             query?: never;
             header?: never;

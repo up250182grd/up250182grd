@@ -166,10 +166,102 @@
         }
       }
     },
+    "/api/v1/voice/sessions" : {
+      "get" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "list",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/VoiceSessionSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "start",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VoiceStartResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/voice/sessions/{id}/heartbeat" : {
+      "post" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "heartbeat",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/voice/sessions/{id}/end" : {
+      "post" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "end",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VoiceSessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/tutor/conversations" : {
       "get" : {
         "tags" : [ "tutor-controller" ],
-        "operationId" : "list",
+        "operationId" : "list_1",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -188,7 +280,7 @@
       },
       "post" : {
         "tags" : [ "tutor-controller" ],
-        "operationId" : "start",
+        "operationId" : "start_1",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -544,7 +636,7 @@
     "/api/v1/assessments" : {
       "post" : {
         "tags" : [ "assessment-controller" ],
-        "operationId" : "start_1",
+        "operationId" : "start_2",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -1078,10 +1170,80 @@
         }
       }
     },
+    "/api/v1/voice/sessions/{id}" : {
+      "get" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "get",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VoiceSessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/voice/sessions/{id}/events" : {
+      "get" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "events",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SseEmitter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/voice/quote" : {
+      "get" : {
+        "tags" : [ "voice-controller" ],
+        "operationId" : "quote",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VoiceQuote"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/tutor/conversations/{id}" : {
       "get" : {
         "tags" : [ "tutor-controller" ],
-        "operationId" : "get",
+        "operationId" : "get_1",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1775,9 +1937,196 @@
             "type" : "string",
             "maxLength" : 200,
             "minLength" : 0
+          },
+          "sdpOffer" : {
+            "type" : "string",
+            "maxLength" : 20000,
+            "minLength" : 0
           }
         },
         "required" : [ "mode" ]
+      },
+      "VoiceModelInfo" : {
+        "type" : "object",
+        "properties" : {
+          "provider" : {
+            "type" : "string"
+          },
+          "modelCode" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "simulated" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "VoiceStartResult" : {
+        "type" : "object",
+        "properties" : {
+          "sessionId" : {
+            "type" : "string"
+          },
+          "simulated" : {
+            "type" : "boolean"
+          },
+          "sdpAnswer" : {
+            "type" : "string"
+          },
+          "maxDurationSeconds" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "reservedMxn" : {
+            "type" : "number"
+          },
+          "model" : {
+            "$ref" : "#/components/schemas/VoiceModelInfo"
+          }
+        }
+      },
+      "CostEstimate" : {
+        "type" : "object",
+        "properties" : {
+          "available" : {
+            "type" : "boolean"
+          },
+          "providerCost" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "totalMxn" : {
+            "type" : "number"
+          }
+        }
+      },
+      "SettlementView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "providerCost" : {
+            "type" : "number"
+          },
+          "providerCurrency" : {
+            "type" : "string"
+          },
+          "fxRate" : {
+            "type" : "number"
+          },
+          "fxSource" : {
+            "type" : "string"
+          },
+          "directCostMxn" : {
+            "type" : "number"
+          },
+          "factorApplied" : {
+            "type" : "number"
+          },
+          "markupMxn" : {
+            "type" : "number"
+          },
+          "taxMxn" : {
+            "type" : "number"
+          },
+          "totalMxn" : {
+            "type" : "number"
+          },
+          "internal" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          }
+        }
+      },
+      "VoiceSessionView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "mode" : {
+            "type" : "string"
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "endReason" : {
+            "type" : "string"
+          },
+          "model" : {
+            "$ref" : "#/components/schemas/VoiceModelInfo"
+          },
+          "maxDurationSeconds" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "connectedSeconds" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "reservedMxn" : {
+            "type" : "number"
+          },
+          "measured" : {
+            "$ref" : "#/components/schemas/CostEstimate"
+          },
+          "transcriptStored" : {
+            "type" : "boolean"
+          },
+          "transcript" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/VoiceTranscriptLine"
+            }
+          },
+          "studentTurns" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "settlement" : {
+            "$ref" : "#/components/schemas/SettlementView"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "connectedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "endedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "VoiceTranscriptLine" : {
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string"
+          },
+          "content" : {
+            "type" : "string"
+          },
+          "at" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
       },
       "ConversationView" : {
         "type" : "object",
@@ -1866,23 +2215,6 @@
           }
         }
       },
-      "CostEstimate" : {
-        "type" : "object",
-        "properties" : {
-          "available" : {
-            "type" : "boolean"
-          },
-          "providerCost" : {
-            "type" : "number"
-          },
-          "currency" : {
-            "type" : "string"
-          },
-          "totalMxn" : {
-            "type" : "number"
-          }
-        }
-      },
       "MessageView" : {
         "type" : "object",
         "properties" : {
@@ -1912,50 +2244,6 @@
           },
           "simulated" : {
             "type" : "boolean"
-          }
-        }
-      },
-      "SettlementView" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "status" : {
-            "type" : "string"
-          },
-          "providerCost" : {
-            "type" : "number"
-          },
-          "providerCurrency" : {
-            "type" : "string"
-          },
-          "fxRate" : {
-            "type" : "number"
-          },
-          "fxSource" : {
-            "type" : "string"
-          },
-          "directCostMxn" : {
-            "type" : "number"
-          },
-          "factorApplied" : {
-            "type" : "number"
-          },
-          "markupMxn" : {
-            "type" : "number"
-          },
-          "taxMxn" : {
-            "type" : "number"
-          },
-          "totalMxn" : {
-            "type" : "number"
-          },
-          "internal" : {
-            "type" : "boolean"
-          },
-          "note" : {
-            "type" : "string"
           }
         }
       },
@@ -2573,6 +2861,64 @@
             "minimum" : 5
           },
           "storeTranscripts" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "VoiceSessionSummary" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "mode" : {
+            "type" : "string"
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "connectedSeconds" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "VoiceQuote" : {
+        "type" : "object",
+        "properties" : {
+          "model" : {
+            "$ref" : "#/components/schemas/VoiceModelInfo"
+          },
+          "estimatedPerMinuteMxn" : {
+            "type" : "number"
+          },
+          "maxMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "availableMxn" : {
+            "type" : "number"
+          },
+          "spentThisMonthMxn" : {
+            "type" : "number"
+          },
+          "monthlyLimitMxn" : {
+            "type" : "number"
+          },
+          "canStart" : {
+            "type" : "boolean"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "admin" : {
             "type" : "boolean"
           }
         }

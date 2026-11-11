@@ -154,7 +154,7 @@ class WalletAndTutorIT extends IntegrationTest {
 
         // El uso viene del proveedor (simulado) y se registra en el servidor, una vez por respuesta.
         Integer usageRows = jdbc.queryForObject("""
-                select count(*) from ai_usage_records u join ai_conversations c on c.id = u.subject_id
+                select count(*) from ai_usage_records u join ai_conversations c on c.id = u.subject_id and u.subject_type = 'TEXT_CONVERSATION'
                 where c.public_id = ? and u.data_source = 'SIMULATED'""", Integer.class, conv);
         assertThat(usageRows).isEqualTo(2);
 

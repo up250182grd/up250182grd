@@ -44,7 +44,13 @@ export function TutorHomePage() {
     <div className="mx-auto flex max-w-4xl flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Profesor IA</h1>
-        <p className="mt-1 text-muted">Practica inglés escribiendo. La conversación por voz llegará en la Fase 5.</p>
+        <p className="mt-1 text-muted">
+          Practica inglés escribiendo. ¿Prefieres hablar?{' '}
+          <Link to="/app/voice" className="font-semibold text-primary underline-offset-4 hover:underline">
+            Haz una llamada de voz
+          </Link>
+          .
+        </p>
       </div>
 
       <Card className="flex flex-col gap-4">

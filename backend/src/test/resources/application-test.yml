@@ -15,6 +15,13 @@ app:
     simulated-topups-enabled: true
   scheduling:
     enabled: false
+  ai:
+    fake-voice:
+      tick: PT0.3S
+  voice:
+    heartbeat-timeout: 3s
+    end-grace: 500ms
+    watchdog-period: 300ms
   admin-bootstrap:
     email: admin@englishos.test
     password: Owner-Secret-Phrase-2026

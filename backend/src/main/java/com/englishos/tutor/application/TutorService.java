@@ -62,7 +62,15 @@ import org.springframework.transaction.support.TransactionTemplate;
  * El cobro se liquida una sola vez al cerrar la conversación (RN-12), con la tarifa y el factor fijados al iniciarla.
  */
 @Service
-public class TutorService {
+public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> recentPairs(Long userId, int limit) {
+        return errors.findRecentByUser(userId, PageRequest.of(0, limit)).stream()
+                .map(e -> "\"" + e.getOriginal() + "\" -> \"" + e.getCorrection() + "\"")
+                .toList();
+    }
 
     private static final Logger log = LoggerFactory.getLogger(TutorService.class);
     public static final String SUBJECT = "TEXT_CONVERSATION";
