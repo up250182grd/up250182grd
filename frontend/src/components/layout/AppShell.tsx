@@ -10,6 +10,7 @@ import {
   Mic,
   Settings,
   Shield,
+  SlidersHorizontal,
   Users,
   Wallet,
   type LucideIcon,
@@ -31,7 +32,7 @@ interface NavItem {
 const studentNav: NavItem[] = [
   { to: '/app', label: 'Inicio', icon: Home },
   { to: '/app/plan', label: 'Mi plan', icon: GraduationCap },
-  { to: '/app/practice', label: 'Repaso', icon: BookOpen, phase: 'Fase 6' },
+  { to: '/app/practice', label: 'Repaso', icon: BookOpen },
   { to: '/app/tutor', label: 'Profesor IA', icon: MessagesSquare },
   { to: '/app/voice', label: 'Voz', icon: Mic },
   { to: '/app/wallet', label: 'Billetera', icon: Wallet },
@@ -42,6 +43,7 @@ const adminNav: NavItem[] = [
   { to: '/admin/users', label: 'Usuarios', icon: Users },
   { to: '/admin/content', label: 'Contenido', icon: Library },
   { to: '/admin/billing', label: 'Finanzas', icon: BarChart3 },
+  { to: '/admin/recommendations', label: 'Recomendaciones', icon: SlidersHorizontal },
 ];
 
 function SideLink({ item }: { item: NavItem }) {

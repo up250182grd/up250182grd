@@ -72,6 +72,20 @@ public class TutorService implements com.englishos.tutor.api.LearnerErrorsApi {
                 .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Map<String, Integer> openErrorsByCategory(Long userId) {
+        java.util.Map<String, Integer> out = new java.util.TreeMap<>();
+        errors.findOpenByUser(userId).forEach(e -> out.merge(e.getCategory(), 1, Integer::sum));
+        return out;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Instant> tutorMessageTimesSince(Long userId, Instant from) {
+        return messages.userMessageTimesSince(userId, from);
+    }
+
     private static final Logger log = LoggerFactory.getLogger(TutorService.class);
     public static final String SUBJECT = "TEXT_CONVERSATION";
     static final String PROMPT_VERSION = "tutor-text-v1";

@@ -41,7 +41,7 @@ class VoiceController {
         this.voice = voice;
     }
 
-    record StartRequest(@NotNull VoiceSession.Mode mode, @Size(max = 200) String topic,
+    record VoiceStartRequest(@NotNull VoiceSession.Mode mode, @Size(max = 200) String topic,
             @Size(max = 20000) String sdpOffer) {
     }
 
@@ -52,7 +52,7 @@ class VoiceController {
 
     @PostMapping("/sessions")
     @ResponseStatus(HttpStatus.CREATED)
-    VoiceStartResult start(@AuthenticationPrincipal CurrentUser user, @Valid @RequestBody StartRequest req) {
+    VoiceStartResult start(@AuthenticationPrincipal CurrentUser user, @Valid @RequestBody VoiceStartRequest req) {
         return voice.start(user, req.mode(), req.topic(), req.sdpOffer());
     }
 

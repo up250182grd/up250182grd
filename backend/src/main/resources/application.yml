@@ -120,6 +120,10 @@ app:
       audio-in-per-minute: 600
       audio-out-per-minute: 900
       text-out-per-minute: 200
+  vocabulary:
+    # Tarjetas nuevas por día (RF-SRS-3) y tamaño máximo de la cola diaria.
+    new-cards-per-day: 10
+    max-queue: 50
   billing:
     # Sobregiro técnico máximo (RN-24) y tope mensual del consumo interno del administrador (RN-8).
     overdraft-limit-mxn: 10.00

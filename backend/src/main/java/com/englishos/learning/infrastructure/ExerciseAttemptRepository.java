@@ -12,4 +12,6 @@ public interface ExerciseAttemptRepository extends JpaRepository<ExerciseAttempt
     Optional<ExerciseAttempt> findByUserIdAndIdempotencyKey(Long userId, String idempotencyKey);
 
     List<ExerciseAttempt> findByLessonRunIdOrderByIdAsc(Long lessonRunId);
+
+    List<ExerciseAttempt> findByUserIdAndCreatedAtGreaterThanEqual(Long userId, java.time.Instant from);
 }

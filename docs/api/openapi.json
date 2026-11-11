@@ -193,7 +193,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/StartRequest"
+                "$ref" : "#/components/schemas/VoiceStartRequest"
               }
             }
           },
@@ -251,6 +251,42 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/VoiceSessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vocabulary/cards/{id}/reviews" : {
+      "post" : {
+        "tags" : [ "vocabulary-controller" ],
+        "operationId" : "review",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReviewRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VocabularyReviewResult"
                 }
               }
             }
@@ -360,6 +396,42 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/practice/errors/{id}/answer" : {
+      "post" : {
+        "tags" : [ "error-practice-controller" ],
+        "operationId" : "answer",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AnswerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorAnswerResult"
                 }
               }
             }
@@ -765,6 +837,53 @@
         }
       }
     },
+    "/api/v1/admin/recommendations/weights" : {
+      "get" : {
+        "tags" : [ "recommendation-controller" ],
+        "operationId" : "weights",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RecommendationWeightsView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "recommendation-controller" ],
+        "operationId" : "updateWeights",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WeightsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecommendationWeightsView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/content/modules/{modulePublicId}/lessons" : {
       "post" : {
         "tags" : [ "content-admin-controller" ],
@@ -840,7 +959,7 @@
     "/api/v1/admin/content/lessons/{publicId}/review" : {
       "post" : {
         "tags" : [ "content-admin-controller" ],
-        "operationId" : "review",
+        "operationId" : "review_1",
         "parameters" : [ {
           "name" : "publicId",
           "in" : "path",
@@ -1240,6 +1359,45 @@
         }
       }
     },
+    "/api/v1/vocabulary/queue" : {
+      "get" : {
+        "tags" : [ "vocabulary-controller" ],
+        "operationId" : "queue",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VocabularyQueue"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vocabulary/cards" : {
+      "get" : {
+        "tags" : [ "vocabulary-controller" ],
+        "operationId" : "words",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/VocabularyCardView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/tutor/conversations/{id}" : {
       "get" : {
         "tags" : [ "tutor-controller" ],
@@ -1259,6 +1417,27 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/practice/errors" : {
+      "get" : {
+        "tags" : [ "error-practice-controller" ],
+        "operationId" : "queue_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ErrorItem"
+                  }
                 }
               }
             }
@@ -1387,6 +1566,42 @@
                   "items" : {
                     "$ref" : "#/components/schemas/SkillLevelView"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/recommendations" : {
+      "get" : {
+        "tags" : [ "recommendation-controller" ],
+        "operationId" : "recommendations",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecommendationsView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/progress" : {
+      "get" : {
+        "tags" : [ "recommendation-controller" ],
+        "operationId" : "progress",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LearnerProgressView"
                 }
               }
             }
@@ -1926,7 +2141,7 @@
         },
         "required" : [ "feedback", "instructions", "level", "promptJson", "skill", "solutionJson", "type" ]
       },
-      "StartRequest" : {
+      "VoiceStartRequest" : {
         "type" : "object",
         "properties" : {
           "mode" : {
@@ -2128,6 +2343,107 @@
           }
         }
       },
+      "ReviewRequest" : {
+        "type" : "object",
+        "properties" : {
+          "quality" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 5,
+            "minimum" : 0
+          },
+          "reviewId" : {
+            "type" : "string",
+            "maxLength" : 64,
+            "minLength" : 0
+          },
+          "durationMs" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0
+          }
+        },
+        "required" : [ "reviewId" ]
+      },
+      "VocabularyCardView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "term" : {
+            "type" : "string"
+          },
+          "partOfSpeech" : {
+            "type" : "string"
+          },
+          "ipa" : {
+            "type" : "string"
+          },
+          "translation" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string"
+          },
+          "state" : {
+            "type" : "string"
+          },
+          "repetitions" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "intervalDays" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "easeFactor" : {
+            "type" : "number"
+          },
+          "lapses" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dueAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lastReviewedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "VocabularyReviewResult" : {
+        "type" : "object",
+        "properties" : {
+          "card" : {
+            "$ref" : "#/components/schemas/VocabularyCardView"
+          },
+          "quality" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "replayed" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "StartRequest" : {
+        "type" : "object",
+        "properties" : {
+          "mode" : {
+            "type" : "string",
+            "enum" : [ "FREE", "GUIDED", "ROLEPLAY" ]
+          },
+          "topic" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "mode" ]
+      },
       "ConversationView" : {
         "type" : "object",
         "properties" : {
@@ -2264,6 +2580,41 @@
           "timeout" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "AnswerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "answer" ]
+      },
+      "ErrorAnswerResult" : {
+        "type" : "object",
+        "properties" : {
+          "correct" : {
+            "type" : "boolean"
+          },
+          "expected" : {
+            "type" : "string"
+          },
+          "explanationEs" : {
+            "type" : "string"
+          },
+          "explanationEn" : {
+            "type" : "string"
+          },
+          "correctStreak" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "resolved" : {
+            "type" : "boolean"
           }
         }
       },
@@ -2591,6 +2942,51 @@
           },
           "item" : {
             "$ref" : "#/components/schemas/ItemView"
+          }
+        }
+      },
+      "WeightsRequest" : {
+        "type" : "object",
+        "properties" : {
+          "weights" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "note", "weights" ]
+      },
+      "RecommendationWeightsView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "weights" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "createdBy" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -2923,6 +3319,96 @@
           }
         }
       },
+      "VocabularyGradePreview" : {
+        "type" : "object",
+        "properties" : {
+          "quality" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "intervalDays" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "VocabularyQueue" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/VocabularyQueueItem"
+            }
+          },
+          "dueCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "newCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "newAvailableToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "stats" : {
+            "$ref" : "#/components/schemas/VocabularyStats"
+          }
+        }
+      },
+      "VocabularyQueueItem" : {
+        "type" : "object",
+        "properties" : {
+          "card" : {
+            "$ref" : "#/components/schemas/VocabularyCardView"
+          },
+          "previews" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/VocabularyGradePreview"
+            }
+          }
+        }
+      },
+      "VocabularyStats" : {
+        "type" : "object",
+        "properties" : {
+          "total" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "newCards" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "learning" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "review" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "relearning" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "mature" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dueNow" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "newAvailableToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "ConversationSummary" : {
         "type" : "object",
         "properties" : {
@@ -2947,6 +3433,36 @@
             "format" : "date-time"
           },
           "closedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ErrorItem" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "original" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "categoryOpenCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "correctStreak" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "streakToResolve" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "detectedAt" : {
             "type" : "string",
             "format" : "date-time"
           }
@@ -3019,6 +3535,133 @@
           "updatedAt" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }
+      },
+      "RecommendationView" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "score" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "actionPath" : {
+            "type" : "string"
+          },
+          "estimatedMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "RecommendationsView" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RecommendationView"
+            }
+          },
+          "minutesToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dailyGoalMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weightsVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "engineVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ActivityDay" : {
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "exercises" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "reviews" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tutorMessages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "LearnerProgressView" : {
+        "type" : "object",
+        "properties" : {
+          "activity" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ActivityDay"
+            }
+          },
+          "minutesToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dailyGoalMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "activeDaysLast14" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "vocabulary" : {
+            "$ref" : "#/components/schemas/VocabularyStats"
+          },
+          "openErrorsByCategory" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "skills" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SkillLevelItem"
+            }
+          }
+        }
+      },
+      "SkillLevelItem" : {
+        "type" : "object",
+        "properties" : {
+          "skill" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "string"
           }
         }
       },

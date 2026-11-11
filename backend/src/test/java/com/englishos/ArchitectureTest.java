@@ -62,6 +62,39 @@ class ArchitectureTest {
                 .check(classes);
     }
 
+    /** Cada módulo usa a los demás solo a través de su paquete {@code api} (ADR-0001). */
+    @Test
+    void modulesTalkToEachOtherOnlyThroughTheirApi() {
+        java.util.List<String> modules = java.util.List.of("identity", "learning", "assessment", "tutor", "voice",
+                "metering", "wallet", "ai", "vocabulary", "recommendation");
+        for (String m : modules) {
+            String[] internals = modules.stream().filter(o -> !o.equals(m))
+                    .flatMap(o -> java.util.stream.Stream.of("application", "domain", "infrastructure", "web")
+                            .map(layer -> "com.englishos." + o + "." + layer + ".."))
+                    .toArray(String[]::new);
+            noClasses().that().resideInAPackage("com.englishos." + m + "..")
+                    .should().dependOnClassesThat().resideInAnyPackage(internals)
+                    .because("el módulo " + m + " debe usar a los demás solo por su API")
+                    .check(classes);
+        }
+    }
+
+    /**
+     * El contrato OpenAPI nombra los esquemas por el nombre simple de la clase: dos tipos expuestos con el mismo nombre
+     * se sobrescriben en silencio (pasó con {@code StartRequest} del tutor y de la voz).
+     */
+    @Test
+    void typesExposedByTheApiHaveUniqueSimpleNames() {
+        java.util.Map<String, java.util.List<String>> byName = new java.util.TreeMap<>();
+        classes.stream()
+                .filter(c -> c.isRecord() || c.isEnum())
+                .filter(c -> c.getPackageName().matches("com\\.englishos\\.[a-z]+\\.(web|application)"))
+                .forEach(c -> byName.computeIfAbsent(c.getSimpleName(), k -> new java.util.ArrayList<>())
+                        .add(c.getName()));
+        var duplicated = byName.entrySet().stream().filter(e -> e.getValue().size() > 1).toList();
+        org.assertj.core.api.Assertions.assertThat(duplicated).as("nombres repetidos en tipos de la API").isEmpty();
+    }
+
     /** RNF-1: el dinero nunca se representa con coma flotante. */
     @Test
     void noFloatingPointFieldsInBusinessCode() {

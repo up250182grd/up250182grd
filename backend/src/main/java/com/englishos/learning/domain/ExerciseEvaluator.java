@@ -1,5 +1,6 @@
 package com.englishos.learning.domain;
 
+import com.englishos.shared.text.AnswerNormalizer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;

@@ -17,6 +17,9 @@ import { TutorHomePage } from '@/features/tutor/TutorHomePage';
 import { WalletPage } from '@/features/wallet/WalletPage';
 import { VoicePage } from '@/features/voice/VoicePage';
 import { VoiceSessionPage } from '@/features/voice/VoiceSessionPage';
+import { PracticePage } from '@/features/practice/PracticePage';
+import { VocabularyPage } from '@/features/practice/VocabularyPage';
+import { RecommendationWeightsPage } from '@/features/admin/recommendations/RecommendationWeightsPage';
 
 // El código del panel de administración se descarga solo cuando un administrador lo abre.
 const AdminUsersPage = lazy(() =>
@@ -75,8 +78,11 @@ export const router = createBrowserRouter([
       { path: '/app/tutor/:conversationId', element: <ChatPage /> },
       { path: '/app/voice', element: <VoicePage /> },
       { path: '/app/voice/:sessionId', element: <VoiceSessionPage /> },
+      { path: '/app/practice', element: <PracticePage /> },
+      { path: '/app/vocabulary', element: <VocabularyPage /> },
       { path: '/app/wallet', element: <WalletPage /> },
       { path: '/admin/billing', element: <AdminRoute><AdminBillingPage /></AdminRoute> },
+      { path: '/admin/recommendations', element: <AdminRoute><RecommendationWeightsPage /></AdminRoute> },
       { path: '/admin/users', element: <AdminRoute><AdminUsersPage /></AdminRoute> },
       { path: '/admin/content', element: <AdminRoute><AdminContentPage /></AdminRoute> },
       { path: '/admin/content/lessons/:lessonId', element: <AdminRoute><AdminLessonEditor /></AdminRoute> },

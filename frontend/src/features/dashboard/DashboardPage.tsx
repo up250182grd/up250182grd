@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
-import { BookOpen, ChevronRight, ClipboardCheck, MessagesSquare, Mic, Wallet, type LucideIcon } from 'lucide-react';
+import { ChevronRight, ClipboardCheck, MessagesSquare, Mic, Wallet } from 'lucide-react';
 import { api, unwrap } from '@/api/client';
 import { Alert } from '@/components/ui/Alert';
 import { Badge, ProgressBadge, ProgressBar } from '@/components/ui/Badge';
@@ -12,6 +12,7 @@ import { useWallet } from '@/features/wallet/WalletPage';
 import { formatMXN } from '@/lib/money';
 import { confidenceLabels, skillLabels, useLearningSummary, useSkillLevels } from '@/features/learning/api';
 import { useT } from '@/lib/lang';
+import { ProgressSection, RecommendationsCard } from './AdaptiveSections';
 
 function greeting(date = new Date()): string {
   const h = date.getHours();
@@ -19,11 +20,6 @@ function greeting(date = new Date()): string {
   if (h < 19) return 'Buenas tardes';
   return 'Buenas noches';
 }
-
-/** Lo que aún no existe se presenta como "próximamente", sin datos inventados. */
-const upcoming: { icon: LucideIcon; title: string; text: string; phase: string }[] = [
-  { icon: BookOpen, title: 'Repaso espaciado', text: 'Tarjetas de vocabulario y repasos en el momento justo.', phase: 'Fase 6' },
-];
 
 function TutorAndWalletCard() {
   const wallet = useWallet();
@@ -180,33 +176,15 @@ export function DashboardPage() {
 
       {!me.emailVerified && me.email && <VerifyEmailBanner email={me.email} />}
 
+      <RecommendationsCard />
+
       <div className="grid gap-4 lg:grid-cols-2">
         <NextLessonCard />
         <SkillsCard />
         <TutorAndWalletCard />
       </div>
 
-      <section aria-labelledby="upcoming">
-        <h2 id="upcoming" className="mb-3 text-lg font-semibold">
-          Próximamente
-        </h2>
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {upcoming.map(({ icon: Icon, title, text, phase }) => (
-            <li key={title}>
-              <Card className="flex h-full gap-3">
-                <Icon aria-hidden className="size-5 shrink-0 text-primary" />
-                <div>
-                  <h3 className="flex flex-wrap items-center gap-2 font-semibold">
-                    {title}
-                    <Badge>{phase}</Badge>
-                  </h3>
-                  <p className="mt-1 text-sm text-muted">{text}</p>
-                </div>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ProgressSection />
     </div>
   );
 }

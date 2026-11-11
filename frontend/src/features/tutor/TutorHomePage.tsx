@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { MessageSquarePlus, Wallet } from 'lucide-react';
 import { api, unwrap } from '@/api/client';
@@ -29,8 +29,13 @@ export function TutorHomePage() {
   const { data: me } = useMe();
   const admin = isAdmin(me);
   const wallet = useWallet();
-  const [mode, setMode] = useState<Mode>('FREE');
-  const [topic, setTopic] = useState('');
+  // Una recomendación puede abrir esta página con un modo y tema sugeridos (?mode=GUIDED&topic=...).
+  const [params] = useSearchParams();
+  const [mode, setMode] = useState<Mode>(() => {
+    const m = params.get('mode');
+    return m === 'GUIDED' || m === 'ROLEPLAY' ? m : 'FREE';
+  });
+  const [topic, setTopic] = useState(() => (params.get('topic') ?? '').slice(0, 200));
   const conversations = useQuery({
     queryKey: ['tutor', 'list'],
     queryFn: () => unwrap(api.GET('/api/v1/tutor/conversations')),

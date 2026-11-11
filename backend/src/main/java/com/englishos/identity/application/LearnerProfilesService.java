@@ -60,6 +60,12 @@ class LearnerProfilesService implements LearnerProfiles {
 
     @Override
     @Transactional(readOnly = true)
+    public int dailyGoalMinutes(Long userId) {
+        return profiles.findById(userId).map(UserProfile::getDailyGoalMinutes).orElse(20);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public String explanationLanguage(Long userId) {
         return profiles.findById(userId).map(UserProfile::getExplanationLanguage).orElse("es");
     }

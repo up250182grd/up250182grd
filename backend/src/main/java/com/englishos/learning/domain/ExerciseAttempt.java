@@ -93,6 +93,14 @@ public class ExerciseAttempt {
         return correct;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Integer getDurationMs() {
+        return durationMs;
+    }
+
     public BigDecimal getScore() {
         return score;
     }

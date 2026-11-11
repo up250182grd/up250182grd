@@ -1,6 +1,20 @@
 # EnglishOS — Instalación, ejecución y pruebas
 
-Estado: **Fases 2 a 5 implementadas.** Ver [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+Estado: **Fases 2 a 6 implementadas.** Ver [Fase 6](#estado-de-la-fase-6), [Fase 5](#estado-de-la-fase-5), [Fase 4](#estado-de-la-fase-4), [Fase 3](#estado-de-la-fase-3) y [Fase 2](#estado-de-la-fase-2).
+
+## Estado de la Fase 6
+
+| Funcionalidad | Estado |
+|---|---|
+| SM-2 (RN-43) con aritmética decimal, versión de algoritmo por tarjeta e historial antes/después (ADR-0009) | ✅ Implementado y probado con tabla de casos |
+| Tarjetas creadas desde el vocabulario de las lecciones practicadas; "Mis palabras" con búsqueda y filtros | ✅ |
+| Cola diaria: olvidadas → vencidas → nuevas (10/día); vencimiento al inicio del día local; repasos idempotentes; atajos de teclado | ✅ |
+| Errores del profesor IA → práctica "escríbelo bien" (determinista, sin costo); superado con 2 aciertos seguidos | ✅ |
+| Recomendador por reglas (6 reglas, sin IA) con pesos versionados, auditados y editables en *Administración → Recomendaciones* | ✅ Pruebas unitarias con perfiles de alumno |
+| Tablero: "Para hoy", meta diaria, minutos por día (14 días, con tabla equivalente), vocabulario y errores por categoría | ✅ Datos reales; los minutos son **estimados** y así se indica |
+| Regla de arquitectura: los módulos solo se comunican por su `api`; nombres únicos en los tipos de la API | ✅ |
+| FSRS (algoritmo más moderno) | ⏳ v1.3 (prevista la migración por `algorithm_version`) |
+| Vocabulario nuevo detectado en conversaciones con el profesor | ⏳ Pendiente (hoy el vocabulario proviene de las lecciones) |
 
 ## Estado de la Fase 5
 

@@ -9,4 +9,7 @@ public interface LearnerLevels {
 
     /** Mínimo entre vocabulario y gramática, si el alumno hizo el diagnóstico. */
     Optional<CefrLevel> coreLevel(Long userId);
+
+    /** Nivel estimado por habilidad (vacío si no hizo el diagnóstico). */
+    java.util.Map<com.englishos.learning.api.Skill, CefrLevel> levelsBySkill(Long userId);
 }

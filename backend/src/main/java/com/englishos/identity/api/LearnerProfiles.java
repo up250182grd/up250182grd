@@ -18,4 +18,7 @@ public interface LearnerProfiles {
 
     /** Si el alumno permite guardar transcripciones de sus conversaciones (RN-37). */
     boolean storeTranscripts(Long userId);
+
+    /** Meta diaria de estudio en minutos (para recomendar según el tiempo disponible). */
+    int dailyGoalMinutes(Long userId);
 }

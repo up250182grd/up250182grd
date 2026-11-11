@@ -1,4 +1,4 @@
-package com.englishos.learning.domain;
+package com.englishos.shared.text;
 
 import java.text.Normalizer;
 import java.util.Locale;

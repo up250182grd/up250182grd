@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary/cards/{id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tutor/conversations": {
         parameters: {
             query?: never;
@@ -158,6 +174,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["close"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/errors/{id}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["answer"];
         delete?: never;
         options?: never;
         head?: never;
@@ -404,6 +436,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/recommendations/weights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["weights"];
+        put?: never;
+        post: operations["updateWeights"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/content/modules/{modulePublicId}/lessons": {
         parameters: {
             query?: never;
@@ -445,7 +493,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["review"];
+        post: operations["review_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -628,6 +676,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["words"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tutor/conversations/{id}": {
         parameters: {
             query?: never;
@@ -636,6 +716,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/errors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -716,6 +812,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["skills"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/recommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["recommendations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["progress"];
         put?: never;
         post?: never;
         delete?: never;
@@ -972,7 +1100,7 @@ export interface components {
             feedback: components["schemas"]["TextInput"];
             hint?: components["schemas"]["TextInput"];
         };
-        StartRequest: {
+        VoiceStartRequest: {
             /** @enum {string} */
             mode: "FREE" | "GUIDED" | "ROLEPLAY";
             topic?: string;
@@ -1045,6 +1173,44 @@ export interface components {
             /** Format: date-time */
             at?: string;
         };
+        ReviewRequest: {
+            /** Format: int32 */
+            quality?: number;
+            reviewId: string;
+            /** Format: int32 */
+            durationMs?: number;
+        };
+        VocabularyCardView: {
+            id?: string;
+            term?: string;
+            partOfSpeech?: string;
+            ipa?: string;
+            translation?: string;
+            level?: string;
+            state?: string;
+            /** Format: int32 */
+            repetitions?: number;
+            /** Format: int32 */
+            intervalDays?: number;
+            easeFactor?: number;
+            /** Format: int32 */
+            lapses?: number;
+            /** Format: date-time */
+            dueAt?: string;
+            /** Format: date-time */
+            lastReviewedAt?: string;
+        };
+        VocabularyReviewResult: {
+            card?: components["schemas"]["VocabularyCardView"];
+            /** Format: int32 */
+            quality?: number;
+            replayed?: boolean;
+        };
+        StartRequest: {
+            /** @enum {string} */
+            mode: "FREE" | "GUIDED" | "ROLEPLAY";
+            topic?: string;
+        };
         ConversationView: {
             id?: string;
             mode?: string;
@@ -1094,6 +1260,18 @@ export interface components {
         SseEmitter: {
             /** Format: int64 */
             timeout?: number;
+        };
+        AnswerRequest: {
+            answer: string;
+        };
+        ErrorAnswerResult: {
+            correct?: boolean;
+            expected?: string;
+            explanationEs?: string;
+            explanationEn?: string;
+            /** Format: int32 */
+            correctStreak?: number;
+            resolved?: boolean;
         };
         TopupRequest: {
             amount: number;
@@ -1203,6 +1381,24 @@ export interface components {
             /** Format: int32 */
             maxQuestions?: number;
             item?: components["schemas"]["ItemView"];
+        };
+        WeightsRequest: {
+            weights: {
+                [key: string]: number;
+            };
+            note: string;
+        };
+        RecommendationWeightsView: {
+            /** Format: int64 */
+            id?: number;
+            weights?: {
+                [key: string]: number;
+            };
+            note?: string;
+            /** Format: int64 */
+            createdBy?: number;
+            /** Format: date-time */
+            createdAt?: string;
         };
         StatusRequest: {
             /** @enum {string} */
@@ -1322,6 +1518,44 @@ export interface components {
             reason?: string;
             admin?: boolean;
         };
+        VocabularyGradePreview: {
+            /** Format: int32 */
+            quality?: number;
+            /** Format: int32 */
+            intervalDays?: number;
+        };
+        VocabularyQueue: {
+            items?: components["schemas"]["VocabularyQueueItem"][];
+            /** Format: int32 */
+            dueCount?: number;
+            /** Format: int32 */
+            newCount?: number;
+            /** Format: int32 */
+            newAvailableToday?: number;
+            stats?: components["schemas"]["VocabularyStats"];
+        };
+        VocabularyQueueItem: {
+            card?: components["schemas"]["VocabularyCardView"];
+            previews?: components["schemas"]["VocabularyGradePreview"][];
+        };
+        VocabularyStats: {
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            newCards?: number;
+            /** Format: int32 */
+            learning?: number;
+            /** Format: int32 */
+            review?: number;
+            /** Format: int32 */
+            relearning?: number;
+            /** Format: int32 */
+            mature?: number;
+            /** Format: int32 */
+            dueNow?: number;
+            /** Format: int32 */
+            newAvailableToday?: number;
+        };
         ConversationSummary: {
             id?: string;
             mode?: string;
@@ -1333,6 +1567,19 @@ export interface components {
             startedAt?: string;
             /** Format: date-time */
             closedAt?: string;
+        };
+        ErrorItem: {
+            id?: string;
+            original?: string;
+            category?: string;
+            /** Format: int32 */
+            categoryOpenCount?: number;
+            /** Format: int32 */
+            correctStreak?: number;
+            /** Format: int32 */
+            streakToResolve?: number;
+            /** Format: date-time */
+            detectedAt?: string;
         };
         Movement: {
             id?: string;
@@ -1362,6 +1609,57 @@ export interface components {
             evidence?: number;
             /** Format: date-time */
             updatedAt?: string;
+        };
+        RecommendationView: {
+            type?: string;
+            /** Format: int32 */
+            score?: number;
+            title?: string;
+            reason?: string;
+            actionPath?: string;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+        };
+        RecommendationsView: {
+            items?: components["schemas"]["RecommendationView"][];
+            /** Format: int32 */
+            minutesToday?: number;
+            /** Format: int32 */
+            dailyGoalMinutes?: number;
+            /** Format: int32 */
+            weightsVersion?: number;
+            /** Format: int32 */
+            engineVersion?: number;
+        };
+        ActivityDay: {
+            /** Format: date */
+            date?: string;
+            /** Format: int32 */
+            exercises?: number;
+            /** Format: int32 */
+            reviews?: number;
+            /** Format: int32 */
+            tutorMessages?: number;
+            /** Format: int32 */
+            minutes?: number;
+        };
+        LearnerProgressView: {
+            activity?: components["schemas"]["ActivityDay"][];
+            /** Format: int32 */
+            minutesToday?: number;
+            /** Format: int32 */
+            dailyGoalMinutes?: number;
+            /** Format: int32 */
+            activeDaysLast14?: number;
+            vocabulary?: components["schemas"]["VocabularyStats"];
+            openErrorsByCategory?: {
+                [key: string]: number;
+            };
+            skills?: components["schemas"]["SkillLevelItem"][];
+        };
+        SkillLevelItem: {
+            skill?: string;
+            level?: string;
         };
         LearningSummary: {
             /** @enum {string} */
@@ -1713,7 +2011,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["StartRequest"];
+                "application/json": components["schemas"]["VoiceStartRequest"];
             };
         };
         responses: {
@@ -1766,6 +2064,32 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["VoiceSessionView"];
+                };
+            };
+        };
+    };
+    review: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VocabularyReviewResult"];
                 };
             };
         };
@@ -1858,6 +2182,32 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorAnswerResult"];
                 };
             };
         };
@@ -2208,6 +2558,50 @@ export interface operations {
             };
         };
     };
+    weights: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecommendationWeightsView"][];
+                };
+            };
+        };
+    };
+    updateWeights: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WeightsRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecommendationWeightsView"];
+                };
+            };
+        };
+    };
     createLesson: {
         parameters: {
             query?: never;
@@ -2260,7 +2654,7 @@ export interface operations {
             };
         };
     };
-    review: {
+    review_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -2604,6 +2998,46 @@ export interface operations {
             };
         };
     };
+    queue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VocabularyQueue"];
+                };
+            };
+        };
+    };
+    words: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VocabularyCardView"][];
+                };
+            };
+        };
+    };
     get_1: {
         parameters: {
             query?: never;
@@ -2622,6 +3056,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    queue_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorItem"][];
                 };
             };
         };
@@ -2727,6 +3181,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["SkillLevelView"][];
+                };
+            };
+        };
+    };
+    recommendations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecommendationsView"];
+                };
+            };
+        };
+    };
+    progress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LearnerProgressView"];
                 };
             };
         };

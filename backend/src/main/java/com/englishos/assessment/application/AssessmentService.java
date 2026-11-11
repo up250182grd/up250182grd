@@ -44,6 +44,14 @@ public class AssessmentService implements com.englishos.assessment.api.LearnerLe
                 .reduce(CefrLevel::min);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Map<Skill, CefrLevel> levelsBySkill(Long userId) {
+        java.util.Map<Skill, CefrLevel> out = new java.util.EnumMap<>(Skill.class);
+        skillLevels.findByUserId(userId).forEach(l -> out.put(l.getSkill(), l.getLevel()));
+        return out;
+    }
+
     public static final String DISCLAIMER_ES =
             "Nivel estimado a partir de un diagnóstico breve. No es una certificación oficial del MCER.";
     public static final String DISCLAIMER_EN =

@@ -2,6 +2,8 @@ package com.englishos.tutor.domain;
 
 import java.time.Instant;
 
+import com.englishos.shared.ids.Ulid;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,9 @@ public class LearnerError {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "public_id", nullable = false, updatable = false, length = 26)
+    private String publicId;
 
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
@@ -42,11 +47,24 @@ public class LearnerError {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "practice_count", nullable = false)
+    private int practiceCount;
+
+    @Column(name = "correct_streak", nullable = false)
+    private int correctStreak;
+
+    @Column(name = "last_practiced_at")
+    private Instant lastPracticedAt;
+
+    @Column(name = "resolved_at")
+    private Instant resolvedAt;
+
     protected LearnerError() {
     }
 
     public static LearnerError of(Long userId, Long conversationId, ReplyFormat.Correction c, Instant now) {
         LearnerError e = new LearnerError();
+        e.publicId = Ulid.next();
         e.userId = userId;
         e.conversationId = conversationId;
         e.original = c.original();
@@ -60,6 +78,59 @@ public class LearnerError {
 
     public ReplyFormat.Correction toCorrection() {
         return new ReplyFormat.Correction(original, correction, explanationEs, explanationEn, category);
+    }
+
+    /** Aciertos seguidos necesarios para dar el error por superado. */
+    public static final int STREAK_TO_RESOLVE = 2;
+
+    /** Registra un intento de corregir la frase; dos aciertos seguidos lo marcan como superado. */
+    public void practiced(boolean correct, Instant now) {
+        practiceCount++;
+        lastPracticedAt = now;
+        correctStreak = correct ? correctStreak + 1 : 0;
+        if (correctStreak >= STREAK_TO_RESOLVE && resolvedAt == null) {
+            resolvedAt = now;
+        }
+    }
+
+    public boolean isResolved() {
+        return resolvedAt != null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getPublicId() {
+        return publicId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getExplanationEs() {
+        return explanationEs;
+    }
+
+    public String getExplanationEn() {
+        return explanationEn;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public int getPracticeCount() {
+        return practiceCount;
+    }
+
+    public int getCorrectStreak() {
+        return correctStreak;
+    }
+
+    public Instant getLastPracticedAt() {
+        return lastPracticedAt;
     }
 
     public String getCategory() {
