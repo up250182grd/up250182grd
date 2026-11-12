@@ -98,6 +98,8 @@ app:
     voice-provider: ${AI_VOICE_PROVIDER:fake}
     realtime-model: ${AI_REALTIME_MODEL:fake-voice-1}
     realtime-voice: ${AI_REALTIME_VOICE:alloy}
+    # Transcripción de lo que dice el alumno durante la llamada (solo con voice-provider=openai).
+    realtime-transcription-model: ${AI_REALTIME_TRANSCRIPTION_MODEL:gpt-live-transcribe}
     openai:
       api-key: ${OPENAI_API_KEY:}
       base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}

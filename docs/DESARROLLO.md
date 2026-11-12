@@ -92,7 +92,7 @@ Estado: **Fases 2 a 9 implementadas.** Ver [Fase 9](#estado-de-la-fase-9), [Fase
 | Transcripción en vivo (SSE) y guardada solo si el alumno lo permite; **el audio nunca se guarda** | ✅ |
 | Interfaz: cotización, modos, contador, consumo medido, nivel de micrófono, silenciar, colgar, transcripción, resumen con desglose, historial | ✅ |
 | **Llamada simulada** (sin audio, diálogo y consumo ficticios) — proveedor por defecto, etiquetada "Llamada simulada (sin audio)" | ✅ |
-| Adaptador OpenAI Realtime (WebRTC: SDP del navegador → servidor → `/v1/realtime/calls`; canal lateral por WebSocket con `call_id`; colgar) | ⚠️ **Implementado pero no probado contra la API real.** El `call_id` se lee del encabezado `Location` y el modelo de transcripción está fijo (`gpt-4o-mini-transcribe`): 🔍 verificar ambos con la documentación vigente. |
+| Adaptador OpenAI Realtime (WebRTC: SDP del navegador → servidor → `/v1/realtime/calls`; canal lateral por WebSocket con `call_id`; colgar) | ⚠️ **Implementado pero no probado contra la API real.** El modelo de transcripción se configura con `AI_REALTIME_TRANSCRIPTION_MODEL` (por omisión `gpt-live-transcribe`, verificado en la referencia oficial el 2026-11-11; `gpt-4o-mini-transcribe` se retira el 2027-02-26). 🔍 Falta verificar que el `call_id` llegue en el encabezado `Location` (la referencia no lo menciona). ⚠️ La transcripción se factura aparte (por minuto, con la tarifa del modelo de transcripción) y **todavía no se mide ni se cobra**. |
 | Ruta WebRTC del navegador (micrófono, oferta SDP, audio remoto, permisos, iOS) | ⚠️ Implementada; **solo se probó el modo simulado** (no hay proveedor real en el entorno de pruebas). |
 | Grabación/almacenamiento de audio | ❌ Deliberadamente no se hace |
 
@@ -116,7 +116,7 @@ Estado: **Fases 2 a 9 implementadas.** Ver [Fase 9](#estado-de-la-fase-9), [Fase
 | Profesor IA por texto: modos libre/guiado/roleplay, streaming, correcciones estructuradas, memoria de errores recientes, cierre por inactividad | ✅ |
 | Panel de finanzas: resumen del mes, cuentas del negocio, incidencias, "Mi consumo", modelos/tarifas, política, tipo de cambio | ✅ |
 | **Proveedor simulado** (sin red y sin costo real, tarifas ficticias en MXN) | ✅ — es el proveedor activo por defecto |
-| Adaptador OpenAI (Chat Completions en streaming) | ⚠️ **Implementado pero no probado contra la API real** (no hay acceso a la API desde el entorno de desarrollo). Probado con un flujo de ejemplo. 🔍 Verificar con la documentación vigente antes de activarlo. |
+| Adaptador OpenAI (Responses API `POST /v1/responses` en streaming, `store: false`) | ⚠️ **Implementado pero no probado contra la API real** (sin clave). Petición y eventos (`response.output_text.delta`, `response.completed`/`incomplete`/`failed`, `error`, `usage`) verificados en la referencia oficial el 2026-11-11 y probados con un flujo de ejemplo. |
 | Recargas con pago real (Mercado Pago), comisiones, IVA (decisión D-1) | ⏳ Fase 7. Hoy solo hay **recargas simuladas** (activas en `dev`/`test`, desactivadas por defecto en producción). |
 | Evaluación de escritura libre con IA | ⏳ Pendiente (usará esta misma medición) |
 | Tipo de cambio automático de Banxico | ⏳ Pendiente (hoy se captura manualmente) |
