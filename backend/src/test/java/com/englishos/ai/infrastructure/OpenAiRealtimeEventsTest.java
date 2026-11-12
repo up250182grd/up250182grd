@@ -28,6 +28,12 @@ class OpenAiRealtimeEventsTest {
         }
 
         @Override
+        public void onTranscriptionUsage(String itemId, Map<String, Long> units) {
+            log.add("transcription-usage:" + itemId);
+            lastUnits = units;
+        }
+
+        @Override
         public void onTranscript(String role, String text) {
             log.add(role + ":" + text);
         }
@@ -59,6 +65,38 @@ class OpenAiRealtimeEventsTest {
                  "output_token_details":{"text_tokens":0,"audio_tokens":30}}"""));
         assertThat(units).containsEntry("text_in_cached", 100L).containsEntry("audio_in_cached", 20L)
                 .containsEntry("text_in", 0L).containsEntry("audio_in", 30L);
+    }
+
+    @Test
+    void transcriptionBilledByDurationBecomesMillionthsOfAMinute() {
+        Recorder r = new Recorder();
+        new OpenAiRealtimeEvents(JSON, r).accept("""
+                {"type":"conversation.item.input_audio_transcription.completed","event_id":"evt_1","item_id":"item_7",
+                 "content_index":0,"transcript":"I visited my grandmother.",
+                 "usage":{"type":"duration","seconds":2.4}}""");
+        assertThat(r.log).containsExactly("USER:I visited my grandmother.", "transcription-usage:item_7");
+        // 2.4 s = 0.04 min = 40 000 millonésimas de minuto → a 0.017 USD/min cuesta 0.00068 USD.
+        assertThat(r.lastUnits).isEqualTo(Map.of("audio_microminutes", 40_000L));
+    }
+
+    @Test
+    void transcriptionBilledByTokensUsesTheTokenBreakdown() {
+        assertThat(OpenAiRealtimeEvents.transcriptionUnits(JSON.readTree("""
+                {"type":"tokens","input_tokens":30,"output_tokens":8,"total_tokens":38,
+                 "input_token_details":{"audio_tokens":25,"text_tokens":5}}""")))
+                .isEqualTo(Map.of("audio_in", 25L, "text_in", 5L, "text_out", 8L));
+        // Sin desglose: lo que se transcribe es audio.
+        assertThat(OpenAiRealtimeEvents.transcriptionUnits(JSON.readTree("""
+                {"type":"tokens","input_tokens":30,"output_tokens":8,"total_tokens":38}""")))
+                .isEqualTo(Map.of("audio_in", 30L, "text_in", 0L, "text_out", 8L));
+    }
+
+    @Test
+    void secondsAreConvertedExactlyAndRoundedToTheNearestMillionth() {
+        assertThat(TranscriptionUnits.microminutes(new java.math.BigDecimal("60"))).isEqualTo(1_000_000L);
+        assertThat(TranscriptionUnits.microminutes(new java.math.BigDecimal("0.00003"))).isEqualTo(1L); // 0.5 → 1
+        assertThat(TranscriptionUnits.microminutes(new java.math.BigDecimal("0.00002"))).isZero();
+        assertThat(TranscriptionUnits.microminutes(null)).isZero();
     }
 
     @Test

@@ -97,6 +97,21 @@ class VoiceIT extends IntegrationTest {
     }
 
     @Test
+    void callsCannotStartWithoutATranscriptionTariff() {
+        ApiClient c = verifiedStudent(uniqueEmail());
+        topup(c, "100.00");
+        jdbc.update("update ai_models set is_enabled = false where model_code = 'fake-transcribe-1'");
+        try {
+            var res = c.post("/api/v1/voice/sessions", Map.of("mode", "FREE"));
+            assertThat(res.status()).isEqualTo(503);
+            assertThat(res.code()).isEqualTo("AI_NOT_CONFIGURED");
+            assertThat(c.get("/api/v1/me/wallet").json().path("reserved").decimalValue()).isEqualByComparingTo("0.00");
+        } finally {
+            jdbc.update("update ai_models set is_enabled = true where model_code = 'fake-transcribe-1'");
+        }
+    }
+
+    @Test
     void unverifiedUsersCannotCall() {
         ApiClient c = newClient();
         String email = uniqueEmail();
@@ -136,6 +151,22 @@ class VoiceIT extends IntegrationTest {
         JsonNode s = done.path("settlement");
         BigDecimal cost = providerCost(id);
         assertThat(cost).isPositive();
+        // La transcripción del alumno se registra aparte, con el modelo y la tarifa de transcripción (no los del
+        // modelo realtime), y entra en el mismo cobro.
+        var transcription = jdbc.queryForList("""
+                select m.model_code, u.provider_request_id, u.provider_cost, u.pricing_version_id,
+                       s.transcription_pricing_version_id
+                from ai_usage_records u
+                join voice_sessions s on s.id = u.subject_id and u.subject_type = 'VOICE_SESSION'
+                join ai_models m on m.id = u.model_id
+                where s.public_id = ? and m.modality = 'TRANSCRIPTION'""", id);
+        assertThat(transcription).isNotEmpty().allSatisfy(row -> {
+            assertThat(row.get("model_code")).isEqualTo("fake-transcribe-1");
+            assertThat((String) row.get("provider_request_id")).startsWith("transcription:");
+            assertThat(row.get("pricing_version_id")).isEqualTo(row.get("transcription_pricing_version_id"));
+            // 2.4 s a 0.30 MXN/min = 0.012 MXN por turno.
+            assertThat((BigDecimal) row.get("provider_cost")).isEqualByComparingTo("0.012");
+        });
         assertThat(s.path("internal").asBoolean()).isFalse();
         assertThat(s.path("factorApplied").decimalValue()).isEqualByComparingTo("1.30");
         assertThat(s.path("directCostMxn").decimalValue()).isEqualByComparingTo(cost.setScale(2, RoundingMode.HALF_UP));
@@ -176,8 +207,9 @@ class VoiceIT extends IntegrationTest {
     void callIsCutWhenTheReservationCannotBeExtended() {
         ApiClient c = verifiedStudent(uniqueEmail());
         topup(c, "100.00");
-        // El límite mensual alcanza para la reserva mínima (2 minutos) pero no para ampliarla.
-        c.put("/api/v1/me/wallet/preferences", Map.of("monthlyLimit", 6, "lowBalanceThreshold", 20));
+        // El límite mensual alcanza para la reserva mínima (2 minutos ≈ 6.15 con la transcripción incluida en el
+        // estimado simulado) pero no para ampliarla.
+        c.put("/api/v1/me/wallet/preferences", Map.of("monthlyLimit", 7, "lowBalanceThreshold", 20));
         JsonNode started = startCall(c);
         String id = started.path("sessionId").asString();
         assertThat(started.path("maxDurationSeconds").asInt()).isEqualTo(120);

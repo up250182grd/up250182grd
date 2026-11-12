@@ -83,6 +83,11 @@ class OpenAiRealtimeVoiceProvider implements RealtimeVoiceProvider {
     }
 
     @Override
+    public String transcriptionModel() {
+        return transcriptionModel;
+    }
+
+    @Override
     public CallStarted startCall(CallRequest request) {
         if (request.sdpOffer() == null || !request.sdpOffer().startsWith("v=")) {
             throw new LlmException("Oferta SDP inválida");
