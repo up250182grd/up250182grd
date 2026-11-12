@@ -5,7 +5,7 @@
 
 ## Decisiones
 
-1. **Puerto `LlmClient` con dos adaptadores.** `FakeLlmClient` (simulado, sin red, tarifas ficticias en MXN, etiquetado en la interfaz) y `OpenAiChatClient` (Chat Completions con streaming e `include_usage`). El simulado es el valor por defecto para poder desarrollar y probar todo el flujo de cobro sin gastar dinero ni depender de la red.
+1. **Puerto `LlmClient` con dos adaptadores.** `FakeLlmClient` (simulado, sin red, tarifas ficticias en MXN, etiquetado en la interfaz) y `OpenAiResponsesClient` (Responses API con streaming y `store: false`; el uso llega en `response.completed`). *Actualizado 2026-11-12: antes usaba Chat Completions; se migró a Responses, la API principal en la documentación oficial.* El simulado es el valor por defecto para poder desarrollar y probar todo el flujo de cobro sin gastar dinero ni depender de la red.
 2. **Turno en tres fases.** (a) Transacción: validar, reservar el **peor caso** del turno (lo ya medido + entrada estimada + `max-output-tokens`) y guardar el mensaje. (b) Llamada al proveedor **sin transacción abierta**, reenviando el texto por SSE. (c) Transacción: registrar el uso informado por el proveedor (idempotente por id de respuesta), la respuesta y las correcciones.
 3. **Correcciones estructuradas** tras un marcador (`<<<CORRECTIONS>>>` + JSON). El servidor filtra el flujo para que el alumno nunca vea el marcador ni el JSON, y valida el JSON como datos (categorías cerradas, longitudes máximas).
 4. **Cobro por conversación** (RN-12), al cerrarla o tras 30 min de inactividad, con la tarifa y la política fijadas al iniciarla. La reserva inicial es de $5.00 y se amplía por turno si hace falta.

@@ -47,17 +47,29 @@ class OpenAiRealtimeVoiceProvider implements RealtimeVoiceProvider {
     private final String apiKey;
     private final String baseUrl;
     private final String wsUrl;
+    private final String transcriptionModel;
 
+    /**
+     * @param transcriptionModel modelo con el que el proveedor transcribe lo que dice el alumno
+     *        ({@code audio.input.transcription.model}). Por omisión {@code gpt-live-transcribe}, que la referencia
+     *        oficial lista como opción vigente y la página de deprecaciones recomienda como reemplazo de
+     *        {@code gpt-4o-mini-transcribe} (retirado el 2027-02-26). Verificado el 2026-11-11.
+     */
     OpenAiRealtimeVoiceProvider(JsonMapper json, @Value("${app.ai.openai.api-key:}") String apiKey,
             @Value("${app.ai.openai.base-url:https://api.openai.com/v1}") String baseUrl,
-            @Value("${app.ai.openai.realtime-ws-url:wss://api.openai.com/v1/realtime}") String wsUrl) {
+            @Value("${app.ai.openai.realtime-ws-url:wss://api.openai.com/v1/realtime}") String wsUrl,
+            @Value("${app.ai.realtime-transcription-model:gpt-live-transcribe}") String transcriptionModel) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException("AI_VOICE_PROVIDER=openai requiere OPENAI_API_KEY");
+        }
+        if (transcriptionModel == null || transcriptionModel.isBlank()) {
+            throw new IllegalStateException("AI_REALTIME_TRANSCRIPTION_MODEL no puede estar vacío");
         }
         this.json = json;
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
         this.wsUrl = wsUrl;
+        this.transcriptionModel = transcriptionModel;
     }
 
     @Override
@@ -82,7 +94,7 @@ class OpenAiRealtimeVoiceProvider implements RealtimeVoiceProvider {
         session.put("max_output_tokens", request.maxOutputTokens());
         session.put("audio", Map.of(
                 "input", Map.of(
-                        "transcription", Map.of("model", "gpt-4o-mini-transcribe"),
+                        "transcription", Map.of("model", transcriptionModel),
                         "turn_detection", Map.of("type", "semantic_vad", "interrupt_response", true)),
                 "output", Map.of("voice", request.voice())));
 

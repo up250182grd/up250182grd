@@ -60,6 +60,7 @@ services:
       AI_TEXT_MODEL: ${AI_TEXT_MODEL:-fake-tutor-1}
       AI_VOICE_PROVIDER: ${AI_VOICE_PROVIDER:-fake}
       AI_REALTIME_MODEL: ${AI_REALTIME_MODEL:-fake-voice-1}
+      AI_REALTIME_TRANSCRIPTION_MODEL: ${AI_REALTIME_TRANSCRIPTION_MODEL:-gpt-live-transcribe}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       PAYMENTS_PROVIDER: ${PAYMENTS_PROVIDER:-none}
       PAYMENTS_NOTIFICATION_URL: https://${DOMAIN}/api/v1/webhooks/mercadopago
