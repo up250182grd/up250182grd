@@ -92,16 +92,18 @@ Estado: **Fases 2 a 9 implementadas.** Ver [Fase 9](#estado-de-la-fase-9), [Fase
 | Transcripción en vivo (SSE) y guardada solo si el alumno lo permite; **el audio nunca se guarda** | ✅ |
 | Interfaz: cotización, modos, contador, consumo medido, nivel de micrófono, silenciar, colgar, transcripción, resumen con desglose, historial | ✅ |
 | **Llamada simulada** (sin audio, diálogo y consumo ficticios) — proveedor por defecto, etiquetada "Llamada simulada (sin audio)" | ✅ |
-| Adaptador OpenAI Realtime (WebRTC: SDP del navegador → servidor → `/v1/realtime/calls`; canal lateral por WebSocket con `call_id`; colgar) | ⚠️ **Implementado pero no probado contra la API real.** El modelo de transcripción se configura con `AI_REALTIME_TRANSCRIPTION_MODEL` (por omisión `gpt-live-transcribe`, verificado en la referencia oficial el 2026-11-11; `gpt-4o-mini-transcribe` se retira el 2027-02-26). 🔍 Falta verificar que el `call_id` llegue en el encabezado `Location` (la referencia no lo menciona). ⚠️ La transcripción se factura aparte (por minuto, con la tarifa del modelo de transcripción) y **todavía no se mide ni se cobra**. |
+| Adaptador OpenAI Realtime (WebRTC: SDP del navegador → servidor → `/v1/realtime/calls`; canal lateral por WebSocket con `call_id`; colgar) | ⚠️ **Implementado pero no probado contra la API real.** El modelo de transcripción se configura con `AI_REALTIME_TRANSCRIPTION_MODEL` (por omisión `gpt-live-transcribe`, verificado en la referencia oficial el 2026-11-11; `gpt-4o-mini-transcribe` se retira el 2027-02-26). 🔍 Falta verificar que el `call_id` llegue en el encabezado `Location` (la referencia no lo menciona). |
+| Cobro de la transcripción del alumno (el proveedor la factura aparte, con la tarifa del modelo de transcripción) | ✅ Se mide por el canal lateral (por duración o por tokens), con modelo y tarifa propios fijados al iniciar, y entra en la misma liquidación; el estimado por minuto y las reservas la incluyen. Sin tarifa de transcripción vigente no se inicia la llamada. Probado con el proveedor simulado (`VoiceIT`) y con eventos de ejemplo de la referencia oficial (ADR-0013). |
 | Ruta WebRTC del navegador (micrófono, oferta SDP, audio remoto, permisos, iOS) | ⚠️ Implementada; **solo se probó el modo simulado** (no hay proveedor real en el entorno de pruebas). |
 | Grabación/almacenamiento de audio | ❌ Deliberadamente no se hace |
 
 ### Activar la voz real (cuando lo decidas)
 
-1. Registra el modelo realtime en *Finanzas → Modelos y tarifas* (modalidad `REALTIME`) con sus tarifas por millón de tokens de texto y audio (entrada, entrada en caché, salida) **copiadas de la página oficial de precios**, con URL y fecha.
-2. En el backend: `AI_VOICE_PROVIDER=openai`, `AI_REALTIME_MODEL=<código del modelo>`, opcional `AI_REALTIME_VOICE`, y `OPENAI_API_KEY` (solo en el servidor).
-3. Haz llamadas cortas como administrador y compara el consumo registrado con el panel de uso del proveedor antes de abrirlo a alumnos.
-4. El sitio debe servirse por HTTPS (el navegador solo permite el micrófono en contextos seguros).
+1. Registra el modelo realtime en *Finanzas → Modelos y tarifas* (tipo *Voz en tiempo real*) con sus tarifas por millón de tokens de texto y audio (entrada, entrada en caché, salida) **copiadas de la página oficial de precios**, con URL y fecha.
+2. Registra también el modelo de transcripción (tipo *Transcripción de voz*, código igual a `AI_REALTIME_TRANSCRIPTION_MODEL`, por omisión `gpt-live-transcribe`). Si se cobra por duración, captura su **precio por minuto**; si se cobra por tokens, sus tarifas por millón. Debe estar **en la misma moneda** que el modelo realtime. Sin esta tarifa la voz real no inicia llamadas.
+3. En el backend: `AI_VOICE_PROVIDER=openai`, `AI_REALTIME_MODEL=<código del modelo>`, opcional `AI_REALTIME_VOICE` y `AI_REALTIME_TRANSCRIPTION_MODEL`, y `OPENAI_API_KEY` (solo en el servidor).
+4. Haz llamadas cortas como administrador y compara el consumo registrado (incluida la transcripción) con el panel de uso del proveedor antes de abrirlo a alumnos.
+5. El sitio debe servirse por HTTPS (el navegador solo permite el micrófono en contextos seguros).
 
 ## Estado de la Fase 4
 
