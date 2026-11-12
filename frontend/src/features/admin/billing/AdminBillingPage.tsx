@@ -110,10 +110,54 @@ function SummaryTab() {
   );
 }
 
+type Modality = 'TEXT' | 'REALTIME' | 'TRANSCRIPTION';
+
+const MODALITY_LABELS: Record<Modality, string> = {
+  TEXT: 'Texto (profesor por escrito)',
+  REALTIME: 'Voz en tiempo real',
+  TRANSCRIPTION: 'Transcripción de voz',
+};
+
+/** Unidades que factura cada tipo de modelo (las mismas que valida el servidor). */
+const UNITS_BY_MODALITY: Record<Modality, readonly string[]> = {
+  TEXT: ['text_in', 'text_in_cached', 'text_out'],
+  REALTIME: ['text_in', 'text_in_cached', 'text_out', 'audio_in', 'audio_in_cached', 'audio_out'],
+  TRANSCRIPTION: ['audio_microminutes', 'audio_in', 'text_in', 'text_out'],
+};
+
+/** Se mide en millonésimas de minuto, así que su tarifa "por millón" es el precio por minuto. */
+const PER_MINUTE_UNIT = 'audio_microminutes';
+
+const UNIT_LABELS: Record<string, string> = {
+  text_in: 'Texto: entrada',
+  text_in_cached: 'Texto: entrada en caché',
+  text_out: 'Texto: salida',
+  audio_in: 'Audio: entrada',
+  audio_in_cached: 'Audio: entrada en caché',
+  audio_out: 'Audio: salida',
+  [PER_MINUTE_UNIT]: 'Precio por minuto de audio',
+};
+
+function modalityOf(model: Schemas['ModelView']): Modality {
+  return model.modality === 'REALTIME' || model.modality === 'TRANSCRIPTION' ? model.modality : 'TEXT';
+}
+
+/** Orden de presentación de las unidades: el de su tipo de modelo (texto antes que audio, entrada antes que salida). */
+function unitOrder(model: Schemas['ModelView'], unit: string) {
+  const i = UNITS_BY_MODALITY[modalityOf(model)].indexOf(unit);
+  return i < 0 ? Number.MAX_SAFE_INTEGER : i;
+}
+
+function describeRate(unit: string, rate: number, currency?: string) {
+  const suffix = unit === PER_MINUTE_UNIT ? '/min' : '/1M tokens';
+  return `${UNIT_LABELS[unit] ?? unit}: ${formatPrecise(rate)} ${currency ?? ''}${suffix}`;
+}
+
 function AddPricingForm({ model }: { model: Schemas['ModelView'] }) {
   const invalidate = useInvalidate();
+  const units = UNITS_BY_MODALITY[modalityOf(model)];
   const [currency, setCurrency] = useState('USD');
-  const [rates, setRates] = useState({ text_in: '', text_in_cached: '', text_out: '' });
+  const [rates, setRates] = useState<Record<string, string>>(() => Object.fromEntries(units.map((u) => [u, ''])));
   const [sourceUrl, setSourceUrl] = useState('');
   const [verifiedAt, setVerifiedAt] = useState(new Date().toISOString().slice(0, 10));
   const save = useMutation({
@@ -143,7 +187,17 @@ function AddPricingForm({ model }: { model: Schemas['ModelView'] }) {
         save.mutate();
       }}
     >
-      <p className="text-sm font-medium">Nueva versión de tarifa (precio por 1 000 000 de tokens)</p>
+      <p className="text-sm font-medium">
+        {modalityOf(model) === 'TRANSCRIPTION'
+          ? 'Nueva versión de tarifa'
+          : 'Nueva versión de tarifa (precio por 1 000 000 de tokens)'}
+      </p>
+      {modalityOf(model) === 'TRANSCRIPTION' && (
+        <p className="text-xs text-muted">
+          Si el modelo se cobra por duración (p. ej. «$0.017 / minute»), captura solo el precio por minuto. Si se cobra
+          por tokens, captura sus tarifas por 1 000 000 de tokens. Usa la misma moneda que el modelo de voz.
+        </p>
+      )}
       <div className="grid gap-3 sm:grid-cols-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={`cur-${model.id}`} className="text-sm font-medium">
@@ -154,10 +208,10 @@ function AddPricingForm({ model }: { model: Schemas['ModelView'] }) {
             <option>MXN</option>
           </select>
         </div>
-        {(['text_in', 'text_in_cached', 'text_out'] as const).map((k) => (
+        {units.map((k) => (
           <TextField
             key={k}
-            label={{ text_in: 'Entrada', text_in_cached: 'Entrada en caché', text_out: 'Salida' }[k]}
+            label={UNIT_LABELS[k] ?? k}
             type="number"
             step="0.0001"
             min={0}
@@ -192,9 +246,10 @@ function PricingTab() {
   const models = useQuery({ queryKey: ['admin', 'billing', 'models'], queryFn: () => unwrap(api.GET('/api/v1/admin/billing/models')) });
   const [modelCode, setModelCode] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [modality, setModality] = useState<Modality>('TEXT');
   const create = useMutation({
     mutationFn: () =>
-      unwrap(api.POST('/api/v1/admin/billing/models', { body: { provider: 'OPENAI', modelCode, modality: 'TEXT', displayName } })),
+      unwrap(api.POST('/api/v1/admin/billing/models', { body: { provider: 'OPENAI', modelCode, modality, displayName } })),
     onSuccess: invalidate,
   });
   return (
@@ -210,14 +265,16 @@ function PricingTab() {
             <h3 className="font-semibold">{m.displayName}</h3>
             <Badge>{m.provider}</Badge>
             <span className="font-mono text-xs text-muted">{m.modelCode}</span>
+            <Badge>{MODALITY_LABELS[modalityOf(m)]}</Badge>
             {m.simulated && <Badge tone="warning">Simulado</Badge>}
           </div>
           {m.currentPricing ? (
             <div className="mt-2 text-sm">
               <p>
-                Tarifa vigente ({m.currentPricing.currency} por 1M tokens):{' '}
+                Tarifa vigente:{' '}
                 {Object.entries(m.currentPricing.ratesPerMillion ?? {})
-                  .map(([k, v]) => `${k} ${formatPrecise(v)}`)
+                  .sort(([a], [b]) => unitOrder(m, a) - unitOrder(m, b))
+                  .map(([k, v]) => describeRate(k, v, m.currentPricing?.currency))
                   .join(' · ')}
               </p>
               <p className="text-xs text-muted">
@@ -239,6 +296,23 @@ function PricingTab() {
             create.mutate();
           }}
         >
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="new-model-modality" className="text-sm font-medium">
+              Tipo
+            </label>
+            <select
+              id="new-model-modality"
+              value={modality}
+              onChange={(e) => setModality(e.target.value as Modality)}
+              className="min-h-11 rounded-lg border border-border bg-surface px-2"
+            >
+              {(Object.keys(MODALITY_LABELS) as Modality[]).map((k) => (
+                <option key={k} value={k}>
+                  {MODALITY_LABELS[k]}
+                </option>
+              ))}
+            </select>
+          </div>
           <TextField label="Código del modelo" value={modelCode} onChange={(e) => setModelCode(e.target.value)} />
           <TextField label="Nombre visible" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
           <Button type="submit" loading={create.isPending}>
@@ -247,7 +321,14 @@ function PricingTab() {
         </form>
         {create.isError && <Alert tone="error">{errorMessage(create.error)}</Alert>}
         <p className="mt-2 text-xs text-muted">
-          Para usarlo: configura AI_PROVIDER=openai, OPENAI_API_KEY y AI_TEXT_MODEL con este código, y registra su tarifa.
+          {
+            {
+              TEXT: 'Para usarlo: AI_PROVIDER=openai, OPENAI_API_KEY y AI_TEXT_MODEL con este código, y registra su tarifa.',
+              REALTIME: 'Para usarlo: AI_VOICE_PROVIDER=openai, OPENAI_API_KEY y AI_REALTIME_MODEL con este código, y registra su tarifa.',
+              TRANSCRIPTION:
+                'La voz real no inicia llamadas sin esta tarifa: usa el código de AI_REALTIME_TRANSCRIPTION_MODEL (por omisión gpt-live-transcribe).',
+            }[modality]
+          }
         </p>
       </Card>
     </div>

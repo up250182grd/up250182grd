@@ -322,6 +322,18 @@ class WalletAndTutorIT extends IntegrationTest {
                 "ratesPerMillion", Map.of("tokens", 1), "sourceUrl", "https://example.com/pricing",
                 "verifiedAt", "2026-11-01"));
         assertThat(badUnit.code()).isEqualTo("INVALID_RATES");
+        // Las unidades dependen de la modalidad: un modelo de texto no factura audio.
+        var audioOnText = admin.post("/api/v1/admin/billing/models/" + modelId + "/pricing", Map.of("currency", "USD",
+                "ratesPerMillion", Map.of("audio_microminutes", 0.017), "sourceUrl", "https://example.com/pricing",
+                "verifiedAt", "2026-11-01"));
+        assertThat(audioOnText.code()).isEqualTo("INVALID_RATES");
+        var asr = admin.post("/api/v1/admin/billing/models", Map.of("provider", "OPENAI", "modelCode", code + "-asr",
+                "modality", "TRANSCRIPTION", "displayName", "Transcripción de prueba"));
+        assertThat(asr.status()).as(asr.body()).isEqualTo(201);
+        var perMinute = admin.post("/api/v1/admin/billing/models/" + asr.json().path("id").asLong() + "/pricing",
+                Map.of("currency", "USD", "ratesPerMillion", Map.of("audio_microminutes", 0.017),
+                        "sourceUrl", "https://example.com/pricing", "verifiedAt", "2026-11-01"));
+        assertThat(perMinute.status()).as(perMinute.body()).isEqualTo(201);
         var ok = admin.post("/api/v1/admin/billing/models/" + modelId + "/pricing", Map.of("currency", "USD",
                 "ratesPerMillion", Map.of("text_in", 1.25, "text_in_cached", 0.125, "text_out", 10),
                 "sourceUrl", "https://example.com/pricing", "verifiedAt", "2026-11-01"));
