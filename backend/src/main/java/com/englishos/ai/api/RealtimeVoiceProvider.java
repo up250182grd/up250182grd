@@ -15,6 +15,12 @@ public interface RealtimeVoiceProvider {
     /** {@code true} si la llamada no lleva audio real (simulación para desarrollo y pruebas). */
     boolean simulated();
 
+    /**
+     * Modelo que transcribe lo que dice el alumno. Se factura aparte, con SU tarifa (no la del modelo realtime), así
+     * que debe estar registrado en el catálogo con una tarifa vigente para poder iniciar llamadas.
+     */
+    String transcriptionModel();
+
     record CallRequest(String model, String instructions, String voice, int maxOutputTokens, String sdpOffer) {
     }
 
@@ -27,6 +33,13 @@ public interface RealtimeVoiceProvider {
 
         /** Uso informado por el proveedor para una respuesta (unidades tarificables). */
         void onUsage(String responseId, Map<String, Long> units);
+
+        /**
+         * Uso de la transcripción de un turno del alumno ({@code itemId} identifica el turno), en unidades del modelo
+         * de transcripción: {@code audio_microminutes} si se factura por duración, o tokens
+         * ({@code audio_in}, {@code text_in}, {@code text_out}) si se factura por tokens.
+         */
+        void onTranscriptionUsage(String itemId, Map<String, Long> units);
 
         void onTranscript(String role, String text);
 

@@ -18,7 +18,8 @@ import com.englishos.ai.api.RealtimeVoiceProvider.Listener;
  *       ({@code text_tokens}, {@code audio_tokens}, {@code cached_tokens}, {@code cached_tokens_details}) y
  *       {@code output_token_details} ({@code text_tokens}, {@code audio_tokens}). Los tokens en caché son un
  *       subconjunto de los de entrada.</li>
- *   <li>Transcripciones: {@code conversation.item.input_audio_transcription.completed} (alumno) y
+ *   <li>Transcripciones: {@code conversation.item.input_audio_transcription.completed} (alumno, con
+ *       {@code item_id} y {@code usage} de la transcripción, que se cobra aparte) y
  *       {@code response.output_audio_transcript.done} (profesor).</li>
  * </ul>
  */
@@ -42,8 +43,13 @@ final class OpenAiRealtimeEvents {
                     listener.onUsage(response.path("id").asString(), units(usage));
                 }
             }
-            case "conversation.item.input_audio_transcription.completed" ->
-                    transcript("USER", event.path("transcript"));
+            case "conversation.item.input_audio_transcription.completed" -> {
+                transcript("USER", event.path("transcript"));
+                JsonNode usage = event.path("usage");
+                if (usage.isObject() && event.path("item_id").isString()) {
+                    listener.onTranscriptionUsage(event.path("item_id").asString(), transcriptionUnits(usage));
+                }
+            }
             case "response.output_audio_transcript.done" -> transcript("ASSISTANT", event.path("transcript"));
             case "error" -> {
                 // Los errores del proveedor no generan cobro; se registran por quien consuma el canal.
@@ -90,6 +96,34 @@ final class OpenAiRealtimeEvents {
         units.put("audio_in_cached", cachedAudio);
         units.put("text_out", textOut);
         units.put("audio_out", audioOut);
+        return units;
+    }
+
+    /**
+     * Uso de la transcripción del alumno, que se factura con la tarifa del modelo de transcripción (no la del modelo
+     * realtime). Según la referencia oficial (verificada el 2026-11-11) llega en una de dos formas:
+     * <ul>
+     *   <li>{@code {"type":"duration","seconds":2.4}} → {@code audio_microminutes} (millonésimas de minuto: con la
+     *       tarifa capturada como precio por minuto, la calculadora da segundos / 60 × precio).</li>
+     *   <li>{@code {"type":"tokens","input_tokens":…,"input_token_details":{"audio_tokens","text_tokens"},
+     *       "output_tokens":…}} → {@code audio_in}, {@code text_in} y {@code text_out}. Sin desglose, toda la
+     *       entrada se toma como audio (es lo que se transcribe).</li>
+     * </ul>
+     */
+    static Map<String, Long> transcriptionUnits(JsonNode usage) {
+        Map<String, Long> units = new LinkedHashMap<>();
+        if ("duration".equals(usage.path("type").asString("")) || usage.path("seconds").isNumber()) {
+            units.put(TranscriptionUnits.AUDIO_MICROMINUTES,
+                    TranscriptionUnits.microminutes(usage.path("seconds").decimalValue()));
+            return units;
+        }
+        JsonNode in = usage.path("input_token_details");
+        long input = usage.path("input_tokens").asLong(0);
+        long audioIn = in.isObject() ? in.path("audio_tokens").asLong(0) : input;
+        long textIn = in.isObject() ? in.path("text_tokens").asLong(0) : 0;
+        units.put("audio_in", audioIn);
+        units.put("text_in", textIn);
+        units.put("text_out", usage.path("output_tokens").asLong(0));
         return units;
     }
 

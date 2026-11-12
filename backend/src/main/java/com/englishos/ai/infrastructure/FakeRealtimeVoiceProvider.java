@@ -1,5 +1,6 @@
 package com.englishos.ai.infrastructure;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Llamada SIMULADA: no hay audio ni red. Cada {@code tick} emite por el "canal lateral" un turno de conversación
- * ficticio (transcripción + uso con tarifas ficticias). Permite probar de punta a punta reservas, medidor en vivo,
+ * ficticio (transcripción, uso del modelo realtime y uso de la transcripción, con tarifas ficticias). Permite probar de punta a punta reservas, medidor en vivo,
  * cortes por límite, desconexiones y liquidación sin costo real. La interfaz lo etiqueta como simulado.
  */
 @Component
@@ -54,6 +55,12 @@ class FakeRealtimeVoiceProvider implements RealtimeVoiceProvider {
         return true;
     }
 
+    /** Modelo de transcripción simulado (catálogo: tarifa ficticia en MXN por minuto). */
+    @Override
+    public String transcriptionModel() {
+        return "fake-transcribe-1";
+    }
+
     @Override
     public CallStarted startCall(CallRequest request) {
         return new CallStarted("fake-call-" + UUID.randomUUID(), null);
@@ -67,6 +74,9 @@ class FakeRealtimeVoiceProvider implements RealtimeVoiceProvider {
             String[] lines = SCRIPT.get(n % SCRIPT.size());
             listener.onTranscript("ASSISTANT", lines[0]);
             listener.onTranscript("USER", lines[1]);
+            // Como el proveedor real: la transcripción del alumno se informa aparte, facturada por duración.
+            listener.onTranscriptionUsage(callId + "-item-" + n, Map.of(TranscriptionUnits.AUDIO_MICROMINUTES,
+                    TranscriptionUnits.microminutes(new BigDecimal("2.4"))));
             Map<String, Long> units = new LinkedHashMap<>();
             units.put("text_in", 100L + 40L * n); // el contexto crece con la conversación
             units.put("audio_in", 30L);
