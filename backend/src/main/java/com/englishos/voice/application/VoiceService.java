@@ -87,6 +87,9 @@ public class VoiceService implements ApplicationRunner {
     private final Duration watchdogPeriod;
     private final BigDecimal adminMonthlyCap;
     private final Map<String, Long> perMinuteUnits;
+    private final long transcribedSecondsPerMinute;
+    private final long audioInPerMinute;
+    private final long textOutPerMinute;
     private final String promptTemplate;
     private final org.springframework.context.ApplicationEventPublisher events;
 
@@ -114,7 +117,9 @@ public class VoiceService implements ApplicationRunner {
             @Value("${app.voice.estimate.text-in-per-minute:1500}") long textInPerMinute,
             @Value("${app.voice.estimate.audio-in-per-minute:600}") long audioInPerMinute,
             @Value("${app.voice.estimate.audio-out-per-minute:900}") long audioOutPerMinute,
-            @Value("${app.voice.estimate.text-out-per-minute:200}") long textOutPerMinute) throws IOException {
+            @Value("${app.voice.estimate.text-out-per-minute:200}") long textOutPerMinute,
+            @Value("${app.voice.estimate.transcribed-seconds-per-minute:60}") long transcribedSecondsPerMinute)
+            throws IOException {
         this.sessions = sessions;
         this.transcripts = transcripts;
         this.metering = metering;
@@ -145,6 +150,9 @@ public class VoiceService implements ApplicationRunner {
         units.put("audio_out", audioOutPerMinute);
         units.put("text_out", textOutPerMinute);
         this.perMinuteUnits = Map.copyOf(units);
+        this.transcribedSecondsPerMinute = transcribedSecondsPerMinute;
+        this.audioInPerMinute = audioInPerMinute;
+        this.textOutPerMinute = textOutPerMinute;
         try (InputStream in = new ClassPathResource("prompts/" + PROMPT_VERSION + ".txt").getInputStream()) {
             this.promptTemplate = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
@@ -216,9 +224,10 @@ public class VoiceService implements ApplicationRunner {
     // ---- Casos de uso --------------------------------------------------------------------------
 
     public VoiceQuote quote(CurrentUser user) {
-        MeteringApi.SessionPricing pricing = metering.pricingFor(user.id(), user.isAdmin(), provider.provider(), modelCode);
-        CostEstimate perMinute = metering.estimate(pricing.pricingVersionId(), pricing.policyId(), perMinuteUnits);
-        VoiceModelInfo model = modelInfo(pricing.modelId());
+        PinnedPricing pinned = pin(user);
+        CostEstimate perMinute = perMinute(pinned.voice().pricingVersionId(), pinned.transcriptionPricingVersionId(),
+                pinned.voice().policyId());
+        VoiceModelInfo model = modelInfo(pinned.voice().modelId());
         BigDecimal available = wallet.available(user.id());
         BigDecimal spent = wallet.capturedThisMonth(user.id(), profiles.zoneOf(user.id()));
         BigDecimal limit = wallet.monthlyLimit(user.id()).orElse(null);
@@ -283,8 +292,10 @@ public class VoiceService implements ApplicationRunner {
     }
 
     private VoiceSession reserveAndCreate(CurrentUser user, VoiceSession.Mode mode, String topic) {
-        MeteringApi.SessionPricing pricing = metering.pricingFor(user.id(), user.isAdmin(), provider.provider(), modelCode);
-        CostEstimate perMinute = metering.estimate(pricing.pricingVersionId(), pricing.policyId(), perMinuteUnits);
+        PinnedPricing pinned = pin(user);
+        MeteringApi.SessionPricing pricing = pinned.voice();
+        CostEstimate perMinute = perMinute(pricing.pricingVersionId(), pinned.transcriptionPricingVersionId(),
+                pricing.policyId());
         Instant now = Instant.now(clock);
         int minutes;
         BigDecimal target = BigDecimal.ZERO;
@@ -318,7 +329,8 @@ public class VoiceService implements ApplicationRunner {
         VoiceSession s;
         try {
             s = sessions.saveAndFlush(VoiceSession.start(user.id(), mode, topic, pricing.modelId(),
-                    pricing.pricingVersionId(), pricing.policyId(), provider.provider(), minutes * 60,
+                    pricing.pricingVersionId(), pricing.policyId(), pinned.transcriptionModelId(),
+                    pinned.transcriptionPricingVersionId(), provider.provider(), minutes * 60,
                     profiles.storeTranscripts(user.id()), now));
         } catch (DataIntegrityViolationException ex) {
             throw ApiException.conflict("CALL_IN_PROGRESS", "Ya tienes una llamada activa.");
@@ -373,7 +385,13 @@ public class VoiceService implements ApplicationRunner {
         return new RealtimeVoiceProvider.Listener() {
             @Override
             public void onUsage(String responseId, Map<String, Long> units) {
-                handleUsage(sessionId, responseId, units);
+                handleUsage(sessionId, responseId, units, false);
+            }
+
+            @Override
+            public void onTranscriptionUsage(String itemId, Map<String, Long> units) {
+                // Prefijo propio: el id del turno no debe chocar con los ids de respuesta en la idempotencia.
+                handleUsage(sessionId, "transcription:" + itemId, units, true);
             }
 
             @Override
@@ -388,13 +406,26 @@ public class VoiceService implements ApplicationRunner {
         };
     }
 
-    void handleUsage(Long sessionId, String responseId, Map<String, Long> units) {
+    /**
+     * Registra un evento de consumo. {@code transcription = true}: uso de la transcripción del alumno, que se tarifica
+     * con el modelo y la tarifa de transcripción fijados al iniciar (no con los del modelo realtime).
+     */
+    void handleUsage(Long sessionId, String providerRequestId, Map<String, Long> units, boolean transcription) {
         try {
             VoiceSession s = tx.execute(st -> {
                 VoiceSession v = sessions.findByIdForUpdate(sessionId).orElseThrow();
+                Long modelId = transcription ? v.getTranscriptionModelId() : v.getModelId();
+                Long pricingVersionId = transcription ? v.getTranscriptionPricingVersionId() : v.getPricingVersionId();
+                if (pricingVersionId == null) {
+                    // Llamada iniciada antes de fijar tarifa de transcripción: no se inventa un precio.
+                    wallet.openIncident("TRANSCRIPTION_USAGE_UNPRICED", v.getUserId(), SUBJECT, String.valueOf(v.getId()),
+                            "Llegó consumo de transcripción sin tarifa fijada en la llamada; requiere conciliación.");
+                    return v;
+                }
                 // El consumo se registra siempre que el proveedor lo informe: ocurrió (RN-34).
-                metering.recordUsage(new MeteringApi.UsageInput(v.getUserId(), SUBJECT, v.getId(), v.getModelId(),
-                        v.getPricingVersionId(), responseId, units, provider.simulated() ? "SIMULATED" : "PROVIDER_EVENT"));
+                metering.recordUsage(new MeteringApi.UsageInput(v.getUserId(), SUBJECT, v.getId(), modelId,
+                        pricingVersionId, providerRequestId, units,
+                        provider.simulated() ? "SIMULATED" : "PROVIDER_EVENT"));
                 v.usageReceived(Instant.now(clock));
                 if (v.getStatus() == VoiceSession.Status.ENDED && metering.settlementOf(SUBJECT, v.getId()).isPresent()) {
                     wallet.openIncident("USAGE_AFTER_SETTLEMENT", v.getUserId(), SUBJECT, String.valueOf(v.getId()),
@@ -422,7 +453,8 @@ public class VoiceService implements ApplicationRunner {
             return;
         }
         try {
-            CostEstimate perMinute = metering.estimate(s.getPricingVersionId(), s.getPolicyId(), perMinuteUnits);
+            CostEstimate perMinute = perMinute(s.getPricingVersionId(), s.getTranscriptionPricingVersionId(),
+                    s.getPolicyId());
             BigDecimal target = measured.totalMxn().add(reserveFor(perMinute.totalMxn(), minMinutes));
             BigDecimal limit = wallet.monthlyLimit(s.getUserId()).orElse(null);
             if (limit != null && wallet.capturedThisMonth(s.getUserId(), profiles.zoneOf(s.getUserId())).add(target)
@@ -524,6 +556,68 @@ public class VoiceService implements ApplicationRunner {
     }
 
     // ---- Apoyo ----------------------------------------------------------------------------------
+
+    /** Tarifas que se fijan al iniciar: la del modelo realtime y la de la transcripción del alumno. */
+    private record PinnedPricing(MeteringApi.SessionPricing voice, MeteringApi.SessionPricing transcription) {
+
+        Long transcriptionModelId() {
+            return transcription == null ? null : transcription.modelId();
+        }
+
+        Long transcriptionPricingVersionId() {
+            return transcription == null ? null : transcription.pricingVersionId();
+        }
+    }
+
+    /**
+     * Sin tarifa vigente de transcripción no se inicia la llamada (se cobraría algo sin precio). Debe estar en la misma
+     * moneda que la del modelo realtime, porque la llamada se liquida en una sola moneda.
+     */
+    private PinnedPricing pin(CurrentUser user) {
+        MeteringApi.SessionPricing voicePricing = metering.pricingFor(user.id(), user.isAdmin(), provider.provider(),
+                modelCode);
+        String trModel = provider.transcriptionModel();
+        if (trModel == null || trModel.isBlank()) {
+            return new PinnedPricing(voicePricing, null);
+        }
+        MeteringApi.SessionPricing tr = metering.pricingFor(user.id(), user.isAdmin(), provider.provider(), trModel);
+        if (!tr.currency().equals(voicePricing.currency())) {
+            throw new ApiException(HttpStatus.SERVICE_UNAVAILABLE, "AI_NOT_CONFIGURED", "La tarifa del modelo de "
+                    + "transcripción (" + tr.currency() + ") debe estar en la misma moneda que la del modelo de voz ("
+                    + voicePricing.currency() + ").");
+        }
+        return new PinnedPricing(voicePricing, tr);
+    }
+
+    /** Costo estimado de un minuto de llamada: modelo realtime + transcripción del alumno (si tiene tarifa). */
+    private CostEstimate perMinute(Long pricingVersionId, Long transcriptionPricingVersionId, Long policyId) {
+        if (transcriptionPricingVersionId == null) {
+            return metering.estimate(pricingVersionId, policyId, perMinuteUnits);
+        }
+        Map<Long, Map<String, Long>> units = new LinkedHashMap<>();
+        units.put(pricingVersionId, perMinuteUnits);
+        units.put(transcriptionPricingVersionId, transcriptionPerMinute(metering.ratesOf(transcriptionPricingVersionId)));
+        return metering.estimate(policyId, units);
+    }
+
+    /**
+     * Unidades de transcripción estimadas por minuto, según cómo factura el modelo: por duración (se asume que el
+     * alumno habla {@code transcribed-seconds-per-minute}, por omisión todo el minuto) o por tokens.
+     */
+    private Map<String, Long> transcriptionPerMinute(Map<String, BigDecimal> rates) {
+        Map<String, Long> units = new LinkedHashMap<>();
+        if (rates.containsKey(MeteringApi.AUDIO_MICROMINUTES)) {
+            units.put(MeteringApi.AUDIO_MICROMINUTES, transcribedSecondsPerMinute * 1_000_000 / 60);
+            return units;
+        }
+        if (rates.containsKey("audio_in")) {
+            units.put("audio_in", audioInPerMinute);
+        }
+        if (rates.containsKey("text_out")) {
+            units.put("text_out", textOutPerMinute);
+        }
+        return units;
+    }
 
     private int affordableMinutes(BigDecimal available, BigDecimal spent, BigDecimal limit, BigDecimal perMinute) {
         if (perMinute == null || perMinute.signum() <= 0) {

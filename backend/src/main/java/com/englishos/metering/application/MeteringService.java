@@ -125,6 +125,32 @@ class MeteringService implements MeteringApi {
 
     @Override
     @Transactional(readOnly = true)
+    public CostEstimate estimate(Long policyId, Map<Long, Map<String, Long>> unitsByPricingVersion) {
+        BigDecimal cost = BigDecimal.ZERO;
+        String currency = null;
+        for (Map.Entry<Long, Map<String, Long>> e : unitsByPricingVersion.entrySet()) {
+            PricingVersion version = pricing.findById(e.getKey()).orElseThrow();
+            if (currency != null && !currency.equals(version.getCurrency())) {
+                throw new IllegalStateException("Tarifas en monedas distintas: " + currency + " y "
+                        + version.getCurrency());
+            }
+            currency = version.getCurrency();
+            cost = cost.add(ChargeCalculator.providerCost(e.getValue(), rates(version)));
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException("Sin tarifas que estimar");
+        }
+        return price(cost, currency, policies.findById(policyId).orElseThrow());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, BigDecimal> ratesOf(Long pricingVersionId) {
+        return rates(pricing.findById(pricingVersionId).orElseThrow());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ModelRef model(Long modelId) {
         AiModel m = models.findById(modelId).orElseThrow();
         return new ModelRef(m.getId(), m.getProvider(), m.getModelCode(), m.getDisplayName(), m.isSimulated());
