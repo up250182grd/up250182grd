@@ -51,7 +51,7 @@ class BillingController {
     }
 
     record CreateModelRequest(@NotBlank String provider, @NotBlank @Size(max = 100) String modelCode,
-            @NotBlank @Pattern(regexp = "TEXT|REALTIME") String modality, @NotBlank @Size(max = 120) String displayName) {
+            @NotBlank @Pattern(regexp = "TEXT|REALTIME|TRANSCRIPTION") String modality, @NotBlank @Size(max = 120) String displayName) {
     }
 
     record PricingRequest(@NotBlank @Pattern(regexp = "USD|MXN") String currency,

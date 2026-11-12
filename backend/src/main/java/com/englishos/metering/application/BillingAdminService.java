@@ -9,11 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import tools.jackson.databind.json.JsonMapper;
 
 import com.englishos.audit.AuditService;
 import com.englishos.identity.api.CurrentUser;
+import com.englishos.metering.api.MeteringApi;
 import com.englishos.metering.api.MeteringApi.SettlementView;
 import com.englishos.metering.domain.AiModel;
 import com.englishos.metering.domain.ChargeCalculator;
@@ -41,8 +43,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BillingAdminService {
 
-    static final Set<String> UNIT_TYPES = Set.of("text_in", "text_in_cached", "text_out", "audio_in",
-            "audio_in_cached", "audio_out");
+    /** Unidades tarificables por modalidad del modelo. */
+    static final Map<String, Set<String>> UNIT_TYPES = Map.of(
+            "TEXT", Set.of("text_in", "text_in_cached", "text_out"),
+            "REALTIME", Set.of("text_in", "text_in_cached", "text_out", "audio_in", "audio_in_cached", "audio_out"),
+            // Por duración (precio por minuto) o por tokens, según cómo facture el modelo de transcripción.
+            "TRANSCRIPTION", Set.of(MeteringApi.AUDIO_MICROMINUTES, "audio_in", "text_in", "text_out"));
     private static final Set<String> PROVIDERS = Set.of("OPENAI");
 
     private final AiModelRepository models;
@@ -137,9 +143,11 @@ public class BillingAdminService {
             throw ApiException.badRequest("SIMULATED_MODEL", "Las tarifas del proveedor simulado no se modifican.");
         }
         Instant now = Instant.now(clock);
-        if (rates == null || rates.isEmpty() || !UNIT_TYPES.containsAll(rates.keySet())
+        Set<String> allowed = UNIT_TYPES.getOrDefault(model.getModality(), Set.of());
+        if (rates == null || rates.isEmpty() || !allowed.containsAll(rates.keySet())
                 || rates.values().stream().anyMatch(r -> r == null || r.signum() < 0)) {
-            throw ApiException.badRequest("INVALID_RATES", "Tarifas inválidas. Tipos permitidos: " + UNIT_TYPES);
+            throw ApiException.badRequest("INVALID_RATES", "Tarifas inválidas para un modelo " + model.getModality()
+                    + ". Tipos permitidos: " + new TreeSet<>(allowed));
         }
         if (sourceUrl == null || !sourceUrl.startsWith("https://")) {
             throw ApiException.badRequest("SOURCE_REQUIRED",

@@ -55,6 +55,13 @@ public class VoiceSession {
     @Column(name = "policy_id", nullable = false, updatable = false)
     private Long policyId;
 
+    /** Modelo y tarifa de la transcripción del alumno, fijados al iniciar; NULL en llamadas anteriores a V10. */
+    @Column(name = "transcription_model_id", updatable = false)
+    private Long transcriptionModelId;
+
+    @Column(name = "transcription_pricing_version_id", updatable = false)
+    private Long transcriptionPricingVersionId;
+
     @Column(nullable = false, updatable = false, length = 32)
     private String provider;
 
@@ -102,7 +109,8 @@ public class VoiceSession {
     }
 
     public static VoiceSession start(Long userId, Mode mode, String topic, Long modelId, Long pricingVersionId,
-            Long policyId, String provider, int maxDurationSeconds, boolean storeTranscript, Instant now) {
+            Long policyId, Long transcriptionModelId, Long transcriptionPricingVersionId, String provider,
+            int maxDurationSeconds, boolean storeTranscript, Instant now) {
         VoiceSession s = new VoiceSession();
         s.publicId = Ulid.next();
         s.userId = userId;
@@ -111,6 +119,8 @@ public class VoiceSession {
         s.modelId = modelId;
         s.pricingVersionId = pricingVersionId;
         s.policyId = policyId;
+        s.transcriptionModelId = transcriptionModelId;
+        s.transcriptionPricingVersionId = transcriptionPricingVersionId;
         s.provider = provider;
         s.status = Status.STARTING;
         s.maxDurationSeconds = maxDurationSeconds;
@@ -208,6 +218,14 @@ public class VoiceSession {
 
     public Long getPolicyId() {
         return policyId;
+    }
+
+    public Long getTranscriptionModelId() {
+        return transcriptionModelId;
+    }
+
+    public Long getTranscriptionPricingVersionId() {
+        return transcriptionPricingVersionId;
     }
 
     public String getProviderCallId() {
