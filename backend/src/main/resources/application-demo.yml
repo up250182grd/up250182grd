@@ -1,0 +1,14 @@
+# Perfil DEMO: para probar la app en un servidor público sin ningún costo real. Se activa JUNTO con prod
+# (SPRING_PROFILES_ACTIVE=prod,demo) y solo cambia lo necesario para poder probarla sin servicios de pago:
+#   - los correos van a Mailpit (bandeja de pruebas, sin SMTP real);
+#   - las recargas simuladas están activas para que los alumnos de prueba tengan saldo.
+# DemoModeGuard impide arrancar este perfil con IA real o pasarela de pago real.
+spring:
+  mail:
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+app:
+  billing:
+    simulated-topups-enabled: true

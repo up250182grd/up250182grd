@@ -1,0 +1,44 @@
+# Proxy inverso del MODO DEMO (docker-compose.demo.yml): igual que el de producción, más la bandeja de correos de
+# prueba (Mailpit) en /correo/, protegida con usuario y contraseña. Ahí llegan los correos de verificación.
+{
+	email {$ACME_EMAIL}
+}
+
+(tls-acme) {
+	tls {$ACME_EMAIL}
+}
+
+(tls-internal) {
+	tls internal
+}
+
+{$DOMAIN} {
+	import tls-{$TLS_MODE:acme}
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	@correo path /correo /correo/*
+	handle @correo {
+		basic_auth {
+			{$MAILPIT_USER} {$MAILPIT_HASH}
+		}
+		reverse_proxy mailpit:8025
+	}
+
+	handle {
+		# Las respuestas en streaming (SSE) del tutor y de la voz pasan sin búfer.
+		reverse_proxy frontend:8080 {
+			flush_interval -1
+		}
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

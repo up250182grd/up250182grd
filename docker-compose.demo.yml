@@ -1,0 +1,41 @@
+# MODO DEMO para un servidor de prueba (p. ej. Oracle Cloud Always Free): se combina con docker-compose.prod.yml.
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.demo.yml up -d --build
+#
+# Qué cambia respecto a producción:
+#   - IA, voz y pagos SIEMPRE simulados (sin costo real); el backend se niega a arrancar si no (DemoModeGuard).
+#   - Recargas simuladas activas, para que los alumnos de prueba tengan saldo.
+#   - Los correos (verificación, recuperación) los atrapa Mailpit: se ven en https://DOMINIO/correo/
+#     con MAILPIT_USER y la contraseña cuyo hash está en MAILPIT_HASH.
+# El instalador infra/oracle/instalar.sh crea el .env con todo esto.
+services:
+  caddy:
+    environment:
+      MAILPIT_USER: ${MAILPIT_USER:?Define MAILPIT_USER}
+      MAILPIT_HASH: ${MAILPIT_HASH:?Define MAILPIT_HASH}
+    volumes:
+      - ./infra/caddy/Caddyfile.demo:/etc/caddy/Caddyfile:ro
+
+  backend:
+    depends_on:
+      mailpit:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,demo
+      MAIL_HOST: mailpit
+      MAIL_PORT: "1025"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      AI_PROVIDER: fake
+      AI_TEXT_MODEL: fake-tutor-1
+      AI_VOICE_PROVIDER: fake
+      AI_REALTIME_MODEL: fake-voice-1
+      PAYMENTS_PROVIDER: none
+      OPENAI_API_KEY: ""
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    restart: unless-stopped
+    environment:
+      MP_WEBROOT: correo
+      MP_MAX_MESSAGES: "500"
